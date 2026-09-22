@@ -1495,14 +1495,14 @@ html, body {
           <div class="section-label">Recent Sensor Logs</div>
 
           <div class="scan-feed-item" onclick="loadDemoScenario('rt')">
-            <div class="scan-feed-icon">&#127822;</div>
+            <div class="scan-feed-icon">&#127813;</div>
             <div class="scan-feed-info">
-              <div class="scan-feed-title">Honeycrisp Apple</div>
+              <div class="scan-feed-title">Tomato</div>
               <div class="scan-feed-meta">Today, 17:42 &bull; Freshness Screening</div>
             </div>
             <div class="scan-feed-score">
-              <div class="scan-feed-score-val" style="color:var(--gr)">88</div>
-              <div class="scan-feed-score-lbl">91% conf.</div>
+              <div class="scan-feed-score-val" style="color:var(--gr)">80</div>
+              <div class="scan-feed-score-lbl">93% conf.</div>
             </div>
           </div>
 
@@ -1679,7 +1679,7 @@ html, body {
           <div class="reticle-bottom-corners"></div>
           <div class="scan-laser-beam"></div>
           <div class="target-preview-img-wrap" id="targetPreviewWrap" style="font-size:76px;line-height:1;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);box-shadow:0 0 35px rgba(255,255,255,0.12);transition:opacity 0.3s ease;">
-            <span id="liveScanTargetIcon">&#127822;</span>
+            <span id="liveScanTargetIcon">&#127813;</span>
           </div>
         </div>
 
@@ -1687,9 +1687,9 @@ html, body {
         <div class="cv-detect-hud-card" style="z-index:4;">
           <div class="cv-hud-left">
             <div class="cv-hud-status" id="cvHudStatusText">SPECIMEN IDENTIFIED</div>
-            <div class="cv-detected-target" id="cvTargetLabel">Honeycrisp Apple</div>
+            <div class="cv-detected-target" id="cvTargetLabel">Tomato</div>
           </div>
-          <div class="cv-hud-badge" id="cvConfidenceLabel">99% CONF</div>
+          <div class="cv-hud-badge" id="cvConfidenceLabel">93% CONF</div>
         </div>
       </div>
 
@@ -1927,8 +1927,8 @@ html, body {
           <!-- Auto-Detected Label Pill -->
           <div style="text-align:center;margin-bottom:14px;">
             <div class="auto-identified-badge" id="resAutoDetectedBadge">
-              <span id="resTargetIcon">&#127822;</span>
-              <span id="resTargetName">Honeycrisp Apple</span>
+              <span id="resTargetIcon">&#127813;</span>
+              <span id="resTargetName">Tomato</span>
             </div>
           </div>
 
@@ -1938,10 +1938,10 @@ html, body {
               FRESHNESS
             </div>
             <div class="big-score-num" id="resScoreNum" style="color:var(--gr)">
-              88<span class="big-score-denom">/100</span>
+              80<span class="big-score-denom">/100</span>
             </div>
             <div style="margin-top:12px;">
-              <span class="status-pill pill-green" id="resStagePill">OPTIMAL FRESHNESS</span>
+              <span class="status-pill pill-green" id="resStagePill">FRESH</span>
             </div>
           </div>
 
@@ -1949,15 +1949,15 @@ html, body {
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
             <div class="quad-card" style="padding:14px 8px;text-align:center;">
               <div class="quad-title">REMAINING</div>
-              <div class="quad-val" id="resRulVal" style="font-size:16px;margin:4px 0">5&ndash;7 days</div>
+              <div class="quad-val" id="resRulVal" style="font-size:16px;margin:4px 0">4&ndash;5 days</div>
             </div>
             <div class="quad-card" style="padding:14px 8px;text-align:center;">
               <div class="quad-title">DEGRADATION</div>
-              <div class="quad-val" id="resDegVal" style="font-size:16px;margin:4px 0">&minus;1.6 / day</div>
+              <div class="quad-val" id="resDegVal" style="font-size:16px;margin:4px 0">&minus;1.8 / day</div>
             </div>
             <div class="quad-card" style="padding:14px 8px;text-align:center;">
               <div class="quad-title">CONFIDENCE</div>
-              <div class="quad-val" id="resConfVal" style="font-size:16px;margin:4px 0">89%</div>
+              <div class="quad-val" id="resConfVal" style="font-size:16px;margin:4px 0">93%</div>
             </div>
           </div>
 
@@ -2303,8 +2303,8 @@ html, body {
           <div class="result-hero-box" id="milkResultHero" style="margin-bottom:16px;">
             <div style="font-size:38px;line-height:1;margin-bottom:10px">&#129371;</div>
             <div class="section-label" style="justify-content:center;margin-bottom:6px">Milk Quality Verdict</div>
-            <div style="font-size:16px;font-weight:900;letter-spacing:0.04em;" class="status-pill pill-green" id="milkVerdictPill">
-              PURE MILK
+            <div style="font-size:16px;font-weight:900;letter-spacing:0.04em;" class="status-pill pill-yellow" id="milkVerdictPill">
+              4% WATER DETECTED
             </div>
             <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px;font-size:12px;color:var(--ts)">
               <span id="milkProfileLabel">Container: Glass</span>
@@ -2320,11 +2320,11 @@ html, body {
               <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ac)" id="milkConfBadge">94% CONFIDENCE</span>
             </div>
             <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px">
-              <span style="font-family:var(--mono);font-size:32px;font-weight:800;color:var(--gr)" id="milkWaterPct">87.4%</span>
-              <span style="font-size:13px;font-weight:700;color:var(--gr)" id="milkAddedWaterBadge">(0.0% added water)</span>
+              <span style="font-family:var(--mono);font-size:32px;font-weight:800;color:var(--yw)" id="milkWaterPct">4%</span>
+              <span style="font-size:13px;font-weight:700;color:var(--yw)" id="milkAddedWaterBadge">(4.0% water detected)</span>
             </div>
             <div style="font-size:12px;color:var(--ts)" id="milkWaterLabel">
-              Natural pure milk baseline (~87% natural water). No added water detected.
+              4% water detected in sample. Other adulterants within safe limits.
             </div>
           </div>
 
@@ -2332,7 +2332,7 @@ html, body {
           <div class="metric-card" style="margin-bottom:20px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
               <span class="section-label" style="margin-bottom:0">Screened Adulterants &amp; Impurities</span>
-              <span style="font-size:11px;font-weight:700;color:var(--gr)" id="milkAdulterantSummary">0 DETECTED</span>
+              <span style="font-size:11px;font-weight:700;color:var(--yw)" id="milkAdulterantSummary">1 DETECTED</span>
             </div>
 
             <div class="sensor-diag-row">
@@ -2340,7 +2340,7 @@ html, body {
                 <div class="sensor-diag-name">Added Water Dilution</div>
                 <div style="font-size:10px;color:var(--tm)">Normal baseline: &lt; 2%</div>
               </div>
-              <span class="sensor-diag-status" style="color:var(--gr)" id="adWaterStatus">&#10003; 0.0% (Normal)</span>
+              <span class="sensor-diag-status" style="color:var(--yw)" id="adWaterStatus">4.0% (Water Detected)</span>
             </div>
 
             <div class="sensor-diag-row">
@@ -2400,15 +2400,15 @@ html, body {
           <div class="section-label">Today</div>
 
           <div class="history-entry-card" onclick="loadDemoScenario('rt')">
-            <div style="font-size:28px">&#127822;</div>
+            <div style="font-size:28px">&#127813;</div>
             <div style="flex:1">
-              <div style="font-size:14px;font-weight:700;color:var(--tp)">Honeycrisp Apple</div>
-              <div style="font-size:12px;color:var(--ts)">Freshness: 88 &bull; RUL: 5-7 d</div>
+              <div style="font-size:14px;font-weight:700;color:var(--tp)">Tomato</div>
+              <div style="font-size:12px;color:var(--ts)">Freshness: 80 &bull; RUL: 4-5 d</div>
               <div style="font-size:11px;color:var(--tm);margin-top:2px">17:42 &bull; Session #402</div>
             </div>
             <div style="text-align:right">
-              <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--gr)">88</div>
-              <div style="font-size:10px;color:var(--ts)">91% conf</div>
+              <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--gr)">80</div>
+              <div style="font-size:10px;color:var(--ts)">93% conf</div>
             </div>
           </div>
 
@@ -2416,12 +2416,12 @@ html, body {
             <div style="font-size:28px">&#129371;</div>
             <div style="flex:1">
               <div style="font-size:14px;font-weight:700;color:var(--tp)">Cow Milk Sample</div>
-              <div style="font-size:12px;color:var(--ts)">No adulterants &bull; Dilution: ~3.8%</div>
+              <div style="font-size:12px;color:var(--ts)">4% water detected &bull; No chemicals</div>
               <div style="font-size:11px;color:var(--tm);margin-top:2px">14:15 &bull; Session #401</div>
             </div>
             <div style="text-align:right">
-              <div style="font-family:var(--mono);font-size:13px;font-weight:800;color:var(--gr)">PASS</div>
-              <div style="font-size:10px;color:var(--ts)">93% conf</div>
+              <div style="font-family:var(--mono);font-size:13px;font-weight:800;color:var(--yw)">4% WATER</div>
+              <div style="font-size:10px;color:var(--ts)">94% conf</div>
             </div>
           </div>
 
@@ -2573,10 +2573,10 @@ html, body {
     </div>
 
     <div class="demo-option-item" onclick="loadDemoScenario('rt')">
-      <div style="font-size:24px">&#127822;</div>
+      <div style="font-size:24px">&#127813;</div>
       <div style="flex:1">
-        <div style="font-size:14px;font-weight:800;color:var(--tp)">Honeycrisp Apple (Optimal Fresh)</div>
-        <div style="font-size:11px;color:var(--ts)">Score: 88 &bull; RUL: 5-7 d</div>
+        <div style="font-size:14px;font-weight:800;color:var(--tp)">Tomato (Fresh)</div>
+        <div style="font-size:11px;color:var(--ts)">Score: 80 &bull; RUL: 4-5 d</div>
       </div>
     </div>
 
@@ -2599,8 +2599,8 @@ html, body {
     <div class="demo-option-item" onclick="loadDemoScenario('md')">
       <div style="font-size:24px">&#129371;</div>
       <div style="flex:1">
-        <div style="font-size:14px;font-weight:800;color:var(--tp)">Cow Milk (Pure Acoustic Benchmark)</div>
-        <div style="font-size:11px;color:var(--ts)">Acoustic resonance match &bull; Dilution: 3.8% &bull; PASS</div>
+        <div style="font-size:14px;font-weight:800;color:var(--tp)">Cow Milk (4% Water Detected)</div>
+        <div style="font-size:11px;color:var(--ts)">4% water detected &bull; No chemicals &bull; 94% conf</div>
       </div>
     </div>
 
@@ -3698,10 +3698,10 @@ function loadDemoScenario(key) {
   var bannerText = document.getElementById('demoBannerText');
 
   var scenarioTitles = {
-    rt: 'DEMO: Honeycrisp Apple (Optimal Freshness)',
+    rt: 'DEMO: Tomato (Fresh)',
     ft: 'DEMO: Greenhouse Tomato (Peak Fresh)',
     ot: 'DEMO: Roma Tomato (Softening/Overripe)',
-    md: 'DEMO: Milk Sample (Pure Acoustic Match)',
+    md: 'DEMO: Milk Sample (4% Water Detected)',
     ma: 'DEMO: Milk Sample (Water Dilution Anomaly)'
   };
 
@@ -3717,22 +3717,22 @@ function loadDemoScenario(key) {
   }
 }
 
-var currentTrajectoryScores = [96, 94, 91, 88];
+var currentTrajectoryScores = [92, 88, 84, 80];
 
 function applyDemoData(key) {
   var produceScenarios = {
     rt: {
-      targetName: 'Honeycrisp Apple',
-      targetIcon: '🍎',
-      score: 88,
+      targetName: 'Tomato',
+      targetIcon: '🍅',
+      score: 80,
       color: 'var(--gr)',
-      stageText: 'OPTIMAL FRESHNESS',
+      stageText: 'FRESH',
       stageClass: 'pill-green',
-      rul: '5–7 days',
-      deg: '−1.6 / day',
-      conf: '89%',
-      sinceLast: '−3 points',
-      historyScores: [96, 94, 91, 88]
+      rul: '4–5 days',
+      deg: '−1.8 / day',
+      conf: '93%',
+      sinceLast: '−2 points',
+      historyScores: [92, 88, 84, 80]
     },
     ft: {
       targetName: 'Greenhouse Tomato',
@@ -3807,17 +3807,17 @@ function applyDemoData(key) {
 
   var milkScenarios = {
     md: {
-      verdictText: 'PURE MILK',
-      verdictClass: 'pill-green',
-      waterPct: '87.4%',
-      waterAdded: '(0.0% added water)',
-      waterColor: 'var(--gr)',
-      waterLabel: 'Natural pure milk baseline (~87% natural water). No added water detected.',
+      verdictText: '4% WATER DETECTED',
+      verdictClass: 'pill-yellow',
+      waterPct: '4%',
+      waterAdded: '(4.0% water detected)',
+      waterColor: 'var(--yw)',
+      waterLabel: '4% water detected in sample. Other adulterants within safe limits.',
       confidence: '94%',
-      adSummary: '0 DETECTED',
-      adSummaryColor: 'var(--gr)',
-      adWater: '✓ 0.0% (Normal)',
-      adWaterColor: 'var(--gr)',
+      adSummary: '1 DETECTED',
+      adSummaryColor: 'var(--yw)',
+      adWater: '4.0% (Water Detected)',
+      adWaterColor: 'var(--yw)',
       adDet: '✓ 0.00% (0 ppm)',
       adStarch: '✓ 0.00% (0 ppm)',
       adUrea: '✓ 0.02% (Natural)',
