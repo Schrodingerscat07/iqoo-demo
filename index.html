@@ -2303,8 +2303,8 @@ html, body {
           <div class="result-hero-box" id="milkResultHero" style="margin-bottom:16px;">
             <div style="font-size:38px;line-height:1;margin-bottom:10px">&#129371;</div>
             <div class="section-label" style="justify-content:center;margin-bottom:6px">Milk Quality Verdict</div>
-            <div style="font-size:16px;font-weight:900;letter-spacing:0.04em;" class="status-pill pill-yellow" id="milkVerdictPill">
-              4% WATER DETECTED
+            <div style="font-size:16px;font-weight:900;letter-spacing:0.04em;" class="status-pill pill-red" id="milkVerdictPill">
+              49% WATER DETECTED
             </div>
             <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px;font-size:12px;color:var(--ts)">
               <span id="milkProfileLabel">Container: Glass</span>
@@ -2320,11 +2320,11 @@ html, body {
               <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ac)" id="milkConfBadge">94% CONFIDENCE</span>
             </div>
             <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px">
-              <span style="font-family:var(--mono);font-size:32px;font-weight:800;color:var(--yw)" id="milkWaterPct">4%</span>
-              <span style="font-size:13px;font-weight:700;color:var(--yw)" id="milkAddedWaterBadge">(4.0% water detected)</span>
+              <span style="font-family:var(--mono);font-size:32px;font-weight:800;color:var(--rd)" id="milkWaterPct">49%</span>
+              <span style="font-size:13px;font-weight:700;color:var(--rd)" id="milkAddedWaterBadge">(49.0% water detected)</span>
             </div>
             <div style="font-size:12px;color:var(--ts)" id="milkWaterLabel">
-              4% water detected in sample. Other adulterants within safe limits.
+              49% water detected in sample. Other adulterants within safe limits.
             </div>
           </div>
 
@@ -2332,7 +2332,7 @@ html, body {
           <div class="metric-card" style="margin-bottom:20px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
               <span class="section-label" style="margin-bottom:0">Screened Adulterants &amp; Impurities</span>
-              <span style="font-size:11px;font-weight:700;color:var(--yw)" id="milkAdulterantSummary">1 DETECTED</span>
+              <span style="font-size:11px;font-weight:700;color:var(--rd)" id="milkAdulterantSummary">1 DETECTED</span>
             </div>
 
             <div class="sensor-diag-row">
@@ -2340,7 +2340,7 @@ html, body {
                 <div class="sensor-diag-name">Added Water Dilution</div>
                 <div style="font-size:10px;color:var(--tm)">Normal baseline: &lt; 2%</div>
               </div>
-              <span class="sensor-diag-status" style="color:var(--yw)" id="adWaterStatus">4.0% (Water Detected)</span>
+              <span class="sensor-diag-status" style="color:var(--rd)" id="adWaterStatus">49.0% (Water Detected)</span>
             </div>
 
             <div class="sensor-diag-row">
@@ -2416,11 +2416,11 @@ html, body {
             <div style="font-size:28px">&#129371;</div>
             <div style="flex:1">
               <div style="font-size:14px;font-weight:700;color:var(--tp)">Cow Milk Sample</div>
-              <div style="font-size:12px;color:var(--ts)">4% water detected &bull; No chemicals</div>
+              <div style="font-size:12px;color:var(--ts)">49% water detected &bull; No chemicals</div>
               <div style="font-size:11px;color:var(--tm);margin-top:2px">14:15 &bull; Session #401</div>
             </div>
             <div style="text-align:right">
-              <div style="font-family:var(--mono);font-size:13px;font-weight:800;color:var(--yw)">4% WATER</div>
+              <div style="font-family:var(--mono);font-size:13px;font-weight:800;color:var(--rd)">49% WATER</div>
               <div style="font-size:10px;color:var(--ts)">94% conf</div>
             </div>
           </div>
@@ -2599,8 +2599,8 @@ html, body {
     <div class="demo-option-item" onclick="loadDemoScenario('md')">
       <div style="font-size:24px">&#129371;</div>
       <div style="flex:1">
-        <div style="font-size:14px;font-weight:800;color:var(--tp)">Cow Milk (4% Water Detected)</div>
-        <div style="font-size:11px;color:var(--ts)">4% water detected &bull; No chemicals &bull; 94% conf</div>
+        <div style="font-size:14px;font-weight:800;color:var(--tp)">Cow Milk (49% Water Detected)</div>
+        <div style="font-size:11px;color:var(--ts)">49% water detected &bull; No chemicals &bull; 94% conf</div>
       </div>
     </div>
 
@@ -3701,7 +3701,7 @@ function loadDemoScenario(key) {
     rt: 'DEMO: Tomato (Fresh)',
     ft: 'DEMO: Greenhouse Tomato (Peak Fresh)',
     ot: 'DEMO: Roma Tomato (Softening/Overripe)',
-    md: 'DEMO: Milk Sample (4% Water Detected)',
+    md: 'DEMO: Milk Sample (49% Water Detected)',
     ma: 'DEMO: Milk Sample (Water Dilution Anomaly)'
   };
 
@@ -3807,17 +3807,17 @@ function applyDemoData(key) {
 
   var milkScenarios = {
     md: {
-      verdictText: '4% WATER DETECTED',
-      verdictClass: 'pill-yellow',
-      waterPct: '4%',
-      waterAdded: '(4.0% water detected)',
-      waterColor: 'var(--yw)',
-      waterLabel: '4% water detected in sample. Other adulterants within safe limits.',
+      verdictText: '49% WATER DETECTED',
+      verdictClass: 'pill-red',
+      waterPct: '49%',
+      waterAdded: '(49.0% water detected)',
+      waterColor: 'var(--rd)',
+      waterLabel: '49% water detected in sample. Other adulterants within safe limits.',
       confidence: '94%',
       adSummary: '1 DETECTED',
-      adSummaryColor: 'var(--yw)',
-      adWater: '4.0% (Water Detected)',
-      adWaterColor: 'var(--yw)',
+      adSummaryColor: 'var(--rd)',
+      adWater: '49.0% (Water Detected)',
+      adWaterColor: 'var(--rd)',
       adDet: '✓ 0.00% (0 ppm)',
       adStarch: '✓ 0.00% (0 ppm)',
       adUrea: '✓ 0.02% (Natural)',
