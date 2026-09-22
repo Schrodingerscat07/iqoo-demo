@@ -1,7 +1,7 @@
 # FreshGuard — Food Quality Screening Instrument
 
 > **Flagship Multi-Modal Food Screening Application for iQOO 15**  
-> A high-precision mobile instrument combining optical inspection, acoustic resonance analysis, and spectrophotometric density screening.
+> A high-precision mobile instrument combining produce freshness inspection and physical acoustic resonance measurement.
 
 ---
 
@@ -17,11 +17,13 @@
    - **Optical Spectral Feature Mapping**: Evaluates chlorophyll breakdown, anthocyanin shifts, and cuticle degradation.
    - **Actionable Metrics**: Produces an integrated Freshness Index (0–100), estimated Remaining Useful Life (RUL in days), and daily degradation velocity.
 
-2. **Milk Quality & Adulteration Screening**
-   - **Multi-Angle Optical Scattering**: Measures turbidity and transmission across 400–700 nm wavelengths.
-   - **Viscosity Decay Analysis**: Calculates meniscus settling rates to detect common dilution patterns.
-   - **Spectrophotometric Signature Verification**: Flags chemical adulterant anomalies (urea, starch, detergents, neutralizers).
-   - **Binary Clearance Decision**: Returns immediate `PASS / PURE` or `FAIL / ANOMALY DETECTED` metrics with confidence scoring.
+2. **Milk Quality Check — Physical Acoustic Measurement Instrument**
+   - **Multi-Vessel Acoustic Calibration**: Calibrated resonant profiles for standard tumblers, borosilicate beakers, thin stemware, and ceramic mugs.
+   - **Chassis-to-Glass Mechanical Coupling**: Place phone directly against the glass wall with live acoustic contact pressure verification.
+   - **Controlled Vibration Pulse**: Frequency-swept haptic excitation (80 Hz &ndash; 1,800 Hz) drives structural vibration into the liquid column.
+   - **Ringdown Acoustic Listening**: High-sensitivity microphones capture boundary resonance decay envelope $A(t) = A_0 e^{-\zeta \omega_n t} \cos(\omega_d t)$.
+   - **FFT Signal Analysis**: Computes resonant peak shift ($\Delta f$), viscous damping ratio ($\zeta$), speed of sound ($c$), and acoustic impedance ($Z$).
+   - **ML Inference**: Machine learning classifier evaluates water dilution percentage and screens foreign adulterants (Urea, Starch, Detergents/Surfactants).
 
 ---
 
@@ -94,7 +96,8 @@ The application includes interactive simulated scenarios accessible via the **Ab
 - **Honeycrisp Apple**: Optimal freshness benchmark (Score: 88, RUL: 5–7 days).
 - **Greenhouse Tomato**: Peak harvested freshness (Score: 94, RUL: 6–8 days).
 - **Roma Tomato**: Advanced softening and overripe state (Score: 41, RUL: 0–1 day).
-- **Pure Cow Milk**: Zero adulterants, nominal dilution (~3.8% water profile).
+- **Pure Cow Milk**: Zero adulterants, nominal dilution baseline (~3.8% water profile, 1,248 Hz resonant peak, normal viscous damping).
+- **Milk Sample (Water Dilution Anomaly)**: Flagged excess water dilution (+22.4%), resonant frequency shift to 1,180 Hz, reduced acoustic damping.
 
 ---
 

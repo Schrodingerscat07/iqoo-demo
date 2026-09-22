@@ -1293,6 +1293,46 @@ html, body {
   transform: scale(0.96);
 }
 
+
+/* Milk Acoustic Stage Tracker */
+.acoustic-stage-tracker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.acoustic-stage-tracker::-webkit-scrollbar {
+  display: none;
+}
+.stage-chip {
+  flex: 1;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--tm);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--bdr);
+  border-radius: 6px;
+  padding: 6px 2px;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+}
+.stage-chip.active {
+  color: #000000;
+  background: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
+}
+.stage-chip.completed {
+  color: var(--gr);
+  border-color: rgba(34, 197, 94, 0.35);
+  background: var(--gr-bg);
+}
+
 /* History List */
 .history-entry-card {
   background: var(--bg-surf);
@@ -1441,7 +1481,7 @@ html, body {
                 <span>Milk Quality Check</span>
               </div>
               <div class="mode-card-desc">
-                Optical density & spectrophotometric screening for dilution and common adulterant patterns.
+                Physical acoustic resonance screening. Transducer impulses analyze liquid damping and acoustic impedance against glass to measure water dilution and adulterants.
               </div>
             </div>
             <div class="mode-card-arrow">
@@ -1949,7 +1989,7 @@ html, body {
     </div>
 
     <!-- =======================================================
-         SCREEN SM0: MILK CONTAINER SELECTION
+         SCREEN SM0: SELECT GLASS TYPE
          ======================================================= -->
     <div id="sm0" class="screen">
       <div class="app-header">
@@ -1957,7 +1997,7 @@ html, body {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           <span>Back</span>
         </button>
-        <span class="header-title">Milk Sample Setup</span>
+        <span class="header-title">Select Glass Type</span>
         <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </button>
@@ -1965,53 +2005,49 @@ html, body {
       <div class="screen-scroll">
         <div style="padding: 0 20px 32px;">
           <div style="font-size:22px;font-weight:900;color:var(--tp);letter-spacing:-0.02em;margin-bottom:8px">
-            Select sample container
+            Select glass vessel
           </div>
           <div style="font-size:13px;color:var(--ts);line-height:1.45;margin-bottom:20px">
-            Spectrophotometric screening requires transparent containment to allow light transmission.
+            Acoustic resonance frequency and wall impedance depend on vessel geometry. Select your glass to calibrate baseline resonance.
           </div>
 
-          <div class="section-label">Container Material</div>
+          <div class="section-label">Vessel Geometry Profile</div>
           <div class="container-options-grid">
-            <div class="container-option-card selected" id="cntGlass" onclick="selectContainer('glass')">
-              <div style="font-size:32px">&#127755;</div>
-              <div style="font-size:13px;font-weight:700">Clear Glass</div>
-              <div style="font-size:10px;color:var(--gr)">RECOMMENDED</div>
+            <div class="container-option-card selected" id="cntTumbler" onclick="selectGlassType('tumbler')">
+              <div style="font-size:32px">&#129347;</div>
+              <div style="font-size:13px;font-weight:800;color:var(--tp)">Standard Tumbler</div>
+              <div style="font-size:11px;color:var(--ts)">Soda-lime &bull; 2.5mm wall</div>
+              <div style="font-size:10px;font-weight:800;color:var(--gr)">f&#8320; ~1,420 Hz &bull; DEFAULT</div>
             </div>
-            <div class="container-option-card" id="cntPlastic" onclick="selectContainer('plastic')">
-              <div style="font-size:32px">&#129518;</div>
-              <div style="font-size:13px;font-weight:700">Clear Plastic</div>
-              <div style="font-size:10px;color:var(--ts)">SUPPORTED</div>
+            <div class="container-option-card" id="cntBorosilicate" onclick="selectGlassType('borosilicate')">
+              <div style="font-size:32px">&#129514;</div>
+              <div style="font-size:13px;font-weight:800;color:var(--tp)">Borosilicate Glass</div>
+              <div style="font-size:11px;color:var(--ts)">Pyrex/Beaker &bull; 1.8mm wall</div>
+              <div style="font-size:10px;font-weight:800;color:var(--ac)">f&#8320; ~1,680 Hz &bull; HIGH Q</div>
             </div>
-            <div class="container-option-card" id="cntSteel" onclick="selectContainer('steel')">
-              <div style="font-size:32px">&#129695;</div>
-              <div style="font-size:13px;font-weight:700">Steel / Metal</div>
-              <div style="font-size:10px;color:var(--rd)">OPAQUE</div>
+            <div class="container-option-card" id="cntThin" onclick="selectGlassType('thin')">
+              <div style="font-size:32px">&#127863;</div>
+              <div style="font-size:13px;font-weight:800;color:var(--tp)">Thin Wall Glass</div>
+              <div style="font-size:11px;color:var(--ts)">Stemware &bull; 1.2mm wall</div>
+              <div style="font-size:10px;font-weight:800;color:var(--ts)">f&#8320; ~1,840 Hz &bull; SHARP</div>
             </div>
-            <div class="container-option-card" id="cntOther" onclick="selectContainer('other')">
-              <div style="font-size:32px">&#10067;</div>
-              <div style="font-size:13px;font-weight:700">Other / Ceramic</div>
-              <div style="font-size:10px;color:var(--ts)">UNVERIFIED</div>
-            </div>
-          </div>
-
-          <!-- Opaque Steel warning -->
-          <div id="steelWarningBox" style="display:none;background:var(--rd-bg);border:1px solid rgba(239,68,68,0.3);border-radius:var(--rmd);padding:14px;margin-bottom:18px">
-            <div style="font-size:12px;font-weight:800;color:var(--rd);margin-bottom:4px">&#9888; Opaque Container Warning</div>
-            <div style="font-size:11px;color:#fca5a5;line-height:1.4">
-              Optical density measurements cannot penetrate opaque steel or ceramic containers. Please pour 20&ndash;30 mL of milk into a transparent glass for accurate screening.
+            <div class="container-option-card" id="cntCeramic" onclick="selectGlassType('ceramic')">
+              <div style="font-size:32px">&#9749;</div>
+              <div style="font-size:13px;font-weight:800;color:var(--tp)">Ceramic Mug</div>
+              <div style="font-size:11px;color:var(--ts)">Porcelain &bull; 4.0mm wall</div>
+              <div style="font-size:10px;font-weight:800;color:var(--yw)">DAMPED PROFILE</div>
             </div>
           </div>
 
           <div class="info-box" style="margin-bottom:24px;">
-            <div class="info-box-title">&#129514; Optical Calibration Principle</div>
+            <div class="info-box-title">&#128266; Physical Acoustic Principle</div>
             <div class="info-box-body">
-              Light refraction and Rayleigh scattering index are measured through the liquid column to detect changes in milk solids, fat emulsification, and water content.
+              A controlled haptic excitation sweep (80&ndash;1,800 Hz) vibrates the glass wall into the liquid column. Pure milk solids and emulsified fats create distinct viscous damping (&zeta; &asymp; 0.043) and sound speed (c &asymp; 1,532 m/s). Dilution with water shifts the resonant frequency downward and lowers the damping envelope.
             </div>
           </div>
 
           <button class="btn-primary" id="btnContinueMilk" onclick="gt('sm1')">
-            <span>Proceed to Standardization</span>
+            <span>Proceed to Placement &rarr;</span>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </div>
@@ -2019,7 +2055,7 @@ html, body {
     </div>
 
     <!-- =======================================================
-         SCREEN SM1: MILK STANDARDIZE & POSITION
+         SCREEN SM1: PLACE PHONE AGAINST GLASS
          ======================================================= -->
     <div id="sm1" class="screen">
       <div class="app-header">
@@ -2027,59 +2063,67 @@ html, body {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           <span>Back</span>
         </button>
-        <span class="header-title">Position Sample</span>
+        <span class="header-title">Physical Positioning</span>
         <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </button>
       </div>
       <div class="screen-scroll">
         <div style="padding: 0 20px 32px;">
-          <div class="scan-hologram-box" style="margin-bottom:20px;">
-            <div style="display:flex;justify-content:center;margin-bottom:12px;"><svg class="milk-glass-svg" viewBox="0 0 48 48" width="68" height="68" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 15px rgba(255,255,255,0.4))">
-            <defs>
-              <linearGradient id="milkLiquidSm2" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="70%" stop-color="#f8fafc"/>
-                <stop offset="100%" stop-color="#e2e8f0"/>
-              </linearGradient>
-              <linearGradient id="glassShineSm2" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
-                <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
-              </linearGradient>
-              <linearGradient id="glassBorderSm2" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="rgba(255,255,255,0.85)"/>
-                <stop offset="100%" stop-color="rgba(255,255,255,0.4)"/>
-              </linearGradient>
-            </defs>
-            <path d="M12 9L15.5 40C15.7 41.6 17.1 43 18.7 43H29.3C30.9 43 32.3 41.6 32.5 40L36 9" stroke="url(#glassBorderSm2)" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M16 38.5L16.5 41C16.6 41.8 17.3 42.5 18.2 42.5H29.8C30.7 42.5 31.4 41.8 31.5 41L32 38.5H16Z" fill="rgba(255,255,255,0.25)"/>
-            <path d="M13.2 15.5L16 38.5H32L34.8 15.5C34.8 15.5 31.5 17 24 17C16.5 17 13.2 15.5 13.2 15.5Z" fill="url(#milkLiquidSm2)"/>
-            <ellipse cx="24" cy="15.5" rx="10.8" ry="2.2" fill="#ffffff" stroke="rgba(226,232,240,0.8)" stroke-width="0.8"/>
-            <path d="M15 13L17.5 38" stroke="url(#glassShineSm2)" stroke-width="1.8" stroke-linecap="round"/>
-            <ellipse cx="24" cy="9" rx="12" ry="2.8" stroke="url(#glassBorderSm2)" stroke-width="2" fill="none"/>
-          </svg></div>
-            <div style="font-size:16px;font-weight:800;color:var(--tp);">20 &ndash; 30 mL Liquid Sample</div>
-            <div style="font-size:12px;color:var(--ts);margin-top:4px;">Place glass inside scan zone &bull; Avoid direct sunlight glare</div>
+          <!-- Technical Placement Graphic -->
+          <div class="scan-hologram-box" style="margin-bottom:20px;padding:24px 16px;">
+            <div style="display:flex;justify-content:center;margin-bottom:14px;">
+              <svg viewBox="0 0 260 140" width="240" height="130" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Glass Vessel with Milk -->
+                <path d="M50 20 L62 120 C63 126 69 130 76 130 H124 C131 130 137 126 138 120 L150 20 Z" stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="rgba(255,255,255,0.03)"/>
+                <!-- Milk liquid fill -->
+                <path d="M54 44 L62 120 C63 124 67 128 73 128 H127 C133 128 137 124 138 120 L146 44 C146 44 136 48 100 48 C64 48 54 44 54 44 Z" fill="#ffffff" opacity="0.95"/>
+                <!-- Glass Rim -->
+                <ellipse cx="100" cy="20" rx="50" ry="10" stroke="rgba(255,255,260,0.6)" stroke-width="2" fill="none"/>
+                <!-- Milk Meniscus -->
+                <ellipse cx="100" cy="44" rx="46" ry="8" fill="#f4f4f5" stroke="rgba(200,200,200,0.5)" stroke-width="1"/>
+
+                <!-- Phone resting against glass side -->
+                <rect x="146" y="24" width="22" height="96" rx="4" fill="#141414" stroke="#ffffff" stroke-width="1.8"/>
+                <rect x="149" y="32" width="16" height="80" rx="2" fill="#000000"/>
+                <!-- Transducer contact zone -->
+                <circle cx="146" cy="72" r="3" fill="#22c55e"/>
+                <!-- Acoustic contact impulse waves -->
+                <path d="M142 62 C138 67 138 77 142 82" stroke="var(--gr)" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+                <path d="M136 56 C130 64 130 80 136 88" stroke="var(--gr)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                <path d="M130 50 C122 61 122 83 130 94" stroke="var(--gr)" stroke-width="1" stroke-linecap="round" opacity="0.3"/>
+
+                <!-- Contact Indicator Label -->
+                <text x="176" y="68" fill="#22c55e" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700">SOLID CONTACT</text>
+                <text x="176" y="80" fill="var(--ts)" font-family="Inter, sans-serif" font-size="9">Chassis to Glass</text>
+              </svg>
+            </div>
+            <div style="font-size:16px;font-weight:800;color:var(--tp);text-align:center;">Place Phone Against Glass</div>
+            <div style="font-size:12px;color:var(--ts);margin-top:4px;text-align:center;">Firm mechanical coupling transmits vibration and listens to resonance</div>
           </div>
 
-          <div class="section-label">Alignment Checklist</div>
+          <div class="section-label">Coupling Protocol Checklist</div>
           <div class="step-checklist">
             <div class="step-checklist-item">
-              <div class="step-num-badge">&#10003;</div>
-              <div class="step-text"><strong>Working Distance:</strong> Hold phone 15&ndash;20 cm directly above glass rim.</div>
+              <div class="step-num-badge">1</div>
+              <div class="step-text"><strong>Liquid Level:</strong> Ensure the glass is at least half full (100&ndash;200 mL) for adequate liquid damping.</div>
             </div>
             <div class="step-checklist-item">
-              <div class="step-num-badge">&#10003;</div>
-              <div class="step-text"><strong>Surface Meniscus:</strong> Liquid should be at rest without bubbles or froth.</div>
+              <div class="step-num-badge">2</div>
+              <div class="step-text"><strong>Direct Contact:</strong> Hold the phone vertically with its lower-middle back firmly against the outer glass wall.</div>
             </div>
             <div class="step-checklist-item">
-              <div class="step-num-badge">&#10003;</div>
-              <div class="step-text"><strong>Ambient Illumination:</strong> Diffuse indirect light; avoid casting shadows over the glass.</div>
+              <div class="step-num-badge">3</div>
+              <div class="step-text"><strong>Zero Air Gap:</strong> Maintain steady pressure. Avoid loose cases or sleeves that disrupt acoustic transmission.</div>
+            </div>
+            <div class="step-checklist-item">
+              <div class="step-num-badge">4</div>
+              <div class="step-text"><strong>Keep Steady:</strong> Hold still during the excitation pulse; do not tap or slide the device.</div>
             </div>
           </div>
 
-          <button class="btn-primary" onclick="gt('sm2')">
-            <span>Initiate Milk Screening</span>
+          <button class="btn-primary" onclick="startMilkAcousticScan()">
+            <span>Verify Contact &amp; Begin Scan &rarr;</span>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </div>
@@ -2087,7 +2131,7 @@ html, body {
     </div>
 
     <!-- =======================================================
-         SCREEN SM2: MILK MEASUREMENT
+         SCREEN SM2: PHYSICAL ACOUSTIC MEASUREMENT
          ======================================================= -->
     <div id="sm2" class="screen" style="background:#000000;">
       <div class="app-header" style="background:rgba(0,0,0,0.92)">
@@ -2095,74 +2139,73 @@ html, body {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           <span>Cancel</span>
         </button>
-        <span class="header-title">Milk Spectrometry</span>
+        <span class="header-title">Acoustic Inspection</span>
         <button class="nav-home-btn" onclick="goHome()" title="Exit">
           <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
       </div>
 
-      <div class="viewfinder-area" style="height:340px;">
-        <div class="reticle-box">
-          <div class="reticle-bottom-corners"></div>
-          <div class="scan-laser-beam"></div>
-<svg class="milk-glass-svg" viewBox="0 0 48 48" width="68" height="68" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 15px rgba(255,255,255,0.4))">
-            <defs>
-              <linearGradient id="milkLiquidSm2" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="70%" stop-color="#f8fafc"/>
-                <stop offset="100%" stop-color="#e2e8f0"/>
-              </linearGradient>
-              <linearGradient id="glassShineSm2" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
-                <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
-              </linearGradient>
-              <linearGradient id="glassBorderSm2" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="rgba(255,255,255,0.85)"/>
-                <stop offset="100%" stop-color="rgba(255,255,255,0.4)"/>
-              </linearGradient>
-            </defs>
-            <path d="M12 9L15.5 40C15.7 41.6 17.1 43 18.7 43H29.3C30.9 43 32.3 41.6 32.5 40L36 9" stroke="url(#glassBorderSm2)" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M16 38.5L16.5 41C16.6 41.8 17.3 42.5 18.2 42.5H29.8C30.7 42.5 31.4 41.8 31.5 41L32 38.5H16Z" fill="rgba(255,255,255,0.25)"/>
-            <path d="M13.2 15.5L16 38.5H32L34.8 15.5C34.8 15.5 31.5 17 24 17C16.5 17 13.2 15.5 13.2 15.5Z" fill="url(#milkLiquidSm2)"/>
-            <ellipse cx="24" cy="15.5" rx="10.8" ry="2.2" fill="#ffffff" stroke="rgba(226,232,240,0.8)" stroke-width="0.8"/>
-            <path d="M15 13L17.5 38" stroke="url(#glassShineSm2)" stroke-width="1.8" stroke-linecap="round"/>
-            <ellipse cx="24" cy="9" rx="12" ry="2.8" stroke="url(#glassBorderSm2)" stroke-width="2" fill="none"/>
-          </svg>
-        </div>
+      <div class="screen-scroll" style="padding-top:68px;">
+        <div style="padding: 0 20px 32px;">
 
-        <div class="cv-detect-hud-card">
-          <div class="cv-hud-left">
-            <div class="cv-hud-status">OPTICAL SENSING IN PROGRESS</div>
-            <div class="cv-detected-target">Liquid Colloid Dispersion Analysis</div>
+          <!-- Process Stage Breadcrumbs -->
+          <div class="acoustic-stage-tracker" id="acousticStageTracker">
+            <div class="stage-chip active" id="stg1">1. Contact</div>
+            <div class="stage-chip" id="stg2">2. Vibration</div>
+            <div class="stage-chip" id="stg3">3. Listening</div>
+            <div class="stage-chip" id="stg4">4. Signal</div>
+            <div class="stage-chip" id="stg5">5. ML</div>
           </div>
-          <div class="cv-hud-badge" style="color:var(--ac);background:var(--ac-bg)">OPTICAL TRANSMISSION</div>
-        </div>
-      </div>
 
-      <div class="scan-telemetry-tray" style="top:392px;">
-        <div class="metric-card" style="margin-bottom:18px;">
-          <div class="sensor-diag-row">
-            <span class="sensor-diag-name">Rayleigh Scatter Capture</span>
-            <span class="sensor-diag-status" style="color:var(--gr)" id="smDiag1">&#10003; CAPTURED</span>
-          </div>
-          <div class="sensor-diag-row">
-            <span class="sensor-diag-name">Refractive Index Dispersion</span>
-            <span class="sensor-diag-status" style="color:var(--yw)" id="smDiag2">&#9675; SAMPLING</span>
-          </div>
-          <div class="sensor-diag-row">
-            <span class="sensor-diag-name">Spectrophotometric Curve</span>
-            <span class="sensor-diag-status" style="color:var(--ts)" id="smDiag3">&#9675; QUEUED</span>
-          </div>
-        </div>
+          <!-- Active Visualizer Console Card -->
+          <div class="metric-card" style="margin-bottom:16px;text-align:center;padding:20px 16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+              <span class="section-label" style="margin-bottom:0" id="acousticStageTitle">STAGE 1: CONTACT VERIFICATION</span>
+              <span class="status-pill pill-cyan" id="acousticStageBadge">COUPLING: 98.4%</span>
+            </div>
 
-        <button class="btn-primary" id="btnAnalyzeMilk" onclick="runMilkInference()">
-          <span>Analyze Specimen &rarr;</span>
-        </button>
+            <div id="acousticVisualArea" style="min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <canvas id="acousticDecayCanvas" width="320" height="90" style="width:100%;height:90px;display:block;margin-bottom:8px"></canvas>
+              <div id="acousticSubStatus" style="font-family:var(--mono);font-size:11px;color:var(--ts)">
+                Measuring chassis-to-glass contact pressure...
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Physical Acoustic Telemetry -->
+          <div class="metric-card" style="margin-bottom:18px;">
+            <div class="section-label">Acoustic Sensor Telemetry</div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Contact Coupling Floor</span>
+              <span class="sensor-diag-status" style="color:var(--yw)" id="diagContact">&#9675; VERIFYING</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Controlled Vibration (Transducer)</span>
+              <span class="sensor-diag-status" style="color:var(--ts)" id="diagVibe">&#9675; QUEUED</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Acoustic Listening (Ringdown Mic)</span>
+              <span class="sensor-diag-status" style="color:var(--ts)" id="diagListen">&#9675; QUEUED</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">FFT Signal Analysis &amp; Damping</span>
+              <span class="sensor-diag-status" style="color:var(--ts)" id="diagSignal">&#9675; QUEUED</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">ML Water &amp; Adulterant Inference</span>
+              <span class="sensor-diag-status" style="color:var(--ts)" id="diagML">&#9675; QUEUED</span>
+            </div>
+          </div>
+
+          <button class="btn-primary" id="btnAcousticAction" onclick="skipToMilkResult()" style="opacity:0.9">
+            <span id="btnAcousticText">Measuring Resonance &amp; Damping...</span>
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- =======================================================
-         SCREEN SM4: MILK RESULT SCREEN
+         SCREEN SM4: MILK ACOUSTIC RESULT SCREEN
          ======================================================= -->
     <div id="sm4" class="screen">
       <div class="app-header">
@@ -2177,76 +2220,80 @@ html, body {
       </div>
       <div class="screen-scroll">
         <div style="padding: 0 20px 32px;">
+          <!-- Hero Verdict Card -->
           <div class="result-hero-box" id="milkResultHero">
-            <div style="display:flex;justify-content:center;margin-bottom:10px;">
-              <svg class="milk-glass-svg" viewBox="0 0 48 48" width="56" height="56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="milkLiquidSm4" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="#ffffff"/>
-                    <stop offset="70%" stop-color="#f8fafc"/>
-                    <stop offset="100%" stop-color="#e2e8f0"/>
-                  </linearGradient>
-                  <linearGradient id="glassShineSm4" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
-                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
-                  </linearGradient>
-                  <linearGradient id="glassBorderSm4" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="rgba(255,255,255,0.85)"/>
-                    <stop offset="100%" stop-color="rgba(255,255,255,0.4)"/>
-                  </linearGradient>
-                </defs>
-                <path d="M12 9L15.5 40C15.7 41.6 17.1 43 18.7 43H29.3C30.9 43 32.3 41.6 32.5 40L36 9" stroke="url(#glassBorderSm4)" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M16 38.5L16.5 41C16.6 41.8 17.3 42.5 18.2 42.5H29.8C30.7 42.5 31.4 41.8 31.5 41L32 38.5H16Z" fill="rgba(255,255,255,0.25)"/>
-                <path d="M13.2 15.5L16 38.5H32L34.8 15.5C34.8 15.5 31.5 17 24 17C16.5 17 13.2 15.5 13.2 15.5Z" fill="url(#milkLiquidSm4)"/>
-                <ellipse cx="24" cy="15.5" rx="10.8" ry="2.2" fill="#ffffff" stroke="rgba(226,232,240,0.8)" stroke-width="0.8"/>
-                <path d="M15 13L17.5 38" stroke="url(#glassShineSm4)" stroke-width="1.8" stroke-linecap="round"/>
-                <ellipse cx="24" cy="9" rx="12" ry="2.8" stroke="url(#glassBorderSm4)" stroke-width="2" fill="none"/>
-              </svg>
-            </div>
-            <div class="section-label" style="justify-content:center;margin-bottom:6px">Screening Verdict</div>
-            <div style="font-size:16px;font-weight:900;letter-spacing:0.04em;" class="status-pill pill-green" id="milkVerdictPill">
+            <div style="font-size:38px;line-height:1;margin-bottom:10px">&#129371;</div>
+            <div class="section-label" style="justify-content:center;margin-bottom:6px">Acoustic Screening Verdict</div>
+            <div style="font-size:15px;font-weight:900;letter-spacing:0.04em;" class="status-pill pill-green" id="milkVerdictPill">
               NO TESTED ADULTERATION DETECTED
             </div>
+            <div style="font-size:11px;color:var(--ts);margin-top:8px" id="milkProfileLabel">
+              Vessel: Standard Tumbler Glass &bull; Resonant Calibration Locked
+            </div>
           </div>
 
-          <!-- Dilution Gauge Card -->
+          <!-- Primary Metric: Water Dilution Result -->
           <div class="metric-card" style="margin-bottom:16px;">
-            <div class="section-label">Estimated Water Dilution</div>
+            <div class="section-label">Estimated Water Dilution Result</div>
             <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
-              <span style="font-family:var(--mono);font-size:32px;font-weight:800;color:var(--gr)" id="milkWaterPct">3.8%</span>
-              <span style="font-size:12px;color:var(--ts)">(Normal baseline variance)</span>
+              <span style="font-family:var(--mono);font-size:34px;font-weight:800;color:var(--gr)" id="milkWaterPct">3.8%</span>
+              <span style="font-size:12px;color:var(--ts)" id="milkWaterLabel">(Normal baseline variance &lt; 5%)</span>
             </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-size:11px;color:var(--ts)">Certainty</span>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+              <span style="font-size:11px;color:var(--ts)">Acoustic Certainty</span>
               <div style="flex:1;height:5px;background:var(--bdr);border-radius:3px;overflow:hidden">
-                <div style="height:100%;width:92%;background:var(--ac)" id="milkConfBar"></div>
+                <div style="height:100%;width:94%;background:var(--ac)" id="milkConfBar"></div>
               </div>
-              <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ac)" id="milkConfText">92%</span>
+              <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ac)" id="milkConfText">94%</span>
+            </div>
+            <div style="font-size:11px;color:var(--tm);line-height:1.4">
+              Calibrated against pure milk density standard (&rho; = 1.030&ndash;1.034 g/cm&sup3;).
             </div>
           </div>
 
-          <!-- Adulterant Matrix -->
+          <!-- Adulteration Matrix -->
           <div class="section-label">Screened Adulterants Matrix</div>
           <div class="metric-card" style="margin-bottom:16px;">
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Excess Water Dilution</span>
+              <span class="sensor-diag-name">Water Dilution Level</span>
               <span class="sensor-diag-status" style="color:var(--gr)" id="adWaterStatus">&#10003; 3.8% (Normal)</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Synthetic Urea Nitrogen</span>
-              <span class="sensor-diag-status" style="color:var(--gr)">&#10003; Negative</span>
+              <span class="sensor-diag-name">Synthetic Urea &amp; Nitrogen Salts</span>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="adUreaStatus">&#10003; Negative (Velocity Match)</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Starch & Thickening Agents</span>
-              <span class="sensor-diag-status" style="color:var(--gr)">&#10003; Negative</span>
+              <span class="sensor-diag-name">Starch &amp; Thickening Hydrocolloids</span>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="adStarchStatus">&#10003; Negative (Viscous Damping Normal)</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Detergents & Neutralizers</span>
-              <span class="sensor-diag-status" style="color:var(--gr)">&#10003; Negative</span>
+              <span class="sensor-diag-name">Detergents &amp; Neutralizers</span>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="adDetStatus">&#10003; Negative (Surface Tension Normal)</span>
             </div>
             <div class="sensor-diag-row">
               <span class="sensor-diag-name">Unscreened Chemical Compounds</span>
-              <span class="sensor-diag-status" style="color:var(--tm)">&mdash; Out of scope</span>
+              <span class="sensor-diag-status" style="color:var(--tm)">&mdash; Out of acoustic scope</span>
+            </div>
+          </div>
+
+          <!-- Physical Acoustic Measurement Telemetry -->
+          <div class="section-label">Physical Acoustic Telemetry</div>
+          <div class="metric-card" style="margin-bottom:16px;">
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Resonant Frequency (f&#7522;)</span>
+              <span class="sensor-diag-status" style="color:var(--ac)" id="telFreq">1,248 Hz</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Acoustic Damping Ratio (&zeta;)</span>
+              <span class="sensor-diag-status" style="color:var(--ac)" id="telDamp">0.0432 (Normal)</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Sound Velocity in Fluid (c)</span>
+              <span class="sensor-diag-status" style="color:var(--ac)" id="telSpeed">1,532 m/s</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Acoustic Impedance (Z)</span>
+              <span class="sensor-diag-status" style="color:var(--ac)" id="telImp">1.58 MRayl</span>
             </div>
           </div>
 
@@ -2254,7 +2301,7 @@ html, body {
 
           <div class="disclaimer-card" style="margin-bottom:24px;">
             <div class="disclaimer-text">
-              <strong>Screening Limitation:</strong> Optical screening identifies optical density deviances and known refractive anomalies. It is a preliminary rapid test, not a substitute for certified FSSAI/ISO laboratory chemical chromatography.
+              <strong>Measurement Notice:</strong> Physical acoustic resonance screening analyzes container wall vibration damping, speed of sound, and liquid impedance. Rapid diagnostic instrument; not a substitute for certified FSSAI/ISO laboratory chemical chromatography.
             </div>
           </div>
 
@@ -2263,7 +2310,7 @@ html, body {
               <span>Test Another Sample</span>
             </button>
             <button class="btn-secondary" onclick="gt('sm5')">
-              <span>View Spectrometric Curve</span>
+              <span>View Acoustic Resonance Spectrum</span>
             </button>
             <button class="btn-secondary" onclick="goHome()" style="border-color:transparent;color:var(--ts)">
               <span>&#8592; Back to Dashboard</span>
@@ -2274,7 +2321,7 @@ html, body {
     </div>
 
     <!-- =======================================================
-         SCREEN SM5: MILK TECHNICAL ANALYSIS
+         SCREEN SM5: ACOUSTIC RESONANCE SPECTRUM
          ======================================================= -->
     <div id="sm5" class="screen">
       <div class="app-header">
@@ -2282,7 +2329,7 @@ html, body {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           <span>Back</span>
         </button>
-        <span class="header-title">Technical Spectrometry</span>
+        <span class="header-title">Acoustic Resonance</span>
         <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </button>
@@ -2290,30 +2337,30 @@ html, body {
       <div class="screen-scroll">
         <div style="padding: 0 20px 32px;">
           <div class="metric-card" style="margin-bottom:18px;">
-            <div class="section-label">Colloid Dispersion Curve (400&ndash;700 nm)</div>
-            <canvas id="milkCurveCanvas" width="340" height="120" style="width:100%;height:120px;display:block"></canvas>
+            <div class="section-label">Acoustic Power Spectrum (0&ndash;3,000 Hz)</div>
+            <canvas id="milkCurveCanvas" width="340" height="130" style="width:100%;height:130px;display:block"></canvas>
             <div style="font-size:10px;color:var(--ts);margin-top:8px;font-style:italic">
-              Relative normalized optical transmission through 25mm liquid column.
+              Measured resonance peak and damping decay response through fluid-coupled glass vessel.
             </div>
           </div>
 
           <div class="metric-card" style="margin-bottom:20px;">
-            <div class="section-label">Sample Environment Telemetry</div>
+            <div class="section-label">Acoustic Environment Telemetry</div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Container Geometry</span>
-              <span class="sensor-diag-status" style="color:var(--tp)" id="techCntVal">Clear Glass (Cylindrical)</span>
+              <span class="sensor-diag-name">Vessel Geometry</span>
+              <span class="sensor-diag-status" style="color:var(--tp)" id="techCntVal">Standard Tumbler Glass</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Liquid Volume</span>
-              <span class="sensor-diag-status" style="color:var(--tp)">~25 mL (&plusmn;3 mL)</span>
+              <span class="sensor-diag-name">Resonance Peak Shift</span>
+              <span class="sensor-diag-status" style="color:var(--tp)" id="techShiftVal">-172 Hz (Fluid Loaded)</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Ambient Temperature</span>
-              <span class="sensor-diag-status" style="color:var(--tp)">22.4 &deg;C (Estimated)</span>
+              <span class="sensor-diag-name">Ringdown Decay Time (&tau;)</span>
+              <span class="sensor-diag-status" style="color:var(--tp)" id="techDecayVal">48.2 ms</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Transmission Coefficient</span>
-              <span class="sensor-diag-status" style="color:var(--gr)">0.942 (Normal)</span>
+              <span class="sensor-diag-name">Transducer Coupling Loss</span>
+              <span class="sensor-diag-status" style="color:var(--gr)">-0.4 dB (Optimal)</span>
             </div>
           </div>
 
@@ -2430,7 +2477,7 @@ html, body {
               v2.2.0 &bull; iQOO 15 Edition
             </div>
             <div style="font-size:13px;color:var(--ts);line-height:1.5;margin-top:8px;max-width:280px;margin-left:auto;margin-right:auto">
-              Automated multi-modal food screening combining optical inspection, acoustic resonance, and surface spectroscopy.
+              Automated multi-modal food screening combining produce vision analysis and physical acoustic resonance inspection for milk quality.
             </div>
           </div>
 
@@ -2465,7 +2512,7 @@ html, body {
               <span class="sensor-diag-status" style="color:var(--ac)">MOCKED</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">MilkColloidSpectrometry</span>
+              <span class="sensor-diag-name">MilkAcousticResonanceEngine</span>
               <span class="sensor-diag-status" style="color:var(--ac)">MOCKED</span>
             </div>
             <div class="sensor-diag-row">
@@ -2547,8 +2594,16 @@ html, body {
     <div class="demo-option-item" onclick="loadDemoScenario('md')">
       <div style="font-size:24px">&#129371;</div>
       <div style="flex:1">
-        <div style="font-size:14px;font-weight:800;color:var(--tp)">Milk Sample (Pure / Normal)</div>
-        <div style="font-size:11px;color:var(--ts)">Water: ~3.8% &bull; No adulteration detected</div>
+        <div style="font-size:14px;font-weight:800;color:var(--tp)">Cow Milk (Pure Acoustic Benchmark)</div>
+        <div style="font-size:11px;color:var(--ts)">Acoustic resonance match &bull; Dilution: 3.8% &bull; PASS</div>
+      </div>
+    </div>
+
+    <div class="demo-option-item" onclick="loadDemoScenario('ma')">
+      <div style="font-size:24px">&#129371;</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:800;color:var(--tp)">Cow Milk (Water Dilution Anomaly)</div>
+        <div style="font-size:11px;color:var(--ts)">Resonance frequency shift &bull; Dilution: +22.4% &bull; ANOMALY</div>
       </div>
     </div>
 
@@ -2658,6 +2713,7 @@ function transitionScreen(fromId, toId, direction) {
 function onLeaveScreen(id) {
   stopWaveform();
   if (calibTimer) clearTimeout(calibTimer);
+  if (id === 'sm2') clearAcousticTimers();
 }
 
 function onEnterScreen(id) {
@@ -2677,7 +2733,7 @@ function onEnterScreen(id) {
   } else if (id === 's7') {
     setTimeout(drawTrajectoryChart, 250);
   } else if (id === 'sm2') {
-    resetMilkMeasurement();
+    startMilkAcousticScan();
   } else if (id === 'sm5') {
     setTimeout(drawMilkSpectrumChart, 250);
   }
@@ -2813,78 +2869,232 @@ function stopWaveform() {
 }
 
 /* =================================================================
-   MILK SCREENING FLOW
+   MILK PHYSICAL ACOUSTIC WORKFLOW
    ================================================================= */
-function selectContainer(type) {
-  ['cntGlass', 'cntPlastic', 'cntSteel', 'cntOther'].forEach(function(id) {
+var selectedGlassType = 'tumbler';
+var acousticScanTimers = [];
+
+var glassProfiles = {
+  tumbler: { name: 'Standard Tumbler Glass', f0: 1420, wall: '2.5mm', damping: 0.0432 },
+  borosilicate: { name: 'Borosilicate Glass Beaker', f0: 1680, wall: '1.8mm', damping: 0.0381 },
+  thin: { name: 'Thin Wall Stemware Glass', f0: 1840, wall: '1.2mm', damping: 0.0345 },
+  ceramic: { name: 'Ceramic Porcelain Mug', f0: 1120, wall: '4.0mm', damping: 0.0618 }
+};
+
+function selectGlassType(type) {
+  selectedGlassType = type;
+  ['cntTumbler', 'cntBorosilicate', 'cntThin', 'cntCeramic'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove('selected');
   });
 
-  var map = { glass: 'cntGlass', plastic: 'cntPlastic', steel: 'cntSteel', other: 'cntOther' };
-  if (map[type]) document.getElementById(map[type]).classList.add('selected');
+  var map = {
+    tumbler: 'cntTumbler',
+    borosilicate: 'cntBorosilicate',
+    thin: 'cntThin',
+    ceramic: 'cntCeramic'
+  };
+  var target = document.getElementById(map[type]);
+  if (target) target.classList.add('selected');
 
-  var warn = document.getElementById('steelWarningBox');
-  var btn = document.getElementById('btnContinueMilk');
-  var techCnt = document.getElementById('techCntVal');
+  var prof = glassProfiles[type] || glassProfiles.tumbler;
+  var techVal = document.getElementById('techCntVal');
+  if (techVal) techVal.textContent = prof.name;
+  var profLabel = document.getElementById('milkProfileLabel');
+  if (profLabel) profLabel.textContent = 'Vessel: ' + prof.name + ' • Resonant Calibration Locked';
+}
 
-  if (type === 'steel') {
-    warn.style.display = 'block';
-    btn.disabled = true;
-    btn.style.opacity = '0.35';
-    btn.style.cursor = 'not-allowed';
-  } else {
-    warn.style.display = 'none';
-    btn.disabled = false;
-    btn.style.opacity = '1';
-    btn.style.cursor = 'pointer';
-    if (techCnt) {
-      techCnt.textContent = type === 'glass' ? 'Clear Glass (Cylindrical)' :
-                            type === 'plastic' ? 'Clear Polyethylene' : 'Custom Specimen Cell';
+function startMilkAcousticScan() {
+  if (currentScreen !== 'sm2') {
+    gt('sm2');
+    return;
+  }
+  clearAcousticTimers();
+
+  for (var i = 1; i <= 5; i++) {
+    var ch = document.getElementById('stg' + i);
+    if (ch) {
+      ch.className = 'stage-chip' + (i === 1 ? ' active' : '');
+    }
+  }
+
+  document.getElementById('diagContact').innerHTML = '&#9675; VERIFYING';
+  document.getElementById('diagContact').style.color = 'var(--yw)';
+  document.getElementById('diagVibe').innerHTML = '&#9675; QUEUED';
+  document.getElementById('diagVibe').style.color = 'var(--ts)';
+  document.getElementById('diagListen').innerHTML = '&#9675; QUEUED';
+  document.getElementById('diagListen').style.color = 'var(--ts)';
+  document.getElementById('diagSignal').innerHTML = '&#9675; QUEUED';
+  document.getElementById('diagSignal').style.color = 'var(--ts)';
+  document.getElementById('diagML').innerHTML = '&#9675; QUEUED';
+  document.getElementById('diagML').style.color = 'var(--ts)';
+
+  document.getElementById('acousticStageTitle').textContent = 'STAGE 1: CONTACT VERIFICATION';
+  document.getElementById('acousticStageBadge').textContent = 'COUPLING: VERIFYING';
+  document.getElementById('acousticStageBadge').className = 'status-pill pill-yellow';
+  document.getElementById('acousticSubStatus').textContent = 'Measuring chassis-to-glass contact pressure & stability...';
+  document.getElementById('btnAcousticText').textContent = 'Measuring Resonance & Damping...';
+
+  drawAcousticDecay(0.1, 'contact');
+
+  // Stage 1 -> Stage 2 (Vibration Sweep) at 1200ms
+  acousticScanTimers.push(setTimeout(function() {
+    setStageActive(2);
+    document.getElementById('diagContact').innerHTML = '&#10003; LOCKED (98.6%)';
+    document.getElementById('diagContact').style.color = 'var(--gr)';
+    document.getElementById('diagVibe').innerHTML = '&#9675; 80–1800 Hz SWEEP';
+    document.getElementById('diagVibe').style.color = 'var(--ac)';
+
+    document.getElementById('acousticStageTitle').textContent = 'STAGE 2: CONTROLLED VIBRATION';
+    document.getElementById('acousticStageBadge').textContent = 'EXCITING VESSEL';
+    document.getElementById('acousticStageBadge').className = 'status-pill pill-cyan';
+    document.getElementById('acousticSubStatus').textContent = 'Haptic transducer driving 80 Hz -> 1,800 Hz frequency sweep...';
+
+    drawAcousticDecay(0.35, 'vibration');
+  }, 1200));
+
+  // Stage 2 -> Stage 3 (Acoustic Listening) at 2600ms
+  acousticScanTimers.push(setTimeout(function() {
+    setStageActive(3);
+    document.getElementById('diagVibe').innerHTML = '&#10003; SWEEP COMPLETE';
+    document.getElementById('diagVibe').style.color = 'var(--gr)';
+    document.getElementById('diagListen').innerHTML = '&#9675; RECORDING RINGDOWN';
+    document.getElementById('diagListen').style.color = 'var(--ac)';
+
+    document.getElementById('acousticStageTitle').textContent = 'STAGE 3: ACOUSTIC LISTENING';
+    document.getElementById('acousticStageBadge').textContent = 'LISTENING';
+    document.getElementById('acousticStageBadge').className = 'status-pill pill-cyan';
+    document.getElementById('acousticSubStatus').textContent = 'Dual microphones capturing boundary resonance & viscous damping...';
+
+    drawAcousticDecay(0.7, 'listening');
+  }, 2600));
+
+  // Stage 3 -> Stage 4 (Signal Analysis) at 4200ms
+  acousticScanTimers.push(setTimeout(function() {
+    setStageActive(4);
+    document.getElementById('diagListen').innerHTML = '&#10003; RINGDOWN CAPTURED';
+    document.getElementById('diagListen').style.color = 'var(--gr)';
+    document.getElementById('diagSignal').innerHTML = '&#9675; COMPUTING FFT';
+    document.getElementById('diagSignal').style.color = 'var(--ac)';
+
+    document.getElementById('acousticStageTitle').textContent = 'STAGE 4: SIGNAL ANALYSIS';
+    document.getElementById('acousticStageBadge').textContent = 'FFT ANALYSIS';
+    document.getElementById('acousticStageBadge').className = 'status-pill pill-cyan';
+    document.getElementById('acousticSubStatus').textContent = 'Computing power spectral density, damping ratio (ζ), & speed of sound...';
+
+    drawAcousticDecay(0.9, 'signal');
+  }, 4200));
+
+  // Stage 4 -> Stage 5 (ML Inference) at 5600ms
+  acousticScanTimers.push(setTimeout(function() {
+    setStageActive(5);
+    document.getElementById('diagSignal').innerHTML = '&#10003; fr: 1,248 Hz | ζ: 0.0432';
+    document.getElementById('diagSignal').style.color = 'var(--gr)';
+    document.getElementById('diagML').innerHTML = '&#9675; CLASSIFYING DENSITY';
+    document.getElementById('diagML').style.color = 'var(--ac)';
+
+    document.getElementById('acousticStageTitle').textContent = 'STAGE 5: ML INFERENCE';
+    document.getElementById('acousticStageBadge').textContent = 'CLASSIFYING';
+    document.getElementById('acousticStageBadge').className = 'status-pill pill-cyan';
+    document.getElementById('acousticSubStatus').textContent = 'Neural classifier evaluating water dilution & foreign adulterants...';
+
+    drawAcousticDecay(1.0, 'complete');
+  }, 5600));
+
+  // Finish -> sm4 at 7000ms
+  acousticScanTimers.push(setTimeout(function() {
+    document.getElementById('diagML').innerHTML = '&#10003; 94% CERTAINTY';
+    document.getElementById('diagML').style.color = 'var(--gr)';
+    document.getElementById('btnAcousticText').textContent = 'View Screening Result →';
+    gt('sm4');
+    setTimeout(drawMilkSpectrumChart, 300);
+  }, 7000));
+}
+
+function setStageActive(num) {
+  for (var i = 1; i <= 5; i++) {
+    var ch = document.getElementById('stg' + i);
+    if (!ch) continue;
+    var baseText = ch.textContent.replace(/^✓\s*|^\d+\.\s*/, '');
+    if (i < num) {
+      ch.className = 'stage-chip completed';
+      ch.textContent = '✓ ' + baseText;
+    } else if (i === num) {
+      ch.className = 'stage-chip active';
+      ch.textContent = i + '. ' + baseText;
+    } else {
+      ch.className = 'stage-chip';
+      ch.textContent = i + '. ' + baseText;
     }
   }
 }
 
-function resetMilkMeasurement() {
-  ['smDiag1', 'smDiag2', 'smDiag3'].forEach(function(id) {
-    var el = document.getElementById(id);
-    el.innerHTML = '&#9675; STANDBY';
-    el.style.color = 'var(--ts)';
-  });
-  var btn = document.getElementById('btnAnalyzeMilk');
-  btn.disabled = false;
-  btn.innerHTML = '<span>Analyze Specimen &rarr;</span>';
-  btn.style.opacity = '1';
-  btn.onclick = runMilkInference;
+function clearAcousticTimers() {
+  acousticScanTimers.forEach(function(t) { clearTimeout(t); });
+  acousticScanTimers = [];
 }
 
-function runMilkInference() {
-  var btn = document.getElementById('btnAnalyzeMilk');
-  btn.disabled = true;
-  btn.innerHTML = '<span>Measuring Spectral Absorption...</span>';
-  btn.style.opacity = '0.6';
+function skipToMilkResult() {
+  clearAcousticTimers();
+  gt('sm4');
+  setTimeout(drawMilkSpectrumChart, 300);
+}
 
-  setTimeout(function() {
-    var d1 = document.getElementById('smDiag1');
-    d1.innerHTML = '&#10003; 0.942 CAPTURED';
-    d1.style.color = 'var(--gr)';
-  }, 600);
+function drawAcousticDecay(progress, mode) {
+  var canvas = document.getElementById('acousticDecayCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width;
+  var H = canvas.height;
+  var midY = H / 2;
 
-  setTimeout(function() {
-    var d2 = document.getElementById('smDiag2');
-    d2.innerHTML = '&#10003; REFRACTIVE MATCH';
-    d2.style.color = 'var(--gr)';
-  }, 1200);
+  ctx.clearRect(0, 0, W, H);
 
-  setTimeout(function() {
-    var d3 = document.getElementById('smDiag3');
-    d3.innerHTML = '&#10003; 100% SYNTHESIZED';
-    d3.style.color = 'var(--gr)';
-    btn.disabled = false;
-    btn.innerHTML = '<span>View Screening Result &rarr;</span>';
-    btn.style.opacity = '1';
-    btn.onclick = function() { gt('sm4'); };
-  }, 1800);
+  // Background grid
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, midY);
+  ctx.lineTo(W, midY);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 1.8;
+
+  var cycles = mode === 'vibration' ? 12 : 24;
+  var dampFactor = mode === 'contact' ? 0.005 : (mode === 'vibration' ? 0.002 : 0.022);
+
+  for (var x = 0; x < W * progress; x++) {
+    var t = x / W;
+    var envelope = (H * 0.42) * Math.exp(-dampFactor * x);
+    var y = midY + envelope * Math.sin(t * cycles * Math.PI * 2);
+    if (x === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  if (mode === 'listening' || mode === 'signal' || mode === 'complete') {
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (var x = 0; x < W * progress; x++) {
+      var env = (H * 0.42) * Math.exp(-dampFactor * x);
+      if (x === 0) ctx.moveTo(x, midY - env);
+      else ctx.lineTo(x, midY - env);
+    }
+    ctx.stroke();
+
+    ctx.beginPath();
+    for (var x = 0; x < W * progress; x++) {
+      var env = (H * 0.42) * Math.exp(-dampFactor * x);
+      if (x === 0) ctx.moveTo(x, midY + env);
+      else ctx.lineTo(x, midY + env);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
 }
 
 /* =================================================================
@@ -2926,8 +3136,8 @@ function loadDemoScenario(key) {
     rt: 'DEMO: Honeycrisp Apple (Optimal Freshness)',
     ft: 'DEMO: Greenhouse Tomato (Peak Fresh)',
     ot: 'DEMO: Roma Tomato (Softening/Overripe)',
-    md: 'DEMO: Milk Sample (Pure Standard)',
-    ma: 'DEMO: Milk Sample (Excess Water Anomaly)'
+    md: 'DEMO: Milk Sample (Pure Acoustic Match)',
+    ma: 'DEMO: Milk Sample (Water Dilution Anomaly)'
   };
 
   banner.classList.add('visible');
@@ -2997,20 +3207,40 @@ function applyDemoData(key) {
       verdictClass: 'pill-green',
       waterPct: '3.8%',
       waterColor: 'var(--gr)',
-      conf: '92%',
-      adWater: 'က3 3.8% (Normal baseline)',
+      waterLabel: '(Normal baseline variance < 5%)',
+      conf: '94%',
+      adWater: '✓ 3.8% (Normal)',
       adWaterColor: 'var(--gr)',
+      adUrea: '✓ Negative (Velocity Match)',
+      adStarch: '✓ Negative (Viscous Damping Normal)',
+      adDet: '✓ Negative (Surface Tension Normal)',
+      freq: '1,248 Hz',
+      damp: '0.0432 (Normal)',
+      speed: '1,532 m/s',
+      imp: '1.58 MRayl',
+      shiftVal: '-172 Hz (Fluid Loaded)',
+      decayVal: '48.2 ms',
       anomalyHtml: ''
     },
     ma: {
-      verdictText: 'POTENTIAL WATER DILUTION DETECTED',
+      verdictText: 'EXCESS WATER DILUTION ANOMALY',
       verdictClass: 'pill-red',
-      waterPct: '11.4%',
+      waterPct: '+22.4%',
       waterColor: 'var(--rd)',
-      conf: '88%',
-      adWater: '⚠ 11.4% (Elevated Dilution)',
+      waterLabel: '(Excess dilution anomaly > 15%)',
+      conf: '91%',
+      adWater: '⚠ +22.4% (EXCESS WATER)',
       adWaterColor: 'var(--rd)',
-      anomalyHtml: '<div style="background:var(--rd-bg);border:1px solid rgba(239,68,68,0.3);border-radius:14px;padding:14px;margin-bottom:18px"><div style="font-size:12px;font-weight:800;color:var(--rd);margin-bottom:4px">&#9888; Refractive Anomaly Detected</div><div style="font-size:12px;color:#fca5a5;line-height:1.4">Colloid dispersion index deviates by > 2.4 sigma. Water dilution estimated between <strong>9% and 13%</strong>. Verification recommended.</div></div>'
+      adUrea: '✓ Negative',
+      adStarch: '✓ Negative',
+      adDet: '✓ Negative',
+      freq: '1,180 Hz',
+      damp: '0.0261 (Low Damping)',
+      speed: '1,498 m/s',
+      imp: '1.51 MRayl',
+      shiftVal: '-240 Hz (Water Loaded)',
+      decayVal: '68.5 ms',
+      anomalyHtml: '<div class="disclaimer-card" style="background:var(--rd-bg);border-color:rgba(239,68,68,0.3);border-left-color:var(--rd);margin-bottom:16px"><div class="disclaimer-text" style="color:#fca5a5"><strong style="color:var(--rd)">Acoustic Anomaly Flagged:</strong> Significant downward shift in resonant frequency (1,180 Hz vs 1,248 Hz standard) and lower acoustic damping indicate substantial water dilution exceeding acceptable thresholds.</div></div>'
     }
   };
 
@@ -3040,22 +3270,55 @@ function applyDemoData(key) {
 
   if (milkScenarios[key]) {
     var m = milkScenarios[key];
-    var mv = document.getElementById('milkVerdictPill');
-    mv.textContent = m.verdictText;
-    mv.className = 'status-pill ' + m.verdictClass;
+    var vp = document.getElementById('milkVerdictPill');
+    if (vp) {
+      vp.className = 'status-pill ' + m.verdictClass;
+      vp.textContent = m.verdictText;
+    }
 
     var wp = document.getElementById('milkWaterPct');
-    wp.textContent = m.waterPct;
-    wp.style.color = m.waterColor;
+    if (wp) {
+      wp.textContent = m.waterPct;
+      wp.style.color = m.waterColor;
+    }
 
-    document.getElementById('milkConfText').textContent = m.conf;
-    document.getElementById('milkConfBar').style.width = m.conf;
+    var wl = document.getElementById('milkWaterLabel');
+    if (wl) wl.textContent = m.waterLabel;
+
+    var ct = document.getElementById('milkConfText');
+    if (ct) ct.textContent = m.conf;
+    var cb = document.getElementById('milkConfBar');
+    if (cb) cb.style.width = m.conf;
 
     var aw = document.getElementById('adWaterStatus');
-    aw.textContent = m.adWater;
-    aw.style.color = m.adWaterColor;
+    if (aw) {
+      aw.textContent = m.adWater;
+      aw.style.color = m.adWaterColor;
+    }
 
-    document.getElementById('milkAnomalyAlert').innerHTML = m.anomalyHtml;
+    var au = document.getElementById('adUreaStatus');
+    if (au) au.textContent = m.adUrea;
+    var as = document.getElementById('adStarchStatus');
+    if (as) as.textContent = m.adStarch;
+    var ad = document.getElementById('adDetStatus');
+    if (ad) ad.textContent = m.adDet;
+
+    var tf = document.getElementById('telFreq');
+    if (tf) tf.textContent = m.freq;
+    var td = document.getElementById('telDamp');
+    if (td) td.textContent = m.damp;
+    var ts = document.getElementById('telSpeed');
+    if (ts) ts.textContent = m.speed;
+    var ti = document.getElementById('telImp');
+    if (ti) ti.textContent = m.imp;
+
+    var tsv = document.getElementById('techShiftVal');
+    if (tsv) tsv.textContent = m.shiftVal;
+    var tdv = document.getElementById('techDecayVal');
+    if (tdv) tdv.textContent = m.decayVal;
+
+    var maAlert = document.getElementById('milkAnomalyAlert');
+    if (maAlert) maAlert.innerHTML = m.anomalyHtml;
   }
 }
 
@@ -3145,49 +3408,76 @@ function drawMilkSpectrumChart() {
   var c = document.getElementById('milkCurveCanvas');
   if (!c) return;
   var W = c.offsetWidth || 320;
-  var H = 120;
+  var H = 130;
   c.width = W;
   c.height = H;
   var ctx = c.getContext('2d');
-  var pad = 20;
+  var pad = 24;
   var cW = W - pad * 2;
   var cH = H - pad * 2;
 
+  // Grid
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.lineWidth = 1;
+  [0, 500, 1000, 1500, 2000, 2500, 3000].forEach(function(freq) {
+    var x = pad + (freq / 3000) * cW;
+    ctx.beginPath();
+    ctx.moveTo(x, pad);
+    ctx.lineTo(x, H - pad);
+    ctx.stroke();
+  });
+
   var pts = [
-    { x: 0.05, y: 0.32 }, { x: 0.2, y: 0.65 }, { x: 0.35, y: 0.82 },
-    { x: 0.5, y: 0.74 }, { x: 0.65, y: 0.55 }, { x: 0.8, y: 0.42 }, { x: 0.95, y: 0.28 }
+    { f: 100, a: 0.05 }, { f: 400, a: 0.12 }, { f: 800, a: 0.28 },
+    { f: 1100, a: 0.65 }, { f: 1248, a: 0.95 }, { f: 1400, a: 0.52 },
+    { f: 1800, a: 0.22 }, { f: 2400, a: 0.10 }, { f: 3000, a: 0.04 }
   ];
 
+  var grad = ctx.createLinearGradient(0, pad, 0, H - pad);
+  grad.addColorStop(0, 'rgba(255, 255, 255, 0.25)');
+  grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+  ctx.beginPath();
+  pts.forEach(function(pt, i) {
+    var x = pad + (pt.f / 3000) * cW;
+    var y = pad + cH - pt.a * cH;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.lineTo(pad + cW, H - pad);
+  ctx.lineTo(pad, H - pad);
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Curve line
   ctx.strokeStyle = '#ffffff';
   ctx.lineWidth = 2.2;
   ctx.beginPath();
   pts.forEach(function(pt, i) {
-    var x = pad + pt.x * cW;
-    var y = pad + cH - pt.y * cH;
+    var x = pad + (pt.f / 3000) * cW;
+    var y = pad + cH - pt.a * cH;
     if (i === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
   ctx.stroke();
 
-  var grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-  grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  // Annotate resonant peak
+  var peakX = pad + (1248 / 3000) * cW;
+  var peakY = pad + cH - 0.95 * cH;
+  ctx.fillStyle = '#22c55e';
   ctx.beginPath();
-  pts.forEach(function(pt, i) {
-    var x = pad + pt.x * cW;
-    var y = pad + cH - pt.y * cH;
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  });
-  ctx.lineTo(pad + cW, pad + cH);
-  ctx.lineTo(pad, pad + cH);
-  ctx.fillStyle = grad;
+  ctx.arc(peakX, peakY, 4.5, 0, Math.PI * 2);
   ctx.fill();
 
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '10px JetBrains Mono';
+  ctx.fillText('fr: 1,248 Hz (Q: 23.1)', peakX - 44, peakY - 8);
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
   ctx.font = '9px JetBrains Mono';
-  ctx.fillText('400 nm (Violet)', pad, H - 4);
-  ctx.fillText('700 nm (Red)', W - 78, H - 4);
+  ctx.fillText('0 Hz', pad, H - 6);
+  ctx.fillText('1,500 Hz', pad + cW * 0.5 - 20, H - 6);
+  ctx.fillText('3,000 Hz', W - pad - 36, H - 6);
 }
 
 // Initial demo defaults
