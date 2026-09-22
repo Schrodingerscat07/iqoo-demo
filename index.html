@@ -118,75 +118,15 @@ html, body {
     box-shadow: none;
     border: none;
   }
-  #cameraNotch {
-    display: none;
-  }
-}
-
-/* Dynamic Island / Camera Notch */
-#cameraNotch {
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 124px;
-  height: 32px;
-  background: #000;
-  border-radius: 20px;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
-  pointer-events: none;
-}
-.camera-lens {
-  width: 12px;
-  height: 12px;
-  background: #141414;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
-}
-.camera-lens::after {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  background: #202020;
-  border-radius: 50%;
-}
-
-/* Status Bar */
-#statusBar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 52px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 0 24px 8px;
-  z-index: 500;
-  pointer-events: none;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--tp);
-}
-.status-icons {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
 }
 
 /* Top App Bar (Unified Header for sub-screens) */
 .app-header {
   position: absolute;
-  top: 52px;
+  top: 0;
   left: 0;
   right: 0;
-  height: 58px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -307,14 +247,14 @@ html, body {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding-top: 118px;
+  padding-top: 68px;
   padding-bottom: 96px;
 }
 .screen-scroll::-webkit-scrollbar {
   display: none;
 }
 .screen-scroll.no-header {
-  padding-top: 54px;
+  padding-top: 0;
 }
 
 /* Bottom Navigation Bar */
@@ -379,7 +319,7 @@ html, body {
 /* Demo Banner */
 #demoBanner {
   position: absolute;
-  top: 52px;
+  top: 0;
   left: 0;
   right: 0;
   background: linear-gradient(90deg, #240e04, #361605);
@@ -1448,19 +1388,6 @@ html, body {
 
 <div id="outerShell">
 <div id="deviceFrame">
-  <!-- Dynamic Island -->
-  <div id="cameraNotch"><div class="camera-lens"></div></div>
-
-  <!-- Status Bar -->
-  <div id="statusBar">
-    <span id="liveClock">18:30</span>
-    <div class="status-icons">
-      <span>5G</span>
-      <span>&#9679;&#9679;&#9679;</span>
-      <span>100%</span>
-    </div>
-  </div>
-
   <!-- Demo Banner -->
   <div id="demoBanner">
     <span class="demo-tag">&#9888; DEMO ACTIVE</span>
@@ -3262,19 +3189,6 @@ function drawMilkSpectrumChart() {
   ctx.fillText('400 nm (Violet)', pad, H - 4);
   ctx.fillText('700 nm (Red)', W - 78, H - 4);
 }
-
-/* =================================================================
-   CLOCK
-   ================================================================= */
-function updateClock() {
-  var now = new Date();
-  var h = String(now.getHours()).padStart(2, '0');
-  var m = String(now.getMinutes()).padStart(2, '0');
-  var el = document.getElementById('liveClock');
-  if (el) el.textContent = h + ':' + m;
-}
-setInterval(updateClock, 10000);
-updateClock();
 
 // Initial demo defaults
 applyDemoData('rt');
