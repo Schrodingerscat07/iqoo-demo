@@ -1465,7 +1465,7 @@ html, body {
                 <span>Freshness Check</span>
               </div>
               <div class="mode-card-desc">
-                Instant produce recognition via onboard sensors. Analyzes cellular degradation, firmness, and remaining shelf-life.
+                Multimodal food screening combining optical surface imaging, acoustic response, IMU stability, and history tracking.
               </div>
             </div>
             <div class="mode-card-arrow">
@@ -1534,7 +1534,7 @@ html, body {
     </div>
 
     <!-- =======================================================
-         SCREEN 2: PREPARE SCAN (Zero manual selection needed)
+         SCREEN 2: PREPARE PRODUCE SCAN
          ======================================================= -->
     <div id="s2" class="screen">
       <div class="app-header">
@@ -1570,24 +1570,24 @@ html, body {
           <div class="step-checklist">
             <div class="step-checklist-item">
               <div class="step-num-badge">1</div>
-              <div class="step-text">Place food on a <strong>clean, flat surface</strong> under diffuse ambient light.</div>
+              <div class="step-text">Place produce on a clean, flat surface.</div>
             </div>
             <div class="step-checklist-item">
               <div class="step-num-badge">2</div>
-              <div class="step-text">The <strong>optical sensor</strong> will lock on and identify produce specimen automatically.</div>
+              <div class="step-text">Keep phone at the indicated distance.</div>
             </div>
             <div class="step-checklist-item">
               <div class="step-num-badge">3</div>
-              <div class="step-text">Follow prompts to <strong>rotate specimen</strong> for 360&deg; surface mapping.</div>
+              <div class="step-text">Rotate when prompted.</div>
             </div>
             <div class="step-checklist-item">
               <div class="step-num-badge">4</div>
-              <div class="step-text">Gently <strong>tap the specimen</strong> when prompted to record acoustic damping.</div>
+              <div class="step-text">Keep the environment quiet during acoustic measurement.</div>
             </div>
           </div>
 
-          <button class="btn-primary" onclick="gt('s3')">
-            <span>Start Sensor Calibration</span>
+          <button class="btn-primary" onclick="requestHardwarePermissions(); gt('s3');">
+            <span>START SENSOR CALIBRATION &rarr;</span>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </div>
@@ -1614,41 +1614,36 @@ html, body {
             <div class="calib-outer-ring">
               <div class="calib-spinner"></div>
               <div class="calib-inner-core">
-                <span class="calib-pct" id="calibPct">0%</span>
-                <span class="calib-state-text" id="calibStateText">Initializing</span>
+                <span class="calib-state-text" id="calibStateText" style="font-size:13px;letter-spacing:0.06em">CALIBRATING</span>
               </div>
             </div>
           </div>
 
-          <div style="font-size:13px;color:var(--ts);text-align:center;margin-bottom:24px;font-style:italic;" id="calibSubLabel">
-            Aligning optical & acoustic baseline...
-          </div>
-
           <div class="metric-card" style="width:100%;max-width:330px;margin-bottom:28px;">
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">White Balance & ISO</span>
+              <span class="sensor-diag-name">CAMERA</span>
               <span class="sensor-diag-status" style="color:var(--yw)" id="calibRow1">SYNCING</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Acoustic Floor (Mic)</span>
+              <span class="sensor-diag-name">MICROPHONE</span>
               <span class="sensor-diag-status" style="color:var(--yw)" id="calibRow2">SYNCING</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Spatial Gyro (IMU)</span>
+              <span class="sensor-diag-name">ACCELEROMETER</span>
               <span class="sensor-diag-status" style="color:var(--yw)" id="calibRow3">SYNCING</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Optical Classifier Weights</span>
+              <span class="sensor-diag-name">GYROSCOPE</span>
               <span class="sensor-diag-status" style="color:var(--yw)" id="calibRow4">SYNCING</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">SCAN HISTORY</span>
+              <span class="sensor-diag-status" style="color:var(--yw)" id="calibRow5">SYNCING</span>
             </div>
           </div>
 
-          <div id="calibReadyBadge" style="display:none;margin-bottom:20px;">
-            <span class="status-pill pill-green">&#10003; All Sensors Calibrated & Locked</span>
-          </div>
-
           <button class="btn-primary" id="calibBeginScanBtn" style="display:none;width:100%;max-width:320px;" onclick="gt('s4')">
-            <span>Proceed to Active Scan</span>
+            <span>START MULTIMODAL SCAN &rarr;</span>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </div>
@@ -1656,7 +1651,7 @@ html, body {
     </div>
 
     <!-- =======================================================
-         SCREEN 4: ACTIVE SCAN (With Real-Time Auto-Detect HUD)
+         SCREEN 4: ACTIVE MULTIMODAL SCAN
          ======================================================= -->
     <div id="s4" class="screen" style="background:#000000;">
       <div class="app-header" style="background:rgba(0,0,0,0.92)">
@@ -1664,29 +1659,37 @@ html, body {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           <span>Abort</span>
         </button>
-        <span class="header-title">Multi-Modal Scan</span>
+        <span class="header-title">Multimodal Scan</span>
         <button class="nav-home-btn" onclick="goHome()" title="Exit Scan">
           <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
       </div>
 
       <!-- Viewfinder Area -->
-      <div class="viewfinder-area">
-        <div class="reticle-box">
+      <div class="viewfinder-area" style="position:relative;background:#000000;overflow:hidden;">
+        <!-- Live Hardware Camera Stream -->
+        <video id="cameraStreamVideo" autoplay playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;display:none;background:#000000;"></video>
+
+        <!-- Camera Facing Switch Button (Rear / Front) -->
+        <button id="cameraToggleBtn" onclick="toggleCameraFacing()" title="Switch Camera" style="position:absolute;top:70px;right:16px;z-index:15;width:38px;height:38px;border-radius:50%;background:rgba(20,20,20,0.85);border:1px solid rgba(255,255,255,0.25);color:#fff;display:none;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(8px);box-shadow:0 4px 14px rgba(0,0,0,0.5);">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 16v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4M4 8V4a2 2 0 012-2h12a2 2 0 012 2v4M12 8v8M8 12l4-4 4 4"/></svg>
+        </button>
+
+        <div class="reticle-box" style="z-index:2;">
           <div class="reticle-bottom-corners"></div>
           <div class="scan-laser-beam"></div>
-          <div class="target-preview-img-wrap" style="font-size:76px;line-height:1;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);box-shadow:0 0 35px rgba(255,255,255,0.12)">
+          <div class="target-preview-img-wrap" id="targetPreviewWrap" style="font-size:76px;line-height:1;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);box-shadow:0 0 35px rgba(255,255,255,0.12);transition:opacity 0.3s ease;">
             <span id="liveScanTargetIcon">&#127822;</span>
           </div>
         </div>
 
-        <!-- Live Specimen Auto-Detect HUD -->
-        <div class="cv-detect-hud-card">
+        <!-- Live Specimen Auto-Detect Compact Card -->
+        <div class="cv-detect-hud-card" style="z-index:4;">
           <div class="cv-hud-left">
-            <div class="cv-hud-status">SPECIMEN IDENTIFIED</div>
-            <div class="cv-detected-target" id="cvTargetLabel">Honeycrisp Apple (Malus domestica)</div>
+            <div class="cv-hud-status" id="cvHudStatusText">SPECIMEN IDENTIFIED</div>
+            <div class="cv-detected-target" id="cvTargetLabel">Honeycrisp Apple</div>
           </div>
-          <div class="cv-hud-badge" id="cvConfidenceLabel">99.4% CONF</div>
+          <div class="cv-hud-badge" id="cvConfidenceLabel">99% CONF</div>
         </div>
       </div>
 
@@ -1694,28 +1697,24 @@ html, body {
       <div class="scan-telemetry-tray">
         <div class="metric-card" style="margin-bottom:14px;padding:12px 14px;">
           <div class="section-label" style="margin-bottom:6px;display:flex;justify-content:space-between">
-            <span>Acoustic Damping Response</span>
-            <span id="scanViewCounter" style="color:var(--ac)">VIEW 1 OF 3</span>
+            <span>Acoustic Waveform</span>
+            <span id="scanViewCounter" style="color:var(--ac);font-family:var(--mono)">1 / 3</span>
           </div>
-          <canvas id="waveformCanvas" width="340" height="48" style="width:100%;height:48px;display:block"></canvas>
+          <canvas id="waveformCanvas" width="340" height="44" style="width:100%;height:44px;display:block"></canvas>
         </div>
 
         <div class="metric-card" style="margin-bottom:18px;">
           <div class="sensor-diag-row">
-            <span class="sensor-diag-name">Visual Stream (HDR)</span>
-            <span class="sensor-diag-status" style="color:var(--gr)">&#10003; ACTIVE</span>
+            <span class="sensor-diag-name">VISUAL</span>
+            <span class="sensor-diag-status" style="color:var(--gr)" id="scanStatusVisual">ACTIVE</span>
           </div>
           <div class="sensor-diag-row">
-            <span class="sensor-diag-name">Produce Taxonomy</span>
-            <span class="sensor-diag-status" style="color:var(--gr)" id="scanStatusCV">&#10003; AUTO-RESOLVED</span>
+            <span class="sensor-diag-name">ACOUSTIC</span>
+            <span class="sensor-diag-status" style="color:var(--ac)" id="scanStatusAcoustic">READY</span>
           </div>
           <div class="sensor-diag-row">
-            <span class="sensor-diag-name">Acoustic Tap Impulse</span>
-            <span class="sensor-diag-status" style="color:var(--ac)" id="scanStatusAcoustic">&#9675; RECORDING</span>
-          </div>
-          <div class="sensor-diag-row">
-            <span class="sensor-diag-name">Specular Scatter Index</span>
-            <span class="sensor-diag-status" style="color:var(--ts)" id="scanStatusSurface">&#9675; PENDING</span>
+            <span class="sensor-diag-name">IMU</span>
+            <span class="sensor-diag-status" style="color:var(--gr)" id="scanStatusImu">STEADY</span>
           </div>
         </div>
 
@@ -1726,7 +1725,144 @@ html, body {
     </div>
 
     <!-- =======================================================
-         SCREEN 5: MULTI-MODAL ANALYSIS PROCESSING
+         SCREEN 4_INSTRUCT: PRODUCE TAP INSTRUCTION
+         ======================================================= -->
+    <div id="s4_instruct" class="screen">
+      <div class="app-header">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Back</span>
+        </button>
+        <span class="header-title">Acoustic Tap Test</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding: 0 20px 32px;">
+          <!-- Tap Instruction Graphic -->
+          <div class="scan-hologram-box" style="margin-bottom:20px;padding:24px 16px;">
+            <div style="display:flex;justify-content:center;margin-bottom:14px;">
+              <svg viewBox="0 0 260 140" width="240" height="130" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Table surface line -->
+                <line x1="20" y1="126" x2="240" y2="126" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                
+                <!-- Produce Item (Apple) on table -->
+                <circle cx="85" cy="85" r="36" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.4)" stroke-width="1.8"/>
+                <path d="M85 49 C85 40 92 36 98 34" stroke="var(--gr)" stroke-width="2.2" stroke-linecap="round"/>
+                
+                <!-- Hand / Finger Tapping Icon on top of produce -->
+                <text x="73" y="32" font-size="28">&#128070;</text>
+                <text x="110" y="34" fill="var(--ac)" font-family="Inter, sans-serif" font-size="10" font-weight="700">TAP HERE</text>
+                
+                <!-- Sound vibration waves moving toward phone -->
+                <path d="M125 75 C132 80 132 90 125 95" stroke="var(--ac)" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+                <path d="M133 70 C143 78 143 98 133 105" stroke="var(--ac)" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+                <path d="M141 65 C154 75 154 105 141 115" stroke="var(--ac)" stroke-width="1.2" stroke-linecap="round" opacity="0.3"/>
+                
+                <!-- Phone resting flat on table next to food -->
+                <rect x="160" y="44" width="70" height="82" rx="6" fill="#141414" stroke="#ffffff" stroke-width="1.8"/>
+                <rect x="168" y="52" width="54" height="66" rx="3" fill="#000000"/>
+                <!-- Bottom Mic indicator -->
+                <circle cx="166" cy="90" r="3" fill="#22c55e"/>
+                <text x="174" y="94" fill="#22c55e" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700">MIC</text>
+              </svg>
+            </div>
+            <div style="font-size:16px;font-weight:800;color:var(--tp);text-align:center;">Keep food near phone &amp; tap</div>
+            <div style="font-size:12px;color:var(--ts);margin-top:4px;text-align:center;">The microphone listens to the vibration to test freshness</div>
+          </div>
+
+          <div class="section-label">Easy Instructions</div>
+          <div class="step-checklist">
+            <div class="step-checklist-item">
+              <div class="step-num-badge">1</div>
+              <div class="step-text">Place the food item <strong>directly next to your phone</strong> on a flat table.</div>
+            </div>
+            <div class="step-checklist-item">
+              <div class="step-num-badge">2</div>
+              <div class="step-text">Press <strong>Start Tap Test</strong> below to begin a 3-second countdown.</div>
+            </div>
+            <div class="step-checklist-item">
+              <div class="step-num-badge">3</div>
+              <div class="step-text">When prompted, <strong>gently tap the food 2&ndash;3 times</strong> with your finger.</div>
+            </div>
+            <div class="step-checklist-item">
+              <div class="step-num-badge">4</div>
+              <div class="step-text">Keep the room quiet while the phone listens to the response.</div>
+            </div>
+          </div>
+
+          <button class="btn-primary" onclick="gt('s4b')">
+            <span>Start Tap Test &rarr;</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN 4B: ACOUSTIC MEASUREMENT (LISTEN)
+         ======================================================= -->
+    <div id="s4b" class="screen" style="background:#000000;">
+      <div class="app-header" style="background:rgba(0,0,0,0.92)">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Cancel</span>
+        </button>
+        <span class="header-title">Acoustic Test</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Exit">
+          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="screen-scroll" style="padding-top:68px;">
+        <div style="padding: 0 20px 32px; display:flex; flex-direction:column; align-items:center;">
+          
+          <div style="text-align:center; margin-top:16px; margin-bottom:20px;">
+            <div style="font-size:12px; font-weight:700; color:var(--ts); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px">Acoustic Test</div>
+            <div style="font-size:22px; font-weight:800; color:var(--tp); margin-bottom:6px">Hold steady</div>
+            <div style="font-size:13px; color:var(--ts)">Controlled excitation and response capture</div>
+          </div>
+
+          <!-- Countdown / Status Display -->
+          <div style="margin-bottom:24px; text-align:center;">
+            <div id="acousticCountdownText" style="font-family:var(--mono); font-size:46px; font-weight:800; color:var(--tp); letter-spacing:0.04em">3</div>
+            <div id="acousticTestBadge" style="margin-top:10px;">
+              <span class="status-pill pill-yellow" id="acousticTestBadgeInner">PREPARING</span>
+            </div>
+          </div>
+
+          <!-- Minimal Waveform / Signal Canvas -->
+          <div class="metric-card" style="width:100%; max-width:330px; padding:16px 14px; margin-bottom:18px; text-align:center;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span class="section-label" style="margin-bottom:0">Acoustic Response</span>
+              <span style="font-family:var(--mono); font-size:10px; color:var(--ts)" id="acousticSignalStatusLabel">READY</span>
+            </div>
+            <canvas id="acousticProduceCanvas" width="300" height="60" style="width:100%; height:60px; display:block; margin:6px 0;"></canvas>
+          </div>
+
+          <!-- Small Sensor Indicators -->
+          <div class="metric-card" style="width:100%; max-width:330px; margin-bottom:24px;">
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">EXCITATION</span>
+              <span class="sensor-diag-status" style="color:var(--ts)" id="diagAcousticExcite">STANDBY</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">MICROPHONE</span>
+              <span class="sensor-diag-status" style="color:var(--ts)" id="diagAcousticMic">STANDBY</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">IMU STABILITY</span>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="diagAcousticImu">&#10003; STABLE</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN 5: MULTIMODAL ANALYSIS (ANALYZE)
          ======================================================= -->
     <div id="s5" class="screen">
       <div class="app-header">
@@ -1734,57 +1870,46 @@ html, body {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           <span>Cancel</span>
         </button>
-        <span class="header-title">Synthesizing Sensors</span>
+        <span class="header-title">Multimodal Analysis</span>
         <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </button>
       </div>
       <div class="screen-scroll">
-        <div class="analysis-pipeline-wrap">
-          <div style="font-size:16px;font-weight:800;color:var(--tp);margin-bottom:24px;text-align:center;display:flex;align-items:center;gap:8px">
-            <span style="animation:rotateSpin 1.2s linear infinite;color:var(--ac)">&#8635;</span>
-            <span>Running Neural Inference Pipeline...</span>
+        <div style="padding: 32px 20px; display:flex; flex-direction:column; align-items:center;">
+          <div style="font-size:18px;font-weight:800;color:var(--tp);margin-bottom:28px;text-align:center;display:flex;align-items:center;gap:10px">
+            <span style="animation:rotateSpin 1.2s linear infinite;color:var(--ac);display:inline-block">&#8635;</span>
+            <span id="analysisMainTitle">ANALYZING</span>
           </div>
 
-          <div class="pipeline-step-row">
-            <div class="pipeline-step-icon">&#128269;</div>
-            <div class="pipeline-step-name">Produce Classifier Engine</div>
-            <div class="pipeline-step-badge" style="color:var(--gr)">CONFIRMED</div>
+          <div class="metric-card" style="width:100%;max-width:330px;margin-bottom:28px;">
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">CAMERA</span>
+              <span class="sensor-diag-status" style="color:var(--gr)">&#10003;</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">ACOUSTIC</span>
+              <span class="sensor-diag-status" style="color:var(--gr)">&#10003;</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">IMU</span>
+              <span class="sensor-diag-status" style="color:var(--gr)">&#10003;</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">HISTORY</span>
+              <span class="sensor-diag-status" style="color:var(--gr)">&#10003;</span>
+            </div>
           </div>
 
-          <div style="color:var(--tm);font-size:16px;margin:2px 0;">&#8595;</div>
-
-          <div class="pipeline-step-row">
-            <div class="pipeline-step-icon">&#127752;</div>
-            <div class="pipeline-step-name">Anthocyanin & Chlorophyll Loss</div>
-            <div class="pipeline-step-badge" style="color:var(--ac)">COMPUTED</div>
-          </div>
-
-          <div style="color:var(--tm);font-size:16px;margin:2px 0;">&#8595;</div>
-
-          <div class="pipeline-step-row">
-            <div class="pipeline-step-icon">&#128266;</div>
-            <div class="pipeline-step-name">Resonance Turgor Pressure</div>
-            <div class="pipeline-step-badge" style="color:var(--ac)">ANALYZED</div>
-          </div>
-
-          <div style="color:var(--tm);font-size:16px;margin:2px 0;">&#8595;</div>
-
-          <div class="pipeline-step-row" style="background:var(--ac-bg);border-color:var(--bdr-accent)">
-            <div class="pipeline-step-icon">&#129504;</div>
-            <div class="pipeline-step-name">Freshness & Degradation Model</div>
-            <div class="pipeline-step-badge" style="color:var(--ac)">SYNTHESIZED</div>
-          </div>
-
-          <div style="margin-top:24px;font-size:11px;color:var(--ts);text-align:center;font-family:var(--mono)">
-            AgriVision-MobileNet-v4 &bull; 14ms on-device NPU
+          <div style="font-size:13px;font-weight:600;color:var(--ts);letter-spacing:0.04em;text-align:center;" id="analysisSubTitle">
+            ESTIMATING FRESHNESS...
           </div>
         </div>
       </div>
     </div>
 
     <!-- =======================================================
-         SCREEN 6: FRESHNESS RESULT SCREEN
+         SCREEN 6: FRESHNESS RESULT SCREEN (RESULT)
          ======================================================= -->
     <div id="s6" class="screen">
       <div class="app-header">
@@ -1792,7 +1917,7 @@ html, body {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           <span>Back</span>
         </button>
-        <span class="header-title">Freshness Screening Result</span>
+        <span class="header-title">Freshness Result</span>
         <button class="nav-home-btn" onclick="goHome()" title="Return to Dashboard">
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </button>
@@ -1800,82 +1925,60 @@ html, body {
       <div class="screen-scroll">
         <div style="padding: 0 20px 32px;">
           <!-- Auto-Detected Label Pill -->
-          <div style="text-align:center;margin-bottom:12px;">
+          <div style="text-align:center;margin-bottom:14px;">
             <div class="auto-identified-badge" id="resAutoDetectedBadge">
-              <span>&#128269;</span>
-              <span id="resTargetName">Identified: Honeycrisp Apple</span>
-              <span style="color:var(--gr);font-weight:800;" id="resConfBadge">&bull; 99.2% Conf</span>
+              <span id="resTargetIcon">&#127822;</span>
+              <span id="resTargetName">Honeycrisp Apple</span>
             </div>
           </div>
 
           <!-- Big Hero Score Card -->
-          <div class="result-hero-box">
+          <div class="result-hero-box" style="margin-bottom:16px;">
+            <div style="font-size:12px;color:var(--ts);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px">
+              FRESHNESS
+            </div>
             <div class="big-score-num" id="resScoreNum" style="color:var(--gr)">
               88<span class="big-score-denom">/100</span>
-            </div>
-            <div style="font-size:13px;color:var(--ts);margin-top:6px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase">
-              Freshness Index
             </div>
             <div style="margin-top:12px;">
               <span class="status-pill pill-green" id="resStagePill">OPTIMAL FRESHNESS</span>
             </div>
           </div>
 
-          <!-- Quad Metrics Grid -->
-          <div class="metrics-quad-grid">
-            <div class="quad-card">
-              <div class="quad-title">Remaining Shelf-Life</div>
-              <div class="quad-val" id="resRulVal">5&ndash;7</div>
-              <div class="quad-sub">days (80% CI)</div>
+          <!-- Three Compact Metrics Grid -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
+            <div class="quad-card" style="padding:14px 8px;text-align:center;">
+              <div class="quad-title">REMAINING</div>
+              <div class="quad-val" id="resRulVal" style="font-size:16px;margin:4px 0">5&ndash;7 days</div>
             </div>
-            <div class="quad-card">
-              <div class="quad-title">Degradation Rate</div>
-              <div class="quad-val" id="resDegVal">-1.6</div>
-              <div class="quad-sub">points / 24h</div>
+            <div class="quad-card" style="padding:14px 8px;text-align:center;">
+              <div class="quad-title">DEGRADATION</div>
+              <div class="quad-val" id="resDegVal" style="font-size:16px;margin:4px 0">&minus;1.6 / day</div>
             </div>
-            <div class="quad-card">
-              <div class="quad-title">Cellular Turgor</div>
-              <div class="quad-val" id="resTurgorVal">92%</div>
-              <div class="quad-sub">firmness acoustic</div>
-            </div>
-            <div class="quad-card">
-              <div class="quad-title">Model Confidence</div>
-              <div class="quad-val" id="resConfVal">89%</div>
-              <div class="quad-sub">multi-sensor match</div>
+            <div class="quad-card" style="padding:14px 8px;text-align:center;">
+              <div class="quad-title">CONFIDENCE</div>
+              <div class="quad-val" id="resConfVal" style="font-size:16px;margin:4px 0">89%</div>
             </div>
           </div>
 
-          <!-- Expandable Diagnostic Breakdown -->
-          <div class="metric-card" style="margin-bottom:20px;">
-            <div class="diagnostic-header" onclick="toggleDiagnostic('freshDiag')">
-              <h4>Sensor Attribution & Changes</h4>
-              <span class="diagnostic-chevron" id="diagChevron">&#9662;</span>
+          <!-- Small Section: SINCE LAST SCAN -->
+          <div class="metric-card" style="margin-bottom:18px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--ts);letter-spacing:0.06em;text-transform:uppercase">SINCE LAST SCAN</div>
+              <div style="font-size:12px;color:var(--tm);margin-top:2px">Compared with previous scan</div>
             </div>
-            <div class="diagnostic-content" id="freshDiag">
-              <div class="diagnostic-row">
-                <span style="color:var(--ts)">Visual Pigment Loss</span>
-                <span style="font-weight:700;color:var(--gr)">Minimal (&lt; 4%)</span>
-              </div>
-              <div class="diagnostic-row">
-                <span style="color:var(--ts)">Skin Micro-Wrinkles</span>
-                <span style="font-weight:700;color:var(--gr)">None Detected</span>
-              </div>
-              <div class="diagnostic-row">
-                <span style="color:var(--ts)">Acoustic Wave Velocity</span>
-                <span style="font-weight:700;color:var(--ac)">184 m/s (Crisp)</span>
-              </div>
-              <div class="diagnostic-row">
-                <span style="color:var(--ts)">Storage Time Baseline</span>
-                <span style="font-weight:700;color:var(--ts)">Calculated Day 2</span>
-              </div>
+            <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--ac)" id="resSinceLastVal">
+              &minus;3 points
             </div>
           </div>
 
-          <!-- Scientific Disclaimer -->
-          <div class="disclaimer-card" style="margin-bottom:24px;">
-            <div class="disclaimer-text">
-              <strong>Measurement Disclaimer:</strong> FreshGuard calculates non-destructive probabilistic indicators based on physical optical and acoustic responses. It does not replace certified laboratory microbiological testing.
+          <!-- Optional Small Freshness Trajectory Graph -->
+          <div class="metric-card" style="margin-bottom:24px;padding:14px 16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <span class="section-label" style="margin-bottom:0">Freshness Trajectory</span>
+              <span style="font-size:11px;color:var(--ts)">Past 5 Days</span>
             </div>
+            <canvas id="trajectoryCanvas" width="300" height="90" style="width:100%;height:90px;display:block"></canvas>
           </div>
 
           <!-- Bottom Navigation Action Deck -->
@@ -1885,7 +1988,7 @@ html, body {
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </button>
             <button class="btn-secondary" onclick="gt('s7')">
-              <span>View Trajectory & Deep Metrics</span>
+              <span>View Sensor Weights</span>
             </button>
             <button class="btn-secondary" onclick="goHome()" style="border-color:transparent;color:var(--ts)">
               <span>&#8592; Back to Dashboard</span>
@@ -1896,7 +1999,7 @@ html, body {
     </div>
 
     <!-- =======================================================
-         SCREEN 7: DETAILED ANALYSIS
+         SCREEN 7: MULTIMODAL SENSOR WEIGHTS & HISTORY
          ======================================================= -->
     <div id="s7" class="screen">
       <div class="app-header">
@@ -1904,73 +2007,54 @@ html, body {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           <span>Back</span>
         </button>
-        <span class="header-title">Detailed Metrics & Curves</span>
+        <span class="header-title">Multimodal Architecture</span>
         <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </button>
       </div>
       <div class="screen-scroll">
         <div style="padding: 0 20px 32px;">
-          <!-- Historical Trajectory Chart -->
-          <div class="metric-card" style="margin-bottom:18px;">
-            <div class="section-label">Freshness Degradation Trajectory</div>
-            <canvas id="trajectoryCanvas" width="340" height="130" style="width:100%;height:130px;display:block"></canvas>
-          </div>
-
-          <!-- Degradation Velocity -->
-          <div class="metric-card" style="margin-bottom:18px;">
-            <div class="section-label">Degradation Velocity Analysis</div>
-            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
-              <span style="font-family:var(--mono);font-size:28px;font-weight:800;color:var(--gr)" id="deepDegVel">-1.6</span>
-              <span style="font-size:13px;color:var(--ts)">points / day</span>
-            </div>
-            <span class="status-pill pill-green" id="deepDegPill">Stable Linear Decay</span>
-            <div style="margin-top:10px;font-size:12px;color:var(--ts);line-height:1.45">
-              Specimen exhibits robust cellular retention with no accelerated breakdown detected.
-            </div>
-          </div>
-
           <!-- Signal Contribution Weighting -->
           <div class="metric-card" style="margin-bottom:24px;">
-            <div class="section-label">Multi-Modal Sensor Weights</div>
-            <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="section-label">Multimodal Sensor Weights</div>
+            <div style="display:flex;flex-direction:column;gap:12px">
               <div>
                 <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-                  <span style="color:var(--ts)">Optical Spectral Feature Mapping</span>
-                  <span style="font-family:var(--mono);font-weight:700;color:var(--ac)">38%</span>
+                  <span style="color:var(--tp);font-weight:600">Camera (Color, Texture, Appearance)</span>
+                  <span style="font-family:var(--mono);font-weight:700;color:var(--ac)">35%</span>
                 </div>
                 <div style="height:6px;background:var(--bdr);border-radius:3px;overflow:hidden">
-                  <div style="height:100%;width:38%;background:var(--ac)"></div>
+                  <div style="height:100%;width:35%;background:var(--ac)"></div>
                 </div>
               </div>
 
               <div>
                 <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-                  <span style="color:var(--ts)">Acoustic Impulse & Resonant Frequency</span>
-                  <span style="font-family:var(--mono);font-weight:700;color:var(--ac)">28%</span>
+                  <span style="color:var(--tp);font-weight:600">Microphone (Acoustic Response)</span>
+                  <span style="font-family:var(--mono);font-weight:700;color:var(--ac)">30%</span>
                 </div>
                 <div style="height:6px;background:var(--bdr);border-radius:3px;overflow:hidden">
-                  <div style="height:100%;width:28%;background:var(--ac)"></div>
+                  <div style="height:100%;width:30%;background:var(--ac)"></div>
                 </div>
               </div>
 
               <div>
                 <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-                  <span style="color:var(--ts)">Temporal Degradation Curve Matching</span>
-                  <span style="font-family:var(--mono);font-weight:700;color:var(--ac)">22%</span>
+                  <span style="color:var(--tp);font-weight:600">Scan History (Trajectory Comparison)</span>
+                  <span style="font-family:var(--mono);font-weight:700;color:var(--ac)">20%</span>
                 </div>
                 <div style="height:6px;background:var(--bdr);border-radius:3px;overflow:hidden">
-                  <div style="height:100%;width:22%;background:var(--ac)"></div>
+                  <div style="height:100%;width:20%;background:var(--ac)"></div>
                 </div>
               </div>
 
               <div>
                 <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-                  <span style="color:var(--ts)">IMU Orientation & Distance Stability</span>
-                  <span style="font-family:var(--mono);font-weight:700;color:var(--ac)">12%</span>
+                  <span style="color:var(--tp);font-weight:600">IMU (Orientation &amp; Stability)</span>
+                  <span style="font-family:var(--mono);font-weight:700;color:var(--ac)">15%</span>
                 </div>
                 <div style="height:6px;background:var(--bdr);border-radius:3px;overflow:hidden">
-                  <div style="height:100%;width:12%;background:var(--ac)"></div>
+                  <div style="height:100%;width:15%;background:var(--ac)"></div>
                 </div>
               </div>
             </div>
@@ -1987,9 +2071,8 @@ html, body {
         </div>
       </div>
     </div>
-
-    <!-- =======================================================
-         SCREEN SM0: SELECT GLASS TYPE
+<!-- =======================================================
+         SCREEN SM0: SELECT CONTAINER
          ======================================================= -->
     <div id="sm0" class="screen">
       <div class="app-header">
@@ -1997,7 +2080,7 @@ html, body {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           <span>Back</span>
         </button>
-        <span class="header-title">Select Glass Type</span>
+        <span class="header-title">Select Container</span>
         <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </button>
@@ -2005,49 +2088,45 @@ html, body {
       <div class="screen-scroll">
         <div style="padding: 0 20px 32px;">
           <div style="font-size:22px;font-weight:900;color:var(--tp);letter-spacing:-0.02em;margin-bottom:8px">
-            Select glass vessel
+            Select container
           </div>
-          <div style="font-size:13px;color:var(--ts);line-height:1.45;margin-bottom:20px">
-            Acoustic resonance frequency and wall impedance depend on vessel geometry. Select your glass to calibrate baseline resonance.
+          <div style="font-size:14px;color:var(--ts);line-height:1.45;margin-bottom:20px">
+            Choose what your milk is in.
           </div>
 
-          <div class="section-label">Vessel Geometry Profile</div>
+          <div class="section-label">Container Type</div>
           <div class="container-options-grid">
-            <div class="container-option-card selected" id="cntTumbler" onclick="selectGlassType('tumbler')">
+            <div class="container-option-card selected" id="cntGlass" onclick="selectContainerType('glass')">
               <div style="font-size:32px">&#129347;</div>
-              <div style="font-size:13px;font-weight:800;color:var(--tp)">Standard Tumbler</div>
-              <div style="font-size:11px;color:var(--ts)">Soda-lime &bull; 2.5mm wall</div>
-              <div style="font-size:10px;font-weight:800;color:var(--gr)">f&#8320; ~1,420 Hz &bull; DEFAULT</div>
+              <div style="font-size:14px;font-weight:800;color:var(--tp);margin-top:6px">Glass</div>
+              <div style="font-size:11px;color:var(--ts);margin-top:2px">Cup or tumbler</div>
             </div>
-            <div class="container-option-card" id="cntBorosilicate" onclick="selectGlassType('borosilicate')">
-              <div style="font-size:32px">&#129514;</div>
-              <div style="font-size:13px;font-weight:800;color:var(--tp)">Borosilicate Glass</div>
-              <div style="font-size:11px;color:var(--ts)">Pyrex/Beaker &bull; 1.8mm wall</div>
-              <div style="font-size:10px;font-weight:800;color:var(--ac)">f&#8320; ~1,680 Hz &bull; HIGH Q</div>
+            <div class="container-option-card" id="cntPlastic" onclick="selectContainerType('plastic')">
+              <div style="font-size:32px">&#129380;</div>
+              <div style="font-size:14px;font-weight:800;color:var(--tp);margin-top:6px">Plastic</div>
+              <div style="font-size:11px;color:var(--ts);margin-top:2px">Bottle or cup</div>
             </div>
-            <div class="container-option-card" id="cntThin" onclick="selectGlassType('thin')">
-              <div style="font-size:32px">&#127863;</div>
-              <div style="font-size:13px;font-weight:800;color:var(--tp)">Thin Wall Glass</div>
-              <div style="font-size:11px;color:var(--ts)">Stemware &bull; 1.2mm wall</div>
-              <div style="font-size:10px;font-weight:800;color:var(--ts)">f&#8320; ~1,840 Hz &bull; SHARP</div>
-            </div>
-            <div class="container-option-card" id="cntCeramic" onclick="selectGlassType('ceramic')">
+            <div class="container-option-card" id="cntCeramic" onclick="selectContainerType('ceramic')">
               <div style="font-size:32px">&#9749;</div>
-              <div style="font-size:13px;font-weight:800;color:var(--tp)">Ceramic Mug</div>
-              <div style="font-size:11px;color:var(--ts)">Porcelain &bull; 4.0mm wall</div>
-              <div style="font-size:10px;font-weight:800;color:var(--yw)">DAMPED PROFILE</div>
+              <div style="font-size:14px;font-weight:800;color:var(--tp);margin-top:6px">Ceramic</div>
+              <div style="font-size:11px;color:var(--ts);margin-top:2px">Mug or cup</div>
+            </div>
+            <div class="container-option-card" id="cntOther" onclick="selectContainerType('other')">
+              <div style="font-size:32px">&#129705;</div>
+              <div style="font-size:14px;font-weight:800;color:var(--tp);margin-top:6px">Others</div>
+              <div style="font-size:11px;color:var(--ts);margin-top:2px">Steel or other cup</div>
             </div>
           </div>
 
           <div class="info-box" style="margin-bottom:24px;">
-            <div class="info-box-title">&#128266; Physical Acoustic Principle</div>
+            <div class="info-box-title">&#128266; How it works &bull; Why container matters</div>
             <div class="info-box-body">
-              A controlled haptic excitation sweep (80&ndash;1,800 Hz) vibrates the glass wall into the liquid column. Pure milk solids and emulsified fats create distinct viscous damping (&zeta; &asymp; 0.043) and sound speed (c &asymp; 1,532 m/s). Dilution with water shifts the resonant frequency downward and lowers the damping envelope.
+              Your phone sends gentle vibrations to test how the liquid reacts. Because materials like glass, plastic, and ceramic absorb vibrations differently, selecting your container lets the app subtract the container's effect and measure only the milk itself.
             </div>
           </div>
 
           <button class="btn-primary" id="btnContinueMilk" onclick="gt('sm1')">
-            <span>Proceed to Placement &rarr;</span>
+            <span>Continue &rarr;</span>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </div>
@@ -2055,7 +2134,7 @@ html, body {
     </div>
 
     <!-- =======================================================
-         SCREEN SM1: PLACE PHONE AGAINST GLASS
+         SCREEN SM1: PLACE PHONE AGAINST CONTAINER
          ======================================================= -->
     <div id="sm1" class="screen">
       <div class="app-header">
@@ -2063,67 +2142,67 @@ html, body {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           <span>Back</span>
         </button>
-        <span class="header-title">Physical Positioning</span>
+        <span class="header-title">Position Phone</span>
         <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </button>
       </div>
       <div class="screen-scroll">
         <div style="padding: 0 20px 32px;">
-          <!-- Technical Placement Graphic -->
+          <!-- Placement Graphic -->
           <div class="scan-hologram-box" style="margin-bottom:20px;padding:24px 16px;">
             <div style="display:flex;justify-content:center;margin-bottom:14px;">
               <svg viewBox="0 0 260 140" width="240" height="130" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Glass Vessel with Milk -->
+                <!-- Container with Milk -->
                 <path d="M50 20 L62 120 C63 126 69 130 76 130 H124 C131 130 137 126 138 120 L150 20 Z" stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="rgba(255,255,255,0.03)"/>
                 <!-- Milk liquid fill -->
                 <path d="M54 44 L62 120 C63 124 67 128 73 128 H127 C133 128 137 124 138 120 L146 44 C146 44 136 48 100 48 C64 48 54 44 54 44 Z" fill="#ffffff" opacity="0.95"/>
-                <!-- Glass Rim -->
+                <!-- Rim -->
                 <ellipse cx="100" cy="20" rx="50" ry="10" stroke="rgba(255,255,260,0.6)" stroke-width="2" fill="none"/>
-                <!-- Milk Meniscus -->
+                <!-- Meniscus -->
                 <ellipse cx="100" cy="44" rx="46" ry="8" fill="#f4f4f5" stroke="rgba(200,200,200,0.5)" stroke-width="1"/>
 
-                <!-- Phone resting against glass side -->
+                <!-- Phone resting against container side -->
                 <rect x="146" y="24" width="22" height="96" rx="4" fill="#141414" stroke="#ffffff" stroke-width="1.8"/>
                 <rect x="149" y="32" width="16" height="80" rx="2" fill="#000000"/>
-                <!-- Transducer contact zone -->
+                <!-- Contact point -->
                 <circle cx="146" cy="72" r="3" fill="#22c55e"/>
-                <!-- Acoustic contact impulse waves -->
+                <!-- Waves -->
                 <path d="M142 62 C138 67 138 77 142 82" stroke="var(--gr)" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
                 <path d="M136 56 C130 64 130 80 136 88" stroke="var(--gr)" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
                 <path d="M130 50 C122 61 122 83 130 94" stroke="var(--gr)" stroke-width="1" stroke-linecap="round" opacity="0.3"/>
 
                 <!-- Contact Indicator Label -->
-                <text x="176" y="68" fill="#22c55e" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700">SOLID CONTACT</text>
-                <text x="176" y="80" fill="var(--ts)" font-family="Inter, sans-serif" font-size="9">Chassis to Glass</text>
+                <text x="176" y="68" fill="#22c55e" font-family="Inter, sans-serif" font-size="10" font-weight="700">TOUCHING</text>
+                <text x="176" y="80" fill="var(--ts)" font-family="Inter, sans-serif" font-size="9">Hold firmly</text>
               </svg>
             </div>
-            <div style="font-size:16px;font-weight:800;color:var(--tp);text-align:center;">Place Phone Against Glass</div>
-            <div style="font-size:12px;color:var(--ts);margin-top:4px;text-align:center;">Firm mechanical coupling transmits vibration and listens to resonance</div>
+            <div style="font-size:16px;font-weight:800;color:var(--tp);text-align:center;">Place phone against container</div>
+            <div style="font-size:12px;color:var(--ts);margin-top:4px;text-align:center;">Hold the back of your phone firmly against the side</div>
           </div>
 
-          <div class="section-label">Coupling Protocol Checklist</div>
+          <div class="section-label">Easy Steps</div>
           <div class="step-checklist">
             <div class="step-checklist-item">
               <div class="step-num-badge">1</div>
-              <div class="step-text"><strong>Liquid Level:</strong> Ensure the glass is at least half full (100&ndash;200 mL) for adequate liquid damping.</div>
+              <div class="step-text">Have at least half a cup of milk in your container.</div>
             </div>
             <div class="step-checklist-item">
               <div class="step-num-badge">2</div>
-              <div class="step-text"><strong>Direct Contact:</strong> Hold the phone vertically with its lower-middle back firmly against the outer glass wall.</div>
+              <div class="step-text">Hold the back of your phone flat against the side.</div>
             </div>
             <div class="step-checklist-item">
               <div class="step-num-badge">3</div>
-              <div class="step-text"><strong>Zero Air Gap:</strong> Maintain steady pressure. Avoid loose cases or sleeves that disrupt acoustic transmission.</div>
+              <div class="step-text">Keep a firm hold with no gap between phone and cup.</div>
             </div>
             <div class="step-checklist-item">
               <div class="step-num-badge">4</div>
-              <div class="step-text"><strong>Keep Steady:</strong> Hold still during the excitation pulse; do not tap or slide the device.</div>
+              <div class="step-text">Keep still while testing.</div>
             </div>
           </div>
 
           <button class="btn-primary" onclick="startMilkAcousticScan()">
-            <span>Verify Contact &amp; Begin Scan &rarr;</span>
+            <span>Start Test &rarr;</span>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </div>
@@ -2131,7 +2210,7 @@ html, body {
     </div>
 
     <!-- =======================================================
-         SCREEN SM2: PHYSICAL ACOUSTIC MEASUREMENT
+         SCREEN SM2: TESTING MILK
          ======================================================= -->
     <div id="sm2" class="screen" style="background:#000000;">
       <div class="app-header" style="background:rgba(0,0,0,0.92)">
@@ -2139,7 +2218,7 @@ html, body {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           <span>Cancel</span>
         </button>
-        <span class="header-title">Acoustic Inspection</span>
+        <span class="header-title">Testing Milk</span>
         <button class="nav-home-btn" onclick="goHome()" title="Exit">
           <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
@@ -2152,60 +2231,60 @@ html, body {
           <div class="acoustic-stage-tracker" id="acousticStageTracker">
             <div class="stage-chip active" id="stg1">1. Contact</div>
             <div class="stage-chip" id="stg2">2. Vibration</div>
-            <div class="stage-chip" id="stg3">3. Listening</div>
-            <div class="stage-chip" id="stg4">4. Signal</div>
-            <div class="stage-chip" id="stg5">5. ML</div>
+            <div class="stage-chip" id="stg3">3. Sound</div>
+            <div class="stage-chip" id="stg4">4. Analysis</div>
+            <div class="stage-chip" id="stg5">5. Result</div>
           </div>
 
           <!-- Active Visualizer Console Card -->
           <div class="metric-card" style="margin-bottom:16px;text-align:center;padding:20px 16px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-              <span class="section-label" style="margin-bottom:0" id="acousticStageTitle">STAGE 1: CONTACT VERIFICATION</span>
-              <span class="status-pill pill-cyan" id="acousticStageBadge">COUPLING: 98.4%</span>
+              <span class="section-label" style="margin-bottom:0" id="acousticStageTitle">Testing in progress</span>
+              <span class="status-pill pill-cyan" id="acousticStageBadge">Checking contact</span>
             </div>
 
             <div id="acousticVisualArea" style="min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
               <canvas id="acousticDecayCanvas" width="320" height="90" style="width:100%;height:90px;display:block;margin-bottom:8px"></canvas>
-              <div id="acousticSubStatus" style="font-family:var(--mono);font-size:11px;color:var(--ts)">
-                Measuring chassis-to-glass contact pressure...
+              <div id="acousticSubStatus" style="font-size:12px;color:var(--ts)">
+                Checking phone contact with container...
               </div>
             </div>
           </div>
 
-          <!-- Live Physical Acoustic Telemetry -->
+          <!-- Live Telemetry -->
           <div class="metric-card" style="margin-bottom:18px;">
-            <div class="section-label">Acoustic Sensor Telemetry</div>
+            <div class="section-label">Test Progress</div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Contact Coupling Floor</span>
-              <span class="sensor-diag-status" style="color:var(--yw)" id="diagContact">&#9675; VERIFYING</span>
+              <span class="sensor-diag-name">Phone Contact</span>
+              <span class="sensor-diag-status" style="color:var(--yw)" id="diagContact">Checking...</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Controlled Vibration (Transducer)</span>
-              <span class="sensor-diag-status" style="color:var(--ts)" id="diagVibe">&#9675; QUEUED</span>
+              <span class="sensor-diag-name">Vibration</span>
+              <span class="sensor-diag-status" style="color:var(--ts)" id="diagVibe">Waiting...</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Acoustic Listening (Ringdown Mic)</span>
-              <span class="sensor-diag-status" style="color:var(--ts)" id="diagListen">&#9675; QUEUED</span>
+              <span class="sensor-diag-name">Sound Recording</span>
+              <span class="sensor-diag-status" style="color:var(--ts)" id="diagListen">Waiting...</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">FFT Signal Analysis &amp; Damping</span>
-              <span class="sensor-diag-status" style="color:var(--ts)" id="diagSignal">&#9675; QUEUED</span>
+              <span class="sensor-diag-name">Analysis</span>
+              <span class="sensor-diag-status" style="color:var(--ts)" id="diagSignal">Waiting...</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">ML Water &amp; Adulterant Inference</span>
-              <span class="sensor-diag-status" style="color:var(--ts)" id="diagML">&#9675; QUEUED</span>
+              <span class="sensor-diag-name">Quality Check</span>
+              <span class="sensor-diag-status" style="color:var(--ts)" id="diagML">Waiting...</span>
             </div>
           </div>
 
           <button class="btn-primary" id="btnAcousticAction" onclick="skipToMilkResult()" style="opacity:0.9">
-            <span id="btnAcousticText">Measuring Resonance &amp; Damping...</span>
+            <span id="btnAcousticText">Testing milk...</span>
           </button>
         </div>
       </div>
     </div>
 
     <!-- =======================================================
-         SCREEN SM4: MILK ACOUSTIC RESULT SCREEN
+         SCREEN SM4: MILK RESULT SCREEN
          ======================================================= -->
     <div id="sm4" class="screen">
       <div class="app-header">
@@ -2213,7 +2292,7 @@ html, body {
           <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
           <span>Back</span>
         </button>
-        <span class="header-title">Milk Screening Result</span>
+        <span class="header-title">Milk Result</span>
         <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </button>
@@ -2221,96 +2300,79 @@ html, body {
       <div class="screen-scroll">
         <div style="padding: 0 20px 32px;">
           <!-- Hero Verdict Card -->
-          <div class="result-hero-box" id="milkResultHero">
+          <div class="result-hero-box" id="milkResultHero" style="margin-bottom:16px;">
             <div style="font-size:38px;line-height:1;margin-bottom:10px">&#129371;</div>
-            <div class="section-label" style="justify-content:center;margin-bottom:6px">Acoustic Screening Verdict</div>
-            <div style="font-size:15px;font-weight:900;letter-spacing:0.04em;" class="status-pill pill-green" id="milkVerdictPill">
-              NO TESTED ADULTERATION DETECTED
+            <div class="section-label" style="justify-content:center;margin-bottom:6px">Milk Quality Verdict</div>
+            <div style="font-size:16px;font-weight:900;letter-spacing:0.04em;" class="status-pill pill-green" id="milkVerdictPill">
+              PURE MILK
             </div>
-            <div style="font-size:11px;color:var(--ts);margin-top:8px" id="milkProfileLabel">
-              Vessel: Standard Tumbler Glass &bull; Resonant Calibration Locked
+            <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px;font-size:12px;color:var(--ts)">
+              <span id="milkProfileLabel">Container: Glass</span>
+              <span>&bull;</span>
+              <span>Confidence: <strong style="color:var(--ac);font-family:var(--mono)" id="milkConfidenceVal">94%</strong></span>
             </div>
           </div>
 
-          <!-- Primary Metric: Water Dilution Result -->
+          <!-- Primary Metric: Estimated Water Percentage -->
           <div class="metric-card" style="margin-bottom:16px;">
-            <div class="section-label">Estimated Water Dilution Result</div>
-            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
-              <span style="font-family:var(--mono);font-size:34px;font-weight:800;color:var(--gr)" id="milkWaterPct">3.8%</span>
-              <span style="font-size:12px;color:var(--ts)" id="milkWaterLabel">(Normal baseline variance &lt; 5%)</span>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <span class="section-label" style="margin-bottom:0">Estimated Water in Milk</span>
+              <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ac)" id="milkConfBadge">94% CONFIDENCE</span>
             </div>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-              <span style="font-size:11px;color:var(--ts)">Acoustic Certainty</span>
-              <div style="flex:1;height:5px;background:var(--bdr);border-radius:3px;overflow:hidden">
-                <div style="height:100%;width:94%;background:var(--ac)" id="milkConfBar"></div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px">
+              <span style="font-family:var(--mono);font-size:32px;font-weight:800;color:var(--gr)" id="milkWaterPct">87.4%</span>
+              <span style="font-size:13px;font-weight:700;color:var(--gr)" id="milkAddedWaterBadge">(0.0% added water)</span>
+            </div>
+            <div style="font-size:12px;color:var(--ts)" id="milkWaterLabel">
+              Natural pure milk baseline (~87% natural water). No added water detected.
+            </div>
+          </div>
+
+          <!-- Adulterants & Impurities with Numbers -->
+          <div class="metric-card" style="margin-bottom:20px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <span class="section-label" style="margin-bottom:0">Screened Adulterants &amp; Impurities</span>
+              <span style="font-size:11px;font-weight:700;color:var(--gr)" id="milkAdulterantSummary">0 DETECTED</span>
+            </div>
+
+            <div class="sensor-diag-row">
+              <div>
+                <div class="sensor-diag-name">Added Water Dilution</div>
+                <div style="font-size:10px;color:var(--tm)">Normal baseline: &lt; 2%</div>
               </div>
-              <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ac)" id="milkConfText">94%</span>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="adWaterStatus">&#10003; 0.0% (Normal)</span>
             </div>
-            <div style="font-size:11px;color:var(--tm);line-height:1.4">
-              Calibrated against pure milk density standard (&rho; = 1.030&ndash;1.034 g/cm&sup3;).
-            </div>
-          </div>
 
-          <!-- Adulteration Matrix -->
-          <div class="section-label">Screened Adulterants Matrix</div>
-          <div class="metric-card" style="margin-bottom:16px;">
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Water Dilution Level</span>
-              <span class="sensor-diag-status" style="color:var(--gr)" id="adWaterStatus">&#10003; 3.8% (Normal)</span>
+              <div>
+                <div class="sensor-diag-name">Chemicals &amp; Detergents</div>
+                <div style="font-size:10px;color:var(--tm)">Surface active agents</div>
+              </div>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="adDetStatus">&#10003; 0.00% (0 ppm)</span>
             </div>
-            <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Synthetic Urea &amp; Nitrogen Salts</span>
-              <span class="sensor-diag-status" style="color:var(--gr)" id="adUreaStatus">&#10003; Negative (Velocity Match)</span>
-            </div>
-            <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Starch &amp; Thickening Hydrocolloids</span>
-              <span class="sensor-diag-status" style="color:var(--gr)" id="adStarchStatus">&#10003; Negative (Viscous Damping Normal)</span>
-            </div>
-            <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Detergents &amp; Neutralizers</span>
-              <span class="sensor-diag-status" style="color:var(--gr)" id="adDetStatus">&#10003; Negative (Surface Tension Normal)</span>
-            </div>
-            <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Unscreened Chemical Compounds</span>
-              <span class="sensor-diag-status" style="color:var(--tm)">&mdash; Out of acoustic scope</span>
-            </div>
-          </div>
 
-          <!-- Physical Acoustic Measurement Telemetry -->
-          <div class="section-label">Physical Acoustic Telemetry</div>
-          <div class="metric-card" style="margin-bottom:16px;">
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Resonant Frequency (f&#7522;)</span>
-              <span class="sensor-diag-status" style="color:var(--ac)" id="telFreq">1,248 Hz</span>
+              <div>
+                <div class="sensor-diag-name">Starch &amp; Thickeners</div>
+                <div style="font-size:10px;color:var(--tm)">Viscous hydrocolloids</div>
+              </div>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="adStarchStatus">&#10003; 0.00% (0 ppm)</span>
             </div>
+
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Acoustic Damping Ratio (&zeta;)</span>
-              <span class="sensor-diag-status" style="color:var(--ac)" id="telDamp">0.0432 (Normal)</span>
-            </div>
-            <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Sound Velocity in Fluid (c)</span>
-              <span class="sensor-diag-status" style="color:var(--ac)" id="telSpeed">1,532 m/s</span>
-            </div>
-            <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Acoustic Impedance (Z)</span>
-              <span class="sensor-diag-status" style="color:var(--ac)" id="telImp">1.58 MRayl</span>
+              <div>
+                <div class="sensor-diag-name">Synthetic Urea</div>
+                <div style="font-size:10px;color:var(--tm)">Natural limit: &le; 0.03%</div>
+              </div>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="adUreaStatus">&#10003; 0.02% (Natural)</span>
             </div>
           </div>
 
           <div id="milkAnomalyAlert"></div>
 
-          <div class="disclaimer-card" style="margin-bottom:24px;">
-            <div class="disclaimer-text">
-              <strong>Measurement Notice:</strong> Physical acoustic resonance screening analyzes container wall vibration damping, speed of sound, and liquid impedance. Rapid diagnostic instrument; not a substitute for certified FSSAI/ISO laboratory chemical chromatography.
-            </div>
-          </div>
-
           <div class="actions-deck">
             <button class="btn-primary" onclick="gt('sm0')">
               <span>Test Another Sample</span>
-            </button>
-            <button class="btn-secondary" onclick="gt('sm5')">
-              <span>View Acoustic Resonance Spectrum</span>
             </button>
             <button class="btn-secondary" onclick="goHome()" style="border-color:transparent;color:var(--ts)">
               <span>&#8592; Back to Dashboard</span>
@@ -2319,64 +2381,7 @@ html, body {
         </div>
       </div>
     </div>
-
-    <!-- =======================================================
-         SCREEN SM5: ACOUSTIC RESONANCE SPECTRUM
-         ======================================================= -->
-    <div id="sm5" class="screen">
-      <div class="app-header">
-        <button class="nav-back-btn" onclick="gb()" title="Back">
-          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-          <span>Back</span>
-        </button>
-        <span class="header-title">Acoustic Resonance</span>
-        <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
-          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </button>
-      </div>
-      <div class="screen-scroll">
-        <div style="padding: 0 20px 32px;">
-          <div class="metric-card" style="margin-bottom:18px;">
-            <div class="section-label">Acoustic Power Spectrum (0&ndash;3,000 Hz)</div>
-            <canvas id="milkCurveCanvas" width="340" height="130" style="width:100%;height:130px;display:block"></canvas>
-            <div style="font-size:10px;color:var(--ts);margin-top:8px;font-style:italic">
-              Measured resonance peak and damping decay response through fluid-coupled glass vessel.
-            </div>
-          </div>
-
-          <div class="metric-card" style="margin-bottom:20px;">
-            <div class="section-label">Acoustic Environment Telemetry</div>
-            <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Vessel Geometry</span>
-              <span class="sensor-diag-status" style="color:var(--tp)" id="techCntVal">Standard Tumbler Glass</span>
-            </div>
-            <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Resonance Peak Shift</span>
-              <span class="sensor-diag-status" style="color:var(--tp)" id="techShiftVal">-172 Hz (Fluid Loaded)</span>
-            </div>
-            <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Ringdown Decay Time (&tau;)</span>
-              <span class="sensor-diag-status" style="color:var(--tp)" id="techDecayVal">48.2 ms</span>
-            </div>
-            <div class="sensor-diag-row">
-              <span class="sensor-diag-name">Transducer Coupling Loss</span>
-              <span class="sensor-diag-status" style="color:var(--gr)">-0.4 dB (Optimal)</span>
-            </div>
-          </div>
-
-          <div class="actions-deck">
-            <button class="btn-secondary" onclick="gb()">
-              <span>&larr; Return to Milk Result</span>
-            </button>
-            <button class="btn-secondary" onclick="goHome()">
-              <span>Dashboard</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- =======================================================
+<!-- =======================================================
          SCREEN SH: SCAN HISTORY
          ======================================================= -->
     <div id="sh" class="screen">
@@ -2500,24 +2505,24 @@ html, body {
             </button>
           </div>
 
-          <!-- Pipeline Architecture Table -->
+          <!-- Device Sensor Hardware Status Table -->
           <div class="metric-card" style="margin-bottom:20px;">
-            <div class="section-label">Subsystem Architecture (Status)</div>
+            <div class="section-label">Device Sensor Hardware Status</div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">VisionClassifierPipeline</span>
-              <span class="sensor-diag-status" style="color:var(--ac)">MOCKED</span>
+              <span class="sensor-diag-name">Camera (getUserMedia)</span>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="diagHwCamera">DETECTING</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">FreshnessSensorFusion</span>
-              <span class="sensor-diag-status" style="color:var(--ac)">MOCKED</span>
+              <span class="sensor-diag-name">Microphone (Web Audio)</span>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="diagHwMic">DETECTING</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">MilkAcousticResonanceEngine</span>
-              <span class="sensor-diag-status" style="color:var(--ac)">MOCKED</span>
+              <span class="sensor-diag-name">Accelerometer &amp; Gyro (IMU)</span>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="diagHwImu">DETECTING</span>
             </div>
             <div class="sensor-diag-row">
-              <span class="sensor-diag-name">AdulterantPatternLibrary</span>
-              <span class="sensor-diag-status" style="color:var(--ac)">MOCKED</span>
+              <span class="sensor-diag-name">Haptic Engine (Vibration API)</span>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="diagHwHaptics">DETECTING</span>
             </div>
           </div>
 
@@ -2712,8 +2717,13 @@ function transitionScreen(fromId, toId, direction) {
 
 function onLeaveScreen(id) {
   stopWaveform();
+  stopAcousticProduceCanvas();
+  clearAcousticTestTimers();
   if (calibTimer) clearTimeout(calibTimer);
   if (id === 'sm2') clearAcousticTimers();
+  if (id === 's4') {
+    stopCameraStream();
+  }
 }
 
 function onEnterScreen(id) {
@@ -2721,21 +2731,322 @@ function onEnterScreen(id) {
     startCalibrationProcess();
   } else if (id === 's4') {
     startActiveScanProcess();
+  } else if (id === 's4b') {
+    startAcousticTestProcess();
   } else if (id === 's5') {
-    // Auto-advance to Freshness Result after 3.2s
-    setTimeout(function() {
-      if (currentScreen === 's5') gt('s6');
-    }, 3200);
+    startMultimodalAnalysisProcess();
   } else if (id === 's6') {
-    // Scrolled to top
     var sc = document.querySelector('#s6 .screen-scroll');
     if (sc) sc.scrollTop = 0;
+    setTimeout(drawTrajectoryChart, 200);
   } else if (id === 's7') {
-    setTimeout(drawTrajectoryChart, 250);
+    // Navigated to detailed sensor weights
+  } else if (id === 'sa') {
+    updateAboutDiagnostics();
   } else if (id === 'sm2') {
     startMilkAcousticScan();
-  } else if (id === 'sm5') {
-    setTimeout(drawMilkSpectrumChart, 250);
+  }
+}
+
+/* =================================================================
+   DEVICE HARDWARE ACCESS ENGINE: CAMERA, MIC, IMU, HAPTICS
+   ================================================================= */
+var cameraMediaStream = null;
+var cameraFacingMode = 'environment';
+var isCameraStreaming = false;
+
+var audioContext = null;
+var micMediaStream = null;
+var micAnalyserNode = null;
+var micDataArray = null;
+var isMicStreaming = false;
+
+var imuData = {
+  supported: false,
+  active: false,
+  accX: 0,
+  accY: 0,
+  accZ: 9.8,
+  stability: 'STABLE',
+  deltaG: 0.01,
+  alpha: 0,
+  beta: 0,
+  gamma: 0
+};
+
+// Haptic feedback with universal fallback
+function triggerHaptic(pattern) {
+  if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+    try {
+      navigator.vibrate(pattern);
+    } catch (e) {}
+  }
+}
+
+// Motion sensor listener
+function initMotionSensors() {
+  if (typeof window === 'undefined') return;
+
+  if ('DeviceMotionEvent' in window) {
+    imuData.supported = true;
+    try {
+      window.addEventListener('devicemotion', function(e) {
+        var acc = e.accelerationIncludingGravity || e.acceleration;
+        if (!acc) return;
+        imuData.active = true;
+        var x = acc.x || 0;
+        var y = acc.y || 0;
+        var z = acc.z || 0;
+        var d = Math.abs(x - imuData.accX) + Math.abs(y - imuData.accY) + Math.abs(z - imuData.accZ);
+        imuData.accX = x;
+        imuData.accY = y;
+        imuData.accZ = z;
+        imuData.deltaG = d * 0.08;
+        imuData.stability = d > 0.45 ? 'MOVING' : 'STABLE';
+
+        // Update live IMU status in produce scan & acoustic screens
+        var imuDiag = document.getElementById('diagAcousticImu');
+        if (imuDiag) {
+          if (imuData.stability === 'STABLE') {
+            imuDiag.innerHTML = '&#10003; STABLE (&plusmn;' + Math.max(0.01, imuData.deltaG).toFixed(2) + 'g)';
+            imuDiag.style.color = 'var(--gr)';
+          } else {
+            imuDiag.innerHTML = '&bull; HOLD STILL (&plusmn;' + imuData.deltaG.toFixed(2) + 'g)';
+            imuDiag.style.color = 'var(--yw)';
+          }
+        }
+        var scanImu = document.getElementById('scanStatusImu');
+        if (scanImu) {
+          scanImu.textContent = imuData.stability === 'STABLE' ? 'STEADY' : 'MOVING';
+          scanImu.style.color = imuData.stability === 'STABLE' ? 'var(--gr)' : 'var(--yw)';
+        }
+      }, false);
+    } catch (err) {
+      console.warn('devicemotion listener error:', err);
+    }
+  }
+
+  if ('DeviceOrientationEvent' in window) {
+    try {
+      window.addEventListener('deviceorientation', function(e) {
+        if (e.alpha !== null) {
+          imuData.alpha = Math.round(e.alpha || 0);
+          imuData.beta = Math.round(e.beta || 0);
+          imuData.gamma = Math.round(e.gamma || 0);
+        }
+      }, false);
+    } catch (err) {
+      console.warn('deviceorientation listener error:', err);
+    }
+  }
+}
+
+// Request hardware sensor permissions on user gesture
+async function requestHardwarePermissions() {
+  // iOS 13+ motion permission
+  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+    try {
+      var motionPerm = await DeviceMotionEvent.requestPermission();
+      if (motionPerm === 'granted') {
+        initMotionSensors();
+      }
+    } catch (e) {
+      console.warn('Motion permission request error:', e);
+    }
+  }
+
+  // Pre-initialize microphone AudioContext on gesture
+  try {
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (AudioCtx && !audioContext) {
+      audioContext = new AudioCtx();
+    }
+    if (audioContext && audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
+  } catch (e) {}
+
+  // Request microphone stream
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    try {
+      if (!micMediaStream) {
+        micMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        initMicrophoneStream(micMediaStream);
+      }
+    } catch (e) {
+      console.warn('Audio permission error:', e);
+    }
+  }
+}
+
+// Initialize Microphone & Web Audio Analyser
+function initMicrophoneStream(stream) {
+  try {
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (AudioCtx && !audioContext) {
+      audioContext = new AudioCtx();
+    }
+    if (audioContext && audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    if (audioContext && stream && !micAnalyserNode) {
+      micAnalyserNode = audioContext.createAnalyser();
+      micAnalyserNode.fftSize = 256;
+      micAnalyserNode.smoothingTimeConstant = 0.65;
+      var src = audioContext.createMediaStreamSource(stream);
+      src.connect(micAnalyserNode);
+      micDataArray = new Uint8Array(micAnalyserNode.frequencyBinCount);
+      isMicStreaming = true;
+    }
+  } catch (err) {
+    console.warn('initMicrophoneStream error:', err);
+    isMicStreaming = false;
+  }
+}
+
+// Initialize Real Camera Stream
+async function initCameraStream() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    setCameraFallback('NOT SUPPORTED');
+    return;
+  }
+
+  try {
+    if (cameraMediaStream) {
+      cameraMediaStream.getTracks().forEach(function(t) { t.stop(); });
+      cameraMediaStream = null;
+    }
+
+    var constraints = {
+      video: {
+        facingMode: { ideal: cameraFacingMode },
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    };
+
+    cameraMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+    var videoEl = document.getElementById('cameraStreamVideo');
+    if (videoEl) {
+      videoEl.srcObject = cameraMediaStream;
+      await videoEl.play();
+      videoEl.style.display = 'block';
+    }
+
+    // Adjust preview icon to subtle translucent target alignment ring
+    var wrap = document.getElementById('targetPreviewWrap');
+    if (wrap) {
+      wrap.style.opacity = '0.18';
+    }
+
+    var hudStatus = document.getElementById('cvHudStatusText');
+    if (hudStatus) hudStatus.textContent = 'LIVE CAMERA ACTIVE';
+
+    var visStatus = document.getElementById('scanStatusVisual');
+    if (visStatus) {
+      visStatus.textContent = cameraFacingMode === 'environment' ? 'LIVE (REAR)' : 'LIVE (FRONT)';
+      visStatus.style.color = 'var(--gr)';
+    }
+
+    var toggleBtn = document.getElementById('cameraToggleBtn');
+    if (toggleBtn) toggleBtn.style.display = 'flex';
+
+    isCameraStreaming = true;
+  } catch (err) {
+    console.warn('Camera stream error:', err);
+    setCameraFallback(err.name === 'NotAllowedError' ? 'PERMISSION DENIED' : 'OFFLINE');
+  }
+}
+
+function setCameraFallback(label) {
+  isCameraStreaming = false;
+  var videoEl = document.getElementById('cameraStreamVideo');
+  if (videoEl) {
+    videoEl.srcObject = null;
+    videoEl.style.display = 'none';
+  }
+  var wrap = document.getElementById('targetPreviewWrap');
+  if (wrap) {
+    wrap.style.opacity = '1';
+  }
+  var hudStatus = document.getElementById('cvHudStatusText');
+  if (hudStatus) hudStatus.textContent = 'SPECIMEN IDENTIFIED';
+  var visStatus = document.getElementById('scanStatusVisual');
+  if (visStatus) {
+    visStatus.textContent = label ? 'SIMULATED' : 'ACTIVE';
+    visStatus.style.color = 'var(--gr)';
+  }
+  var toggleBtn = document.getElementById('cameraToggleBtn');
+  if (toggleBtn) toggleBtn.style.display = 'none';
+}
+
+function toggleCameraFacing() {
+  cameraFacingMode = cameraFacingMode === 'environment' ? 'user' : 'environment';
+  initCameraStream();
+}
+
+function stopCameraStream() {
+  if (cameraMediaStream) {
+    try {
+      cameraMediaStream.getTracks().forEach(function(t) { t.stop(); });
+    } catch (e) {}
+    cameraMediaStream = null;
+  }
+  var videoEl = document.getElementById('cameraStreamVideo');
+  if (videoEl) {
+    videoEl.srcObject = null;
+    videoEl.style.display = 'none';
+  }
+  isCameraStreaming = false;
+}
+
+function updateAboutDiagnostics() {
+  var camEl = document.getElementById('diagHwCamera');
+  if (camEl) {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      camEl.textContent = isCameraStreaming ? 'ACTIVE (STREAMING)' : 'SUPPORTED (READY)';
+      camEl.style.color = 'var(--gr)';
+    } else {
+      camEl.textContent = 'UNSUPPORTED';
+      camEl.style.color = 'var(--tm)';
+    }
+  }
+  var micEl = document.getElementById('diagHwMic');
+  if (micEl) {
+    if (isMicStreaming) {
+      micEl.textContent = 'ACTIVE (STREAMING)';
+      micEl.style.color = 'var(--gr)';
+    } else if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      micEl.textContent = 'SUPPORTED (READY)';
+      micEl.style.color = 'var(--gr)';
+    } else {
+      micEl.textContent = 'UNSUPPORTED';
+      micEl.style.color = 'var(--tm)';
+    }
+  }
+  var imuEl = document.getElementById('diagHwImu');
+  if (imuEl) {
+    if (imuData.active) {
+      imuEl.textContent = 'ACTIVE (±' + Math.max(0.01, imuData.deltaG).toFixed(2) + 'g)';
+      imuEl.style.color = 'var(--gr)';
+    } else if (imuData.supported) {
+      imuEl.textContent = 'SUPPORTED (STANDBY)';
+      imuEl.style.color = 'var(--gr)';
+    } else {
+      imuEl.textContent = 'SIMULATED';
+      imuEl.style.color = 'var(--ts)';
+    }
+  }
+  var hapEl = document.getElementById('diagHwHaptics');
+  if (hapEl) {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      hapEl.textContent = 'SUPPORTED (READY)';
+      hapEl.style.color = 'var(--gr)';
+    } else {
+      hapEl.textContent = 'UNSUPPORTED (DESKTOP)';
+      hapEl.style.color = 'var(--tm)';
+    }
   }
 }
 
@@ -2743,95 +3054,156 @@ function onEnterScreen(id) {
    CALIBRATION SEQUENCE
    ================================================================= */
 function startCalibrationProcess() {
-  var pct = document.getElementById('calibPct');
   var state = document.getElementById('calibStateText');
-  var sub = document.getElementById('calibSubLabel');
-  var badge = document.getElementById('calibReadyBadge');
   var btn = document.getElementById('calibBeginScanBtn');
 
-  ['calibRow1', 'calibRow2', 'calibRow3', 'calibRow4'].forEach(function(k) {
+  ['calibRow1', 'calibRow2', 'calibRow3', 'calibRow4', 'calibRow5'].forEach(function(k) {
     var el = document.getElementById(k);
-    el.textContent = 'SYNCING';
-    el.style.color = 'var(--yw)';
+    if (el) {
+      el.textContent = 'SYNCING';
+      el.style.color = 'var(--yw)';
+    }
   });
 
-  pct.textContent = '0%';
-  state.textContent = 'Initializing';
-  sub.textContent = 'Aligning optical & acoustic baseline...';
-  badge.style.display = 'none';
-  btn.style.display = 'none';
+  if (state) state.textContent = 'CALIBRATING';
+  if (btn) btn.style.display = 'none';
+
+  // Request actual hardware permissions during calibration
+  requestHardwarePermissions();
 
   var milestones = [
-    { delay: 350, p: '24%', s: 'Camera & ISO', el: 'calibRow1' },
-    { delay: 850, p: '52%', s: 'Acoustic Floor', el: 'calibRow2' },
-    { delay: 1400, p: '78%', s: 'Spatial Gyro', el: 'calibRow3' },
-    { delay: 2000, p: '94%', s: 'Neural Specimen Engine', el: 'calibRow4' },
-    { delay: 2500, p: '100%', s: 'Locked & Ready', el: null }
+    {
+      delay: 400,
+      el: 'calibRow1',
+      update: function(el) {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          el.textContent = 'READY (CAMERA)';
+        } else {
+          el.textContent = 'SIMULATED';
+        }
+        el.style.color = 'var(--gr)';
+      }
+    },
+    {
+      delay: 800,
+      el: 'calibRow2',
+      update: function(el) {
+        if (isMicStreaming || (navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
+          el.textContent = isMicStreaming ? 'LIVE (ACTIVE)' : 'READY (MIC)';
+        } else {
+          el.textContent = 'SIMULATED';
+        }
+        el.style.color = 'var(--gr)';
+      }
+    },
+    {
+      delay: 1200,
+      el: 'calibRow3',
+      update: function(el) {
+        if (imuData.active) {
+          el.textContent = 'LIVE (' + imuData.stability + ')';
+        } else {
+          el.textContent = 'READY (±0.01g)';
+        }
+        el.style.color = 'var(--gr)';
+      }
+    },
+    {
+      delay: 1600,
+      el: 'calibRow4',
+      update: function(el) {
+        if (imuData.active) {
+          el.textContent = 'LIVE (ALIGNED)';
+        } else {
+          el.textContent = 'READY';
+        }
+        el.style.color = 'var(--gr)';
+      }
+    },
+    {
+      delay: 2000,
+      el: 'calibRow5',
+      update: function(el) {
+        el.textContent = 'BASELINE LOADED';
+        el.style.color = 'var(--gr)';
+      }
+    }
   ];
 
   milestones.forEach(function(m) {
     calibTimer = setTimeout(function() {
-      pct.textContent = m.p;
-      state.textContent = m.s;
       if (m.el) {
         var e = document.getElementById(m.el);
-        e.textContent = 'VERIFIED';
-        e.style.color = 'var(--gr)';
-      }
-      if (m.p === '100%') {
-        sub.textContent = 'Ready for specimen capture.';
-        badge.style.display = 'block';
-        setTimeout(function() { btn.style.display = 'flex'; }, 200);
+        if (e && m.update) {
+          m.update(e);
+        }
       }
     }, m.delay);
   });
+
+  calibTimer = setTimeout(function() {
+    if (state) state.textContent = 'READY FOR SCAN';
+    if (btn) btn.style.display = 'flex';
+  }, 2300);
 }
 
 /* =================================================================
-   ACTIVE SCAN SEQUENCE (Auto-CV target detection)
+   ACTIVE MULTIMODAL SCAN SEQUENCE
    ================================================================= */
 function startActiveScanProcess() {
   scanStepIndex = 0;
-  document.getElementById('scanViewCounter').textContent = 'VIEW 1 OF 3';
-  document.getElementById('scanStepBtn').innerHTML = '<span>Rotate Specimen &rarr;</span>';
-  document.getElementById('scanStepBtn').onclick = advanceScanStep;
+  var counter = document.getElementById('scanViewCounter');
+  if (counter) counter.textContent = '1 / 3';
 
-  document.getElementById('scanStatusCV').innerHTML = '&#10003; AUTO-RESOLVED';
-  document.getElementById('scanStatusCV').style.color = 'var(--gr)';
-  document.getElementById('scanStatusAcoustic').innerHTML = '&#9675; RECORDING';
-  document.getElementById('scanStatusAcoustic').style.color = 'var(--ac)';
-  document.getElementById('scanStatusSurface').innerHTML = '&#9675; PENDING';
-  document.getElementById('scanStatusSurface').style.color = 'var(--ts)';
+  var btn = document.getElementById('scanStepBtn');
+  if (btn) {
+    btn.innerHTML = '<span>Rotate Specimen &rarr;</span>';
+    btn.onclick = advanceScanStep;
+  }
+
+  var acStatus = document.getElementById('scanStatusAcoustic');
+  if (acStatus) {
+    acStatus.textContent = 'READY';
+    acStatus.style.color = 'var(--ac)';
+  }
+
+  // Start real hardware camera stream
+  initCameraStream();
 
   startWaveform();
-
-  // Simulated auto-trigger for views
-  setTimeout(function() {
-    if (currentScreen !== 's4') return;
-    document.getElementById('scanStatusAcoustic').innerHTML = '&#10003; 184 m/s CAPTURED';
-    document.getElementById('scanStatusAcoustic').style.color = 'var(--gr)';
-  }, 1200);
 }
 
 function advanceScanStep() {
   scanStepIndex++;
+  var counter = document.getElementById('scanViewCounter');
+  var btn = document.getElementById('scanStepBtn');
+  var acStatus = document.getElementById('scanStatusAcoustic');
+
+  triggerHaptic(50);
+
   if (scanStepIndex === 1) {
-    document.getElementById('scanViewCounter').textContent = 'VIEW 2 OF 3';
-    document.getElementById('scanStatusSurface').innerHTML = '&#10003; 48% MAPPED';
-    document.getElementById('scanStatusSurface').style.color = 'var(--ac)';
+    if (counter) counter.textContent = '2 / 3';
+    if (acStatus) {
+      acStatus.textContent = 'CAPTURING';
+      acStatus.style.color = 'var(--yw)';
+    }
   } else if (scanStepIndex === 2) {
-    document.getElementById('scanViewCounter').textContent = 'VIEW 3 OF 3';
-    document.getElementById('scanStatusSurface').innerHTML = '&#10003; 100% COMPLETED';
-    document.getElementById('scanStatusSurface').style.color = 'var(--gr)';
-    document.getElementById('scanStepBtn').innerHTML = '<span>Compute Freshness Model &rarr;</span>';
-    document.getElementById('scanStepBtn').onclick = function() { gt('s5'); };
+    if (counter) counter.textContent = '3 / 3';
+    if (acStatus) {
+      acStatus.textContent = 'GOOD';
+      acStatus.style.color = 'var(--gr)';
+    }
+    if (btn) {
+      btn.innerHTML = '<span>Proceed to Tap Test &rarr;</span>';
+      btn.onclick = function() { gt('s4_instruct'); };
+    }
   } else {
-    gt('s5');
+    gt('s4_instruct');
   }
 }
 
 /* =================================================================
-   WAVEFORM CANVAS ANIMATION
+   WAVEFORM CANVAS ANIMATION (LIVE MIC + SYNTHETIC FALLBACK)
    ================================================================= */
 function startWaveform() {
   var c = document.getElementById('waveformCanvas');
@@ -2840,9 +3212,17 @@ function startWaveform() {
   var phase = 0;
   stopWaveform();
 
+  // If mic stream is not yet active, initiate mic
+  if (!isMicStreaming && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
+      micMediaStream = stream;
+      initMicrophoneStream(stream);
+    }).catch(function(e) {});
+  }
+
   waveformTimer = setInterval(function() {
-    var W = c.offsetWidth || 320;
-    var H = 48;
+    var W = c.offsetWidth || 340;
+    var H = 44;
     c.width = W;
     c.height = H;
     ctx.clearRect(0, 0, W, H);
@@ -2850,16 +3230,44 @@ function startWaveform() {
     ctx.lineWidth = 1.8;
     ctx.beginPath();
 
-    for (var x = 0; x < W; x++) {
-      var t = x / W;
-      var y = H / 2 + Math.sin(t * Math.PI * 8 + phase) * (H * 0.26)
-                    + Math.sin(t * Math.PI * 18 + phase * 1.5) * (H * 0.12)
-                    + (Math.random() - 0.5) * 3;
-      if (x === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
+    if (isMicStreaming && micAnalyserNode && micDataArray) {
+      micAnalyserNode.getByteTimeDomainData(micDataArray);
+      var sumSquares = 0;
+      var step = micDataArray.length / W;
+      for (var x = 0; x < W; x++) {
+        var idx = Math.floor(x * step);
+        var val = (micDataArray[idx] - 128) / 128;
+        sumSquares += val * val;
+        var y = (H / 2) + val * (H * 0.44);
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      var rms = Math.sqrt(sumSquares / W);
+      var acStatus = document.getElementById('scanStatusAcoustic');
+      if (acStatus) {
+        if (rms > 0.05) {
+          acStatus.textContent = 'LIVE AUDIO (' + Math.round(rms * 100) + '%)';
+          acStatus.style.color = 'var(--gr)';
+        } else {
+          acStatus.textContent = 'LIVE (QUIET)';
+          acStatus.style.color = 'var(--ac)';
+        }
+      }
+    } else {
+      // Synthetic realistic waveform fallback
+      for (var x = 0; x < W; x++) {
+        var t = x / W;
+        var y = H / 2 + Math.sin(t * Math.PI * 8 + phase) * (H * 0.26)
+                      + Math.sin(t * Math.PI * 18 + phase * 1.5) * (H * 0.12)
+                      + (Math.random() - 0.5) * 2;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      phase += 0.14;
     }
-    ctx.stroke();
-    phase += 0.14;
   }, 45);
 }
 
@@ -2869,39 +3277,228 @@ function stopWaveform() {
 }
 
 /* =================================================================
-   MILK PHYSICAL ACOUSTIC WORKFLOW
+   ACOUSTIC TEST SEQUENCE (LISTEN)
    ================================================================= */
-var selectedGlassType = 'tumbler';
+var acousticTestTimers = [];
+var acousticProduceTimer = null;
+
+function clearAcousticTestTimers() {
+  acousticTestTimers.forEach(function(t) { clearTimeout(t); });
+  acousticTestTimers = [];
+}
+
+function startAcousticTestProcess() {
+  clearAcousticTestTimers();
+  stopAcousticProduceCanvas();
+
+  var countText = document.getElementById('acousticCountdownText');
+  var badge = document.getElementById('acousticTestBadgeInner');
+  var label = document.getElementById('acousticSignalStatusLabel');
+  var excite = document.getElementById('diagAcousticExcite');
+  var mic = document.getElementById('diagAcousticMic');
+
+  if (countText) countText.textContent = '3';
+  if (badge) {
+    badge.className = 'status-pill pill-yellow';
+    badge.textContent = 'PREPARING';
+  }
+  if (label) label.textContent = 'READY';
+  if (excite) { excite.textContent = 'STANDBY'; excite.style.color = 'var(--ts)'; }
+  if (mic) { mic.textContent = 'STANDBY'; mic.style.color = 'var(--ts)'; }
+
+  drawAcousticProduceWave('idle');
+
+  // Countdown: 3 -> 2
+  acousticTestTimers.push(setTimeout(function() {
+    if (countText) countText.textContent = '2';
+    if (badge) badge.textContent = 'HOLD STEADY';
+  }, 700));
+
+  // Countdown: 2 -> 1
+  acousticTestTimers.push(setTimeout(function() {
+    if (countText) countText.textContent = '1';
+    if (badge) badge.textContent = 'HOLD STEADY';
+    if (excite) { excite.textContent = 'ACTIVE'; excite.style.color = 'var(--ac)'; }
+  }, 1400));
+
+  // Countdown -> MEASURING
+  acousticTestTimers.push(setTimeout(function() {
+    if (countText) countText.textContent = 'TAP NOW!';
+    triggerHaptic([120, 50, 120]);
+    if (badge) {
+      badge.className = 'status-pill pill-cyan';
+      badge.textContent = 'RECORDING TAP';
+    }
+    if (label) label.textContent = 'CAPTURING';
+    if (mic) { mic.textContent = 'CAPTURING'; mic.style.color = 'var(--ac)'; }
+    startAcousticProduceAnimation();
+  }, 2100));
+
+  // MEASURING -> SIGNAL CAPTURED
+  acousticTestTimers.push(setTimeout(function() {
+    stopAcousticProduceCanvas();
+    drawAcousticProduceWave('captured');
+    triggerHaptic([70, 40, 70]);
+    if (countText) countText.textContent = '✓';
+    if (badge) {
+      badge.className = 'status-pill pill-green';
+      badge.textContent = 'SIGNAL CAPTURED';
+    }
+    if (label) label.textContent = 'GOOD';
+    if (excite) { excite.textContent = 'COMPLETE'; excite.style.color = 'var(--gr)'; }
+    if (mic) { mic.textContent = 'CAPTURED'; mic.style.color = 'var(--gr)'; }
+  }, 3600));
+
+  // Auto-advance to ANALYZE (s5)
+  acousticTestTimers.push(setTimeout(function() {
+    if (currentScreen === 's4b') {
+      gt('s5');
+    }
+  }, 4500));
+}
+
+function drawAcousticProduceWave(mode) {
+  var c = document.getElementById('acousticProduceCanvas');
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var W = c.offsetWidth || 300;
+  var H = 60;
+  c.width = W;
+  c.height = H;
+  ctx.clearRect(0, 0, W, H);
+
+  // Centerline
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, H / 2);
+  ctx.lineTo(W, H / 2);
+  ctx.stroke();
+
+  if (mode === 'idle') {
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(0, H / 2);
+    ctx.lineTo(W, H / 2);
+    ctx.stroke();
+    return;
+  }
+
+  // Draw ringdown decay wave
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  for (var x = 0; x < W; x++) {
+    var t = x / W;
+    var env = (H * 0.4) * Math.exp(-3.5 * t);
+    var y = H / 2 + env * Math.sin(t * Math.PI * 18);
+    if (x === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+}
+
+function startAcousticProduceAnimation() {
+  var c = document.getElementById('acousticProduceCanvas');
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var phase = 0;
+  stopAcousticProduceCanvas();
+
+  acousticProduceTimer = setInterval(function() {
+    var W = c.offsetWidth || 300;
+    var H = 60;
+    c.width = W;
+    c.height = H;
+    ctx.clearRect(0, 0, W, H);
+
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+
+    if (isMicStreaming && micAnalyserNode && micDataArray) {
+      micAnalyserNode.getByteTimeDomainData(micDataArray);
+      var step = micDataArray.length / W;
+      for (var x = 0; x < W; x++) {
+        var idx = Math.floor(x * step);
+        var val = (micDataArray[idx] - 128) / 128;
+        var y = (H / 2) + val * (H * 0.45);
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    } else {
+      for (var x = 0; x < W; x++) {
+        var t = x / W;
+        var env = (H * 0.42) * Math.exp(-2.5 * t);
+        var y = H / 2 + env * Math.sin(t * Math.PI * 16 + phase);
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      phase += 0.2;
+    }
+  }, 40);
+}
+
+function stopAcousticProduceCanvas() {
+  if (acousticProduceTimer) clearInterval(acousticProduceTimer);
+  acousticProduceTimer = null;
+}
+
+/* =================================================================
+   MULTIMODAL ANALYSIS (ANALYZE)
+   ================================================================= */
+function startMultimodalAnalysisProcess() {
+  setTimeout(function() {
+    if (currentScreen === 's5') {
+      gt('s6');
+    }
+  }, 1600);
+}
+
+/* =================================================================
+   MILK WORKFLOW (Simple Container Selection & Acoustic Testing)
+   ================================================================= */
+var selectedContainerType = 'glass';
 var acousticScanTimers = [];
 
-var glassProfiles = {
-  tumbler: { name: 'Standard Tumbler Glass', f0: 1420, wall: '2.5mm', damping: 0.0432 },
-  borosilicate: { name: 'Borosilicate Glass Beaker', f0: 1680, wall: '1.8mm', damping: 0.0381 },
-  thin: { name: 'Thin Wall Stemware Glass', f0: 1840, wall: '1.2mm', damping: 0.0345 },
-  ceramic: { name: 'Ceramic Porcelain Mug', f0: 1120, wall: '4.0mm', damping: 0.0618 }
+var containerNames = {
+  glass: 'Glass',
+  plastic: 'Plastic',
+  ceramic: 'Ceramic',
+  other: 'Others'
 };
 
-function selectGlassType(type) {
-  selectedGlassType = type;
-  ['cntTumbler', 'cntBorosilicate', 'cntThin', 'cntCeramic'].forEach(function(id) {
+function selectContainerType(type) {
+  selectedContainerType = type;
+  ['cntGlass', 'cntPlastic', 'cntCeramic', 'cntOther'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.classList.remove('selected');
   });
 
   var map = {
-    tumbler: 'cntTumbler',
-    borosilicate: 'cntBorosilicate',
-    thin: 'cntThin',
-    ceramic: 'cntCeramic'
+    glass: 'cntGlass',
+    plastic: 'cntPlastic',
+    ceramic: 'cntCeramic',
+    other: 'cntOther'
   };
   var target = document.getElementById(map[type]);
   if (target) target.classList.add('selected');
 
-  var prof = glassProfiles[type] || glassProfiles.tumbler;
-  var techVal = document.getElementById('techCntVal');
-  if (techVal) techVal.textContent = prof.name;
   var profLabel = document.getElementById('milkProfileLabel');
-  if (profLabel) profLabel.textContent = 'Vessel: ' + prof.name + ' • Resonant Calibration Locked';
+  if (profLabel) profLabel.textContent = 'Container: ' + (containerNames[type] || 'Glass');
+}
+
+function selectGlassType(type) {
+  var aliasMap = {
+    tumbler: 'glass',
+    borosilicate: 'plastic',
+    thin: 'ceramic',
+    ceramic: 'ceramic'
+  };
+  selectContainerType(aliasMap[type] || type);
 }
 
 function startMilkAcousticScan() {
@@ -2918,97 +3515,88 @@ function startMilkAcousticScan() {
     }
   }
 
-  document.getElementById('diagContact').innerHTML = '&#9675; VERIFYING';
-  document.getElementById('diagContact').style.color = 'var(--yw)';
-  document.getElementById('diagVibe').innerHTML = '&#9675; QUEUED';
-  document.getElementById('diagVibe').style.color = 'var(--ts)';
-  document.getElementById('diagListen').innerHTML = '&#9675; QUEUED';
-  document.getElementById('diagListen').style.color = 'var(--ts)';
-  document.getElementById('diagSignal').innerHTML = '&#9675; QUEUED';
-  document.getElementById('diagSignal').style.color = 'var(--ts)';
-  document.getElementById('diagML').innerHTML = '&#9675; QUEUED';
-  document.getElementById('diagML').style.color = 'var(--ts)';
+  var diagContact = document.getElementById('diagContact');
+  if (diagContact) { diagContact.textContent = 'Checking...'; diagContact.style.color = 'var(--yw)'; }
+  var diagVibe = document.getElementById('diagVibe');
+  if (diagVibe) { diagVibe.textContent = 'Waiting...'; diagVibe.style.color = 'var(--ts)'; }
+  var diagListen = document.getElementById('diagListen');
+  if (diagListen) { diagListen.textContent = 'Waiting...'; diagListen.style.color = 'var(--ts)'; }
+  var diagSignal = document.getElementById('diagSignal');
+  if (diagSignal) { diagSignal.textContent = 'Waiting...'; diagSignal.style.color = 'var(--ts)'; }
+  var diagML = document.getElementById('diagML');
+  if (diagML) { diagML.textContent = 'Waiting...'; diagML.style.color = 'var(--ts)'; }
 
-  document.getElementById('acousticStageTitle').textContent = 'STAGE 1: CONTACT VERIFICATION';
-  document.getElementById('acousticStageBadge').textContent = 'COUPLING: VERIFYING';
-  document.getElementById('acousticStageBadge').className = 'status-pill pill-yellow';
-  document.getElementById('acousticSubStatus').textContent = 'Measuring chassis-to-glass contact pressure & stability...';
-  document.getElementById('btnAcousticText').textContent = 'Measuring Resonance & Damping...';
+  var title = document.getElementById('acousticStageTitle');
+  if (title) title.textContent = 'Testing in progress';
+  var badge = document.getElementById('acousticStageBadge');
+  if (badge) {
+    badge.textContent = 'Checking contact';
+    badge.className = 'status-pill pill-yellow';
+  }
+  var sub = document.getElementById('acousticSubStatus');
+  if (sub) sub.textContent = 'Checking phone contact with container...';
+  var btnText = document.getElementById('btnAcousticText');
+  if (btnText) btnText.textContent = 'Testing milk...';
 
+  triggerHaptic(40);
   drawAcousticDecay(0.1, 'contact');
 
-  // Stage 1 -> Stage 2 (Vibration Sweep) at 1200ms
+  // Stage 1 -> Stage 2 (Vibration) at 1100ms
   acousticScanTimers.push(setTimeout(function() {
     setStageActive(2);
-    document.getElementById('diagContact').innerHTML = '&#10003; LOCKED (98.6%)';
-    document.getElementById('diagContact').style.color = 'var(--gr)';
-    document.getElementById('diagVibe').innerHTML = '&#9675; 80–1800 Hz SWEEP';
-    document.getElementById('diagVibe').style.color = 'var(--ac)';
+    triggerHaptic([180, 50, 220, 50, 180]);
+    if (diagContact) { diagContact.innerHTML = '&#10003; Good contact'; diagContact.style.color = 'var(--gr)'; }
+    if (diagVibe) { diagVibe.textContent = 'Vibrating...'; diagVibe.style.color = 'var(--ac)'; }
 
-    document.getElementById('acousticStageTitle').textContent = 'STAGE 2: CONTROLLED VIBRATION';
-    document.getElementById('acousticStageBadge').textContent = 'EXCITING VESSEL';
-    document.getElementById('acousticStageBadge').className = 'status-pill pill-cyan';
-    document.getElementById('acousticSubStatus').textContent = 'Haptic transducer driving 80 Hz -> 1,800 Hz frequency sweep...';
+    if (badge) { badge.textContent = 'Vibrating'; badge.className = 'status-pill pill-cyan'; }
+    if (sub) sub.textContent = 'Vibrating container to test milk...';
 
     drawAcousticDecay(0.35, 'vibration');
-  }, 1200));
+  }, 1100));
 
-  // Stage 2 -> Stage 3 (Acoustic Listening) at 2600ms
+  // Stage 2 -> Stage 3 (Sound Recording) at 2400ms
   acousticScanTimers.push(setTimeout(function() {
     setStageActive(3);
-    document.getElementById('diagVibe').innerHTML = '&#10003; SWEEP COMPLETE';
-    document.getElementById('diagVibe').style.color = 'var(--gr)';
-    document.getElementById('diagListen').innerHTML = '&#9675; RECORDING RINGDOWN';
-    document.getElementById('diagListen').style.color = 'var(--ac)';
+    triggerHaptic(30);
+    if (diagVibe) { diagVibe.innerHTML = '&#10003; Done'; diagVibe.style.color = 'var(--gr)'; }
+    if (diagListen) { diagListen.textContent = 'Listening...'; diagListen.style.color = 'var(--ac)'; }
 
-    document.getElementById('acousticStageTitle').textContent = 'STAGE 3: ACOUSTIC LISTENING';
-    document.getElementById('acousticStageBadge').textContent = 'LISTENING';
-    document.getElementById('acousticStageBadge').className = 'status-pill pill-cyan';
-    document.getElementById('acousticSubStatus').textContent = 'Dual microphones capturing boundary resonance & viscous damping...';
+    if (badge) { badge.textContent = 'Listening'; badge.className = 'status-pill pill-cyan'; }
+    if (sub) sub.textContent = 'Listening to sound response in milk...';
 
     drawAcousticDecay(0.7, 'listening');
-  }, 2600));
+  }, 2400));
 
-  // Stage 3 -> Stage 4 (Signal Analysis) at 4200ms
+  // Stage 3 -> Stage 4 (Analysis) at 3800ms
   acousticScanTimers.push(setTimeout(function() {
     setStageActive(4);
-    document.getElementById('diagListen').innerHTML = '&#10003; RINGDOWN CAPTURED';
-    document.getElementById('diagListen').style.color = 'var(--gr)';
-    document.getElementById('diagSignal').innerHTML = '&#9675; COMPUTING FFT';
-    document.getElementById('diagSignal').style.color = 'var(--ac)';
+    if (diagListen) { diagListen.innerHTML = '&#10003; Done'; diagListen.style.color = 'var(--gr)'; }
+    if (diagSignal) { diagSignal.textContent = 'Analyzing...'; diagSignal.style.color = 'var(--ac)'; }
 
-    document.getElementById('acousticStageTitle').textContent = 'STAGE 4: SIGNAL ANALYSIS';
-    document.getElementById('acousticStageBadge').textContent = 'FFT ANALYSIS';
-    document.getElementById('acousticStageBadge').className = 'status-pill pill-cyan';
-    document.getElementById('acousticSubStatus').textContent = 'Computing power spectral density, damping ratio (ζ), & speed of sound...';
+    if (badge) { badge.textContent = 'Analyzing'; badge.className = 'status-pill pill-cyan'; }
+    if (sub) sub.textContent = 'Analyzing sound response...';
 
     drawAcousticDecay(0.9, 'signal');
-  }, 4200));
+  }, 3800));
 
-  // Stage 4 -> Stage 5 (ML Inference) at 5600ms
+  // Stage 4 -> Stage 5 (Result Check) at 5100ms
   acousticScanTimers.push(setTimeout(function() {
     setStageActive(5);
-    document.getElementById('diagSignal').innerHTML = '&#10003; fr: 1,248 Hz | ζ: 0.0432';
-    document.getElementById('diagSignal').style.color = 'var(--gr)';
-    document.getElementById('diagML').innerHTML = '&#9675; CLASSIFYING DENSITY';
-    document.getElementById('diagML').style.color = 'var(--ac)';
+    triggerHaptic([70, 40, 70]);
+    if (diagSignal) { diagSignal.innerHTML = '&#10003; Done'; diagSignal.style.color = 'var(--gr)'; }
+    if (diagML) { diagML.textContent = 'Finalizing...'; diagML.style.color = 'var(--ac)'; }
 
-    document.getElementById('acousticStageTitle').textContent = 'STAGE 5: ML INFERENCE';
-    document.getElementById('acousticStageBadge').textContent = 'CLASSIFYING';
-    document.getElementById('acousticStageBadge').className = 'status-pill pill-cyan';
-    document.getElementById('acousticSubStatus').textContent = 'Neural classifier evaluating water dilution & foreign adulterants...';
+    if (badge) { badge.textContent = 'Finalizing'; badge.className = 'status-pill pill-cyan'; }
+    if (sub) sub.textContent = 'Checking milk quality and water content...';
 
     drawAcousticDecay(1.0, 'complete');
-  }, 5600));
+  }, 5100));
 
-  // Finish -> sm4 at 7000ms
+  // Finish -> sm4 at 6300ms
   acousticScanTimers.push(setTimeout(function() {
-    document.getElementById('diagML').innerHTML = '&#10003; 94% CERTAINTY';
-    document.getElementById('diagML').style.color = 'var(--gr)';
-    document.getElementById('btnAcousticText').textContent = 'View Screening Result →';
+    if (diagML) { diagML.innerHTML = '&#10003; Done'; diagML.style.color = 'var(--gr)'; }
     gt('sm4');
-    setTimeout(drawMilkSpectrumChart, 300);
-  }, 7000));
+  }, 6300));
 }
 
 function setStageActive(num) {
@@ -3037,7 +3625,6 @@ function clearAcousticTimers() {
 function skipToMilkResult() {
   clearAcousticTimers();
   gt('sm4');
-  setTimeout(drawMilkSpectrumChart, 300);
 }
 
 function drawAcousticDecay(progress, mode) {
@@ -3073,28 +3660,6 @@ function drawAcousticDecay(progress, mode) {
     else ctx.lineTo(x, y);
   }
   ctx.stroke();
-
-  if (mode === 'listening' || mode === 'signal' || mode === 'complete') {
-    ctx.setLineDash([3, 3]);
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (var x = 0; x < W * progress; x++) {
-      var env = (H * 0.42) * Math.exp(-dampFactor * x);
-      if (x === 0) ctx.moveTo(x, midY - env);
-      else ctx.lineTo(x, midY - env);
-    }
-    ctx.stroke();
-
-    ctx.beginPath();
-    for (var x = 0; x < W * progress; x++) {
-      var env = (H * 0.42) * Math.exp(-dampFactor * x);
-      if (x === 0) ctx.moveTo(x, midY + env);
-      else ctx.lineTo(x, midY + env);
-    }
-    ctx.stroke();
-    ctx.setLineDash([]);
-  }
 }
 
 /* =================================================================
@@ -3152,121 +3717,130 @@ function loadDemoScenario(key) {
   }
 }
 
+var currentTrajectoryScores = [96, 94, 91, 88];
+
 function applyDemoData(key) {
   var produceScenarios = {
     rt: {
-      targetName: 'Honeycrisp Apple (Malus domestica)',
-      confBadge: '99.2% Conf',
+      targetName: 'Honeycrisp Apple',
+      targetIcon: '🍎',
       score: 88,
       color: 'var(--gr)',
       stageText: 'OPTIMAL FRESHNESS',
       stageClass: 'pill-green',
-      rul: '5–7',
-      deg: '-1.6',
-      turgor: '92%',
+      rul: '5–7 days',
+      deg: '−1.6 / day',
       conf: '89%',
-      deepVel: '-1.6',
-      deepPill: 'Stable Linear Decay',
-      deepPillClass: 'pill-green'
+      sinceLast: '−3 points',
+      historyScores: [96, 94, 91, 88]
     },
     ft: {
-      targetName: 'Greenhouse Tomato (Solanum lycopersicum)',
-      confBadge: '98.8% Conf',
+      targetName: 'Greenhouse Tomato',
+      targetIcon: '🍅',
       score: 94,
       color: 'var(--gr)',
-      stageText: 'PEAK HARVEST FRESH',
+      stageText: 'PEAK FRESH',
       stageClass: 'pill-green',
-      rul: '6–8',
-      deg: '-1.2',
-      turgor: '96%',
-      conf: '93%',
-      deepVel: '-1.2',
-      deepPill: 'Minimal Degradation',
-      deepPillClass: 'pill-green'
+      rul: '6–8 days',
+      deg: '−1.2 / day',
+      conf: '94%',
+      sinceLast: '−1 point',
+      historyScores: [98, 97, 95, 94]
     },
     ot: {
-      targetName: 'Roma Tomato (Solanum lycopersicum)',
-      confBadge: '98.1% Conf',
+      targetName: 'Roma Tomato',
+      targetIcon: '🍅',
       score: 41,
       color: 'var(--rd)',
-      stageText: 'OVERRIPE / CONSUME PROMPTLY',
+      stageText: 'OVERRIPE',
       stageClass: 'pill-red',
-      rul: '0–1',
-      deg: '-6.8',
-      turgor: '54%',
-      conf: '84%',
-      deepVel: '-6.8',
-      deepPill: 'Accelerated Breakdown',
-      deepPillClass: 'pill-red'
-    }
-  };
-
-  var milkScenarios = {
-    md: {
-      verdictText: 'NO TESTED ADULTERATION DETECTED',
-      verdictClass: 'pill-green',
-      waterPct: '3.8%',
-      waterColor: 'var(--gr)',
-      waterLabel: '(Normal baseline variance < 5%)',
-      conf: '94%',
-      adWater: '✓ 3.8% (Normal)',
-      adWaterColor: 'var(--gr)',
-      adUrea: '✓ Negative (Velocity Match)',
-      adStarch: '✓ Negative (Viscous Damping Normal)',
-      adDet: '✓ Negative (Surface Tension Normal)',
-      freq: '1,248 Hz',
-      damp: '0.0432 (Normal)',
-      speed: '1,532 m/s',
-      imp: '1.58 MRayl',
-      shiftVal: '-172 Hz (Fluid Loaded)',
-      decayVal: '48.2 ms',
-      anomalyHtml: ''
-    },
-    ma: {
-      verdictText: 'EXCESS WATER DILUTION ANOMALY',
-      verdictClass: 'pill-red',
-      waterPct: '+22.4%',
-      waterColor: 'var(--rd)',
-      waterLabel: '(Excess dilution anomaly > 15%)',
-      conf: '91%',
-      adWater: '⚠ +22.4% (EXCESS WATER)',
-      adWaterColor: 'var(--rd)',
-      adUrea: '✓ Negative',
-      adStarch: '✓ Negative',
-      adDet: '✓ Negative',
-      freq: '1,180 Hz',
-      damp: '0.0261 (Low Damping)',
-      speed: '1,498 m/s',
-      imp: '1.51 MRayl',
-      shiftVal: '-240 Hz (Water Loaded)',
-      decayVal: '68.5 ms',
-      anomalyHtml: '<div class="disclaimer-card" style="background:var(--rd-bg);border-color:rgba(239,68,68,0.3);border-left-color:var(--rd);margin-bottom:16px"><div class="disclaimer-text" style="color:#fca5a5"><strong style="color:var(--rd)">Acoustic Anomaly Flagged:</strong> Significant downward shift in resonant frequency (1,180 Hz vs 1,248 Hz standard) and lower acoustic damping indicate substantial water dilution exceeding acceptable thresholds.</div></div>'
+      rul: '0–1 days',
+      deg: '−4.8 / day',
+      conf: '82%',
+      sinceLast: '−9 points',
+      historyScores: [85, 76, 62, 41]
     }
   };
 
   if (produceScenarios[key]) {
     var p = produceScenarios[key];
-    document.getElementById('resTargetName').textContent = 'Identified: ' + p.targetName;
-    document.getElementById('resConfBadge').textContent = '• ' + p.confBadge;
-    document.getElementById('cvTargetLabel').textContent = p.targetName;
-    document.getElementById('resScoreNum').innerHTML = p.score + '<span class="big-score-denom">/100</span>';
-    document.getElementById('resScoreNum').style.color = p.color;
+    currentTrajectoryScores = p.historyScores;
 
-    var pill = document.getElementById('resStagePill');
-    pill.textContent = p.stageText;
-    pill.className = 'status-pill ' + p.stageClass;
+    var targetName = document.getElementById('resTargetName');
+    if (targetName) targetName.textContent = p.targetName;
 
-    document.getElementById('resRulVal').textContent = p.rul;
-    document.getElementById('resDegVal').textContent = p.deg;
-    document.getElementById('resTurgorVal').textContent = p.turgor;
-    document.getElementById('resConfVal').textContent = p.conf;
+    var targetIcon = document.getElementById('resTargetIcon');
+    if (targetIcon) targetIcon.textContent = p.targetIcon;
 
-    document.getElementById('deepDegVel').textContent = p.deepVel;
-    document.getElementById('deepDegVel').style.color = p.color;
-    var dp = document.getElementById('deepDegPill');
-    dp.textContent = p.deepPill;
-    dp.className = 'status-pill ' + p.deepPillClass;
+    var cvLabel = document.getElementById('cvTargetLabel');
+    if (cvLabel) cvLabel.textContent = p.targetName;
+
+    var liveIcon = document.getElementById('liveScanTargetIcon');
+    if (liveIcon) liveIcon.textContent = p.targetIcon;
+
+    var scoreNum = document.getElementById('resScoreNum');
+    if (scoreNum) {
+      scoreNum.innerHTML = p.score + '<span class="big-score-denom">/100</span>';
+      scoreNum.style.color = p.color;
+    }
+
+    var stagePill = document.getElementById('resStagePill');
+    if (stagePill) {
+      stagePill.textContent = p.stageText;
+      stagePill.className = 'status-pill ' + p.stageClass;
+    }
+
+    var rulVal = document.getElementById('resRulVal');
+    if (rulVal) rulVal.textContent = p.rul;
+
+    var degVal = document.getElementById('resDegVal');
+    if (degVal) degVal.textContent = p.deg;
+
+    var confVal = document.getElementById('resConfVal');
+    if (confVal) confVal.textContent = p.conf;
+
+    var sinceLast = document.getElementById('resSinceLastVal');
+    if (sinceLast) sinceLast.textContent = p.sinceLast;
+
+    setTimeout(drawTrajectoryChart, 150);
   }
+
+  var milkScenarios = {
+    md: {
+      verdictText: 'PURE MILK',
+      verdictClass: 'pill-green',
+      waterPct: '87.4%',
+      waterAdded: '(0.0% added water)',
+      waterColor: 'var(--gr)',
+      waterLabel: 'Natural pure milk baseline (~87% natural water). No added water detected.',
+      confidence: '94%',
+      adSummary: '0 DETECTED',
+      adSummaryColor: 'var(--gr)',
+      adWater: '✓ 0.0% (Normal)',
+      adWaterColor: 'var(--gr)',
+      adDet: '✓ 0.00% (0 ppm)',
+      adStarch: '✓ 0.00% (0 ppm)',
+      adUrea: '✓ 0.02% (Natural)',
+      anomalyHtml: ''
+    },
+    ma: {
+      verdictText: 'WATER DETECTED',
+      verdictClass: 'pill-red',
+      waterPct: '93.8%',
+      waterAdded: '(+22.4% added water)',
+      waterColor: 'var(--rd)',
+      waterLabel: 'Elevated water content detected. Estimated ~22% extra water added.',
+      confidence: '91%',
+      adSummary: '1 DETECTED',
+      adSummaryColor: 'var(--rd)',
+      adWater: '⚠ +22.4% (Water Added)',
+      adWaterColor: 'var(--rd)',
+      adDet: '✓ 0.00% (0 ppm)',
+      adStarch: '✓ 0.00% (0 ppm)',
+      adUrea: '✓ 0.02% (Natural)',
+      anomalyHtml: '<div class="disclaimer-card" style="background:var(--rd-bg);border-color:rgba(239,68,68,0.3);border-left-color:var(--rd);margin-bottom:16px"><div class="disclaimer-text" style="color:#fca5a5"><strong style="color:var(--rd)">Warning:</strong> Excess water dilution detected in this sample (~22% added water). Purity does not match standard milk.</div></div>'
+    }
+  };
 
   if (milkScenarios[key]) {
     var m = milkScenarios[key];
@@ -3282,13 +3856,26 @@ function applyDemoData(key) {
       wp.style.color = m.waterColor;
     }
 
+    var wab = document.getElementById('milkAddedWaterBadge');
+    if (wab) {
+      wab.textContent = m.waterAdded;
+      wab.style.color = m.waterColor;
+    }
+
     var wl = document.getElementById('milkWaterLabel');
     if (wl) wl.textContent = m.waterLabel;
 
-    var ct = document.getElementById('milkConfText');
-    if (ct) ct.textContent = m.conf;
-    var cb = document.getElementById('milkConfBar');
-    if (cb) cb.style.width = m.conf;
+    var cv = document.getElementById('milkConfidenceVal');
+    if (cv) cv.textContent = m.confidence;
+
+    var cb = document.getElementById('milkConfBadge');
+    if (cb) cb.textContent = m.confidence + ' CONFIDENCE';
+
+    var as = document.getElementById('milkAdulterantSummary');
+    if (as) {
+      as.textContent = m.adSummary;
+      as.style.color = m.adSummaryColor;
+    }
 
     var aw = document.getElementById('adWaterStatus');
     if (aw) {
@@ -3298,24 +3885,12 @@ function applyDemoData(key) {
 
     var au = document.getElementById('adUreaStatus');
     if (au) au.textContent = m.adUrea;
-    var as = document.getElementById('adStarchStatus');
-    if (as) as.textContent = m.adStarch;
+
+    var ast = document.getElementById('adStarchStatus');
+    if (ast) ast.textContent = m.adStarch;
+
     var ad = document.getElementById('adDetStatus');
     if (ad) ad.textContent = m.adDet;
-
-    var tf = document.getElementById('telFreq');
-    if (tf) tf.textContent = m.freq;
-    var td = document.getElementById('telDamp');
-    if (td) td.textContent = m.damp;
-    var ts = document.getElementById('telSpeed');
-    if (ts) ts.textContent = m.speed;
-    var ti = document.getElementById('telImp');
-    if (ti) ti.textContent = m.imp;
-
-    var tsv = document.getElementById('techShiftVal');
-    if (tsv) tsv.textContent = m.shiftVal;
-    var tdv = document.getElementById('techDecayVal');
-    if (tdv) tdv.textContent = m.decayVal;
 
     var maAlert = document.getElementById('milkAnomalyAlert');
     if (maAlert) maAlert.innerHTML = m.anomalyHtml;
@@ -3328,80 +3903,55 @@ function applyDemoData(key) {
 function drawTrajectoryChart() {
   var c = document.getElementById('trajectoryCanvas');
   if (!c) return;
-  var W = c.offsetWidth || 320;
-  var H = 130;
+  var W = c.offsetWidth || 300;
+  var H = 90;
   c.width = W;
   c.height = H;
   var ctx = c.getContext('2d');
-  var pad = 28;
+  var pad = 20;
   var cW = W - pad * 2;
   var cH = H - pad * 2;
-  var scores = [96, 93, 91, 88];
+  var scores = currentTrajectoryScores || [96, 94, 91, 88];
 
-  // Grid lines
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+  // Grid
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
   ctx.lineWidth = 1;
-  [20, 50, 80, 100].forEach(function(val) {
-    var y = pad + cH - (val / 100) * cH;
-    ctx.beginPath();
-    ctx.moveTo(pad, y);
-    ctx.lineTo(W - pad, y);
-    ctx.stroke();
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
-    ctx.font = '9px JetBrains Mono';
-    ctx.fillText(val, 4, y + 3);
-  });
-
-  // Gradient fill
-  var grad = ctx.createLinearGradient(0, pad, 0, H - pad);
-  grad.addColorStop(0, 'rgba(34, 197, 94, 0.35)');
-  grad.addColorStop(1, 'rgba(34, 197, 94, 0)');
-
   ctx.beginPath();
-  scores.forEach(function(val, i) {
-    var x = pad + (i / (scores.length - 1)) * cW;
-    var y = pad + cH - (val / 100) * cH;
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  });
-  ctx.lineTo(pad + cW, H - pad);
-  ctx.lineTo(pad, H - pad);
-  ctx.fillStyle = grad;
-  ctx.fill();
+  ctx.moveTo(pad, pad + cH);
+  ctx.lineTo(pad + cW, pad + cH);
+  ctx.stroke();
 
-  // Line
-  ctx.strokeStyle = '#22c55e';
-  ctx.lineWidth = 2.5;
+  // Trajectory curve
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  scores.forEach(function(val, i) {
-    var x = pad + (i / (scores.length - 1)) * cW;
-    var y = pad + cH - (val / 100) * cH;
+  var step = cW / (scores.length - 1);
+
+  scores.forEach(function(s, i) {
+    var x = pad + i * step;
+    var normY = (100 - s) / 60; // scale 40-100
+    var y = pad + normY * cH;
     if (i === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
   ctx.stroke();
 
-  // Data points
-  scores.forEach(function(val, i) {
-    var x = pad + (i / (scores.length - 1)) * cW;
-    var y = pad + cH - (val / 100) * cH;
+  // Dots
+  scores.forEach(function(s, i) {
+    var x = pad + i * step;
+    var normY = (100 - s) / 60;
+    var y = pad + normY * cH;
+    ctx.fillStyle = i === scores.length - 1 ? '#22c55e' : '#ffffff';
     ctx.beginPath();
-    ctx.arc(x, y, 4.5, 0, Math.PI * 2);
-    ctx.fillStyle = (i === scores.length - 1) ? '#ffffff' : '#22c55e';
+    ctx.arc(x, y, i === scores.length - 1 ? 4 : 3, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.font = '10px JetBrains Mono';
-    ctx.fillText(val, x - 8, y - 8);
   });
 
-  ['Day 1', 'Day 2', 'Day 3', 'Today'].forEach(function(lbl, i) {
-    var x = pad + (i / (scores.length - 1)) * cW;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
-    ctx.font = '9px JetBrains Mono';
-    ctx.textAlign = 'center';
-    ctx.fillText(lbl, x, H - 6);
-  });
-  ctx.textAlign = 'left';
+  // Labels
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+  ctx.font = '9px JetBrains Mono';
+  ctx.fillText('Day 1', pad, H - 4);
+  ctx.fillText('Day 5 (Today)', W - pad - 64, H - 4);
 }
 
 function drawMilkSpectrumChart() {
@@ -3483,6 +4033,7 @@ function drawMilkSpectrumChart() {
 // Initial demo defaults
 applyDemoData('rt');
 applyDemoData('md');
+initMotionSensors();
 </script>
 </body>
 </html>
