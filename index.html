@@ -1501,7 +1501,7 @@ html, body {
               <div class="scan-feed-meta">Today, 17:42 &bull; Freshness Screening</div>
             </div>
             <div class="scan-feed-score">
-              <div class="scan-feed-score-val" style="color:var(--gr)">80</div>
+              <div class="scan-feed-score-val" style="color:var(--yw)">62</div>
               <div class="scan-feed-score-lbl">93% conf.</div>
             </div>
           </div>
@@ -1937,11 +1937,11 @@ html, body {
             <div style="font-size:12px;color:var(--ts);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px">
               FRESHNESS
             </div>
-            <div class="big-score-num" id="resScoreNum" style="color:var(--gr)">
-              80<span class="big-score-denom">/100</span>
+            <div class="big-score-num" id="resScoreNum" style="color:var(--yw)">
+              62<span class="big-score-denom">/100</span>
             </div>
             <div style="margin-top:12px;">
-              <span class="status-pill pill-green" id="resStagePill">FRESH</span>
+              <span class="status-pill pill-yellow" id="resStagePill">RIPE</span>
             </div>
           </div>
 
@@ -1949,11 +1949,11 @@ html, body {
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
             <div class="quad-card" style="padding:14px 8px;text-align:center;">
               <div class="quad-title">REMAINING</div>
-              <div class="quad-val" id="resRulVal" style="font-size:16px;margin:4px 0">4&ndash;5 days</div>
+              <div class="quad-val" id="resRulVal" style="font-size:16px;margin:4px 0">2&ndash;3 days</div>
             </div>
             <div class="quad-card" style="padding:14px 8px;text-align:center;">
               <div class="quad-title">DEGRADATION</div>
-              <div class="quad-val" id="resDegVal" style="font-size:16px;margin:4px 0">&minus;1.8 / day</div>
+              <div class="quad-val" id="resDegVal" style="font-size:16px;margin:4px 0">&minus;2.4 / day</div>
             </div>
             <div class="quad-card" style="padding:14px 8px;text-align:center;">
               <div class="quad-title">CONFIDENCE</div>
@@ -1968,7 +1968,7 @@ html, body {
               <div style="font-size:12px;color:var(--tm);margin-top:2px">Compared with previous scan</div>
             </div>
             <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--ac)" id="resSinceLastVal">
-              &minus;3 points
+              &minus;6 points
             </div>
           </div>
 
@@ -2403,11 +2403,11 @@ html, body {
             <div style="font-size:28px">&#127813;</div>
             <div style="flex:1">
               <div style="font-size:14px;font-weight:700;color:var(--tp)">Tomato</div>
-              <div style="font-size:12px;color:var(--ts)">Freshness: 80 &bull; RUL: 4-5 d</div>
+              <div style="font-size:12px;color:var(--ts)">Freshness: 62 &bull; RUL: 2-3 d</div>
               <div style="font-size:11px;color:var(--tm);margin-top:2px">17:42 &bull; Session #402</div>
             </div>
             <div style="text-align:right">
-              <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--gr)">80</div>
+              <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--yw)">62</div>
               <div style="font-size:10px;color:var(--ts)">93% conf</div>
             </div>
           </div>
@@ -2575,8 +2575,8 @@ html, body {
     <div class="demo-option-item" onclick="loadDemoScenario('rt')">
       <div style="font-size:24px">&#127813;</div>
       <div style="flex:1">
-        <div style="font-size:14px;font-weight:800;color:var(--tp)">Tomato (Fresh)</div>
-        <div style="font-size:11px;color:var(--ts)">Score: 80 &bull; RUL: 4-5 d</div>
+        <div style="font-size:14px;font-weight:800;color:var(--tp)">Tomato (Ripe)</div>
+        <div style="font-size:11px;color:var(--ts)">Score: 62 &bull; RUL: 2-3 d</div>
       </div>
     </div>
 
@@ -3698,7 +3698,7 @@ function loadDemoScenario(key) {
   var bannerText = document.getElementById('demoBannerText');
 
   var scenarioTitles = {
-    rt: 'DEMO: Tomato (Fresh)',
+    rt: 'DEMO: Tomato (Ripe • 62%)',
     ft: 'DEMO: Greenhouse Tomato (Peak Fresh)',
     ot: 'DEMO: Roma Tomato (Softening/Overripe)',
     md: 'DEMO: Milk Sample (49% Water Detected)',
@@ -3717,22 +3717,22 @@ function loadDemoScenario(key) {
   }
 }
 
-var currentTrajectoryScores = [92, 88, 84, 80];
+var currentTrajectoryScores = [82, 75, 68, 62];
 
 function applyDemoData(key) {
   var produceScenarios = {
     rt: {
       targetName: 'Tomato',
       targetIcon: '🍅',
-      score: 80,
-      color: 'var(--gr)',
-      stageText: 'FRESH',
-      stageClass: 'pill-green',
-      rul: '4–5 days',
-      deg: '−1.8 / day',
+      score: 62,
+      color: 'var(--yw)',
+      stageText: 'RIPE',
+      stageClass: 'pill-yellow',
+      rul: '2–3 days',
+      deg: '−2.4 / day',
       conf: '93%',
-      sinceLast: '−2 points',
-      historyScores: [92, 88, 84, 80]
+      sinceLast: '−6 points',
+      historyScores: [82, 75, 68, 62]
     },
     ft: {
       targetName: 'Greenhouse Tomato',
@@ -3941,7 +3941,7 @@ function drawTrajectoryChart() {
     var x = pad + i * step;
     var normY = (100 - s) / 60;
     var y = pad + normY * cH;
-    ctx.fillStyle = i === scores.length - 1 ? '#22c55e' : '#ffffff';
+    ctx.fillStyle = i === scores.length - 1 ? (s >= 75 ? '#22c55e' : (s >= 55 ? '#eab308' : '#ef4444')) : '#ffffff';
     ctx.beginPath();
     ctx.arc(x, y, i === scores.length - 1 ? 4 : 3, 0, Math.PI * 2);
     ctx.fill();
