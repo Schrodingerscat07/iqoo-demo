@@ -39,10 +39,32 @@
 ```
 iqoo-demo/
 ├── index.html       # Complete single-file application with zero runtime dependencies
+├── vercel.json      # Vercel deployment routing, security headers & asset caching
+├── manifest.json    # PWA web app manifest for fullscreen home-screen mobile installation
+├── package.json     # Project metadata and serve script
 ├── logo.png         # High-resolution transparent application logo
 ├── logo.jpg         # Original source asset
-└── README.md        # Technical documentation and launch guide
+├── .gitignore       # Git ignore rules
+└── README.md        # Technical documentation and deployment guide
 ```
+
+---
+
+## Deploy to Vercel
+
+This repository is pre-configured and 100% production-ready for **Vercel** with automatic zero-config deployments:
+
+### Deploy via Vercel Dashboard (Recommended)
+
+1. Go to [vercel.com/new](https://vercel.com/new).
+2. Select **Import Git Repository** and choose **`Schrodingerscat07/iqoo-demo`**.
+3. Leave Framework Preset as **Other** (Root directory `./`).
+4. Click **Deploy**.
+5. Your app will be live with a global HTTPS `.vercel.app` URL in under 15 seconds!
+
+### Automatic CI/CD
+
+Every subsequent commit pushed to `main` on GitHub will automatically trigger a production deployment on Vercel.
 
 ---
 
@@ -55,8 +77,9 @@ FreshGuard runs directly in any modern web browser or mobile WebView without req
 git clone https://github.com/Schrodingerscat07/iqoo-demo.git
 cd iqoo-demo
 
-# 2. Launch with any HTTP server (e.g. Python)
+# 2. Launch with any HTTP server (e.g. Python or Node)
 python -m http.server 8080
+# or: npx serve .
 
 # 3. Open in browser
 http://localhost:8080
