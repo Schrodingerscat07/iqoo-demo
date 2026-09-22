@@ -1,0 +1,3242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="FreshGuard - Smartphone-Based Food Quality Screening Instrument">
+<title>FreshGuard - Food Quality Screening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-base: #000000;
+  --bg-elev: #0a0a0a;
+  --bg-surf: #121212;
+  --bg-card: #161616;
+  --bg-glass: rgba(255, 255, 255, 0.04);
+  --bg-glass-active: rgba(255, 255, 255, 0.08);
+  --bdr: rgba(255, 255, 255, 0.15);
+  --bdr-light: rgba(255, 255, 255, 0.24);
+  --bdr-accent: rgba(255, 255, 255, 0.35);
+  --tp: #ffffff;
+  --ts: #d1d5db;
+  --tm: #9ca3af;
+  --gr: #22c55e;
+  --gr-bg: rgba(34, 197, 94, 0.12);
+  --gr-glow: rgba(34, 197, 94, 0.35);
+  --yw: #eab308;
+  --yw-bg: rgba(234, 179, 8, 0.12);
+  --yw-glow: rgba(234, 179, 8, 0.35);
+  --rd: #ef4444;
+  --rd-bg: rgba(239, 68, 68, 0.12);
+  --rd-glow: rgba(239, 68, 68, 0.35);
+  --bl: #ffffff;
+  --ac: #ffffff;
+  --ac-bg: rgba(255, 255, 255, 0.08);
+  --ac-glow: rgba(255, 255, 255, 0.22);
+  --org: #f97316;
+  --org-bg: rgba(249, 115, 22, 0.12);
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --rsm: 8px;
+  --rmd: 14px;
+  --rlg: 20px;
+  --rxl: 28px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: var(--sans);
+  color: var(--tp);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Outer desktop wrapper */
+#outerShell {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+}
+
+/* Phone Frame (iQOO 15 / flagship proportions) */
+#deviceFrame {
+  width: 393px;
+  height: 852px;
+  background: #000000;
+  border-radius: 48px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 0 2px #000000, 0 35px 90px rgba(0, 0, 0, 0.95), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Dynamic Island / Camera Notch */
+#cameraNotch {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 124px;
+  height: 32px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+.camera-lens {
+  width: 12px;
+  height: 12px;
+  background: #141414;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+.camera-lens::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: #202020;
+  border-radius: 50%;
+}
+
+/* Status Bar */
+#statusBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 24px 8px;
+  z-index: 500;
+  pointer-events: none;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tp);
+}
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+/* Top App Bar (Unified Header for sub-screens) */
+.app-header {
+  position: absolute;
+  top: 52px;
+  left: 0;
+  right: 0;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: rgba(0, 0, 0, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--bdr);
+  z-index: 400;
+}
+.nav-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--bg-glass);
+  border: 1px solid var(--bdr-light);
+  border-radius: 100px;
+  color: var(--tp);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+.nav-back-btn:hover {
+  background: var(--bg-glass-active);
+  border-color: var(--ac);
+  transform: translateX(-2px);
+}
+.nav-back-btn:active {
+  transform: scale(0.96) translateX(-2px);
+  background: rgba(255, 255, 255, 0.12);
+}
+.nav-back-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--ac);
+  stroke-width: 2.5;
+  fill: none;
+}
+.header-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tp);
+  letter-spacing: -0.01em;
+  text-align: center;
+  flex: 1;
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav-home-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-glass);
+  border: 1px solid var(--bdr);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ts);
+  transition: all 0.2s;
+}
+.nav-home-btn:hover {
+  background: var(--bg-glass-active);
+  color: var(--ac);
+  border-color: var(--bdr-accent);
+}
+.nav-home-btn:active {
+  transform: scale(0.94);
+}
+.nav-home-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+
+/* App View Container */
+#appView {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Screens */
+.screen {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(28px);
+  transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1), transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.screen.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(0);
+}
+.screen.exit-left {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-28px);
+}
+
+/* Scroll Container */
+.screen-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-top: 118px;
+  padding-bottom: 96px;
+}
+.screen-scroll::-webkit-scrollbar {
+  display: none;
+}
+.screen-scroll.no-header {
+  padding-top: 54px;
+}
+
+/* Bottom Navigation Bar */
+#bottomBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background: rgba(0, 0, 0, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--bdr);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 16px;
+  z-index: 450;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+#bottomBar.hidden {
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+.nav-tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 8px 20px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.nav-tab-item svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--tm);
+  stroke-width: 2;
+  fill: none;
+  transition: all 0.2s ease;
+}
+.nav-tab-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tm);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+.nav-tab-item.active svg {
+  stroke: var(--ac);
+  filter: drop-shadow(0 0 6px var(--ac-glow));
+}
+.nav-tab-item.active .nav-tab-label {
+  color: var(--ac);
+}
+
+/* Demo Banner */
+#demoBanner {
+  position: absolute;
+  top: 52px;
+  left: 0;
+  right: 0;
+  background: linear-gradient(90deg, #240e04, #361605);
+  border-bottom: 1px solid var(--org);
+  padding: 6px 16px;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 600;
+}
+#demoBanner.visible {
+  display: flex;
+}
+.demo-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--org);
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.demo-desc {
+  font-size: 11px;
+  color: #ffedd5;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 8px;
+}
+.demo-close {
+  cursor: pointer;
+  color: var(--org);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 2px 6px;
+}
+
+/* Primary and Secondary Buttons */
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--rlg);
+  background: #ffffff;
+  color: #000000;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 18px rgba(255, 255, 255, 0.15);
+}
+.btn-primary:hover {
+  background: #f4f4f5;
+  color: #000000;
+  box-shadow: 0 6px 24px rgba(255, 255, 255, 0.25);
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+.btn-secondary {
+  width: 100%;
+  padding: 15px;
+  border-radius: var(--rlg);
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* Cards & Widgets */
+.metric-card {
+  background: var(--bg-surf);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rlg);
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.section-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ts);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.info-box {
+  background: var(--bg-glass);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rmd);
+  padding: 16px;
+}
+.info-box-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tp);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.info-box-body {
+  font-size: 12px;
+  color: var(--ts);
+  line-height: 1.5;
+}
+.disclaimer-card {
+  background: rgba(234, 179, 8, 0.05);
+  border: 1px solid rgba(234, 179, 8, 0.2);
+  border-left: 3px solid var(--yw);
+  border-radius: var(--rmd);
+  padding: 12px 14px;
+}
+.disclaimer-text {
+  font-size: 11px;
+  color: #d1d5db;
+  line-height: 1.45;
+}
+
+/* Badges */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pill-green {
+  background: var(--gr-bg);
+  color: var(--gr);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+.pill-yellow {
+  background: var(--yw-bg);
+  color: var(--yw);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+.pill-red {
+  background: var(--rd-bg);
+  color: var(--rd);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.pill-cyan {
+  background: var(--ac-bg);
+  color: var(--ac);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+/* =================================================================
+   HOME SCREEN (Screen s0)
+   ================================================================= */
+.home-header {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--bdr);
+}
+.brand-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.brand-logo-frame {
+  width: 58px;
+  height: 58px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  position: relative;
+  flex-shrink: 0;
+}
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: normal;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+}
+.brand-info {
+  flex: 1;
+}
+.brand-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--tp);
+  letter-spacing: -0.02em;
+}
+.brand-chip {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 800;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.06em;
+}
+.brand-tagline {
+  font-size: 13px;
+  color: var(--ts);
+  margin-top: 3px;
+  line-height: 1.35;
+}
+
+/* Quick Mode Screening Cards */
+.mode-cards-grid {
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.mode-card {
+  background: var(--bg-surf);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rlg);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.mode-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(circle at 20% 50%, var(--ac-bg), transparent 70%);
+  transition: opacity 0.3s;
+}
+.mode-card:hover {
+  border-color: var(--bdr-accent);
+  transform: translateY(-2px);
+}
+.mode-card:hover::before {
+  opacity: 1;
+}
+.mode-card:active {
+  transform: scale(0.98);
+}
+.mode-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.mode-card-icon svg {
+  width: 34px;
+  height: 34px;
+  display: block;
+}
+.mode-card-icon img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+.mode-card-icon.apple-icon {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.mode-card-icon.milk-icon {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.mode-card-content {
+  flex: 1;
+  min-width: 0;
+}
+.mode-card-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--tp);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.mode-card-badge {
+  font-size: 9px;
+  font-weight: 800;
+  font-family: var(--mono);
+  color: var(--gr);
+  background: var(--gr-bg);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  padding: 1px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+.mode-card-desc {
+  font-size: 12px;
+  color: var(--ts);
+  line-height: 1.45;
+}
+.mode-card-arrow {
+  color: var(--tm);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.mode-card:hover .mode-card-arrow {
+  transform: translateX(3px);
+  color: var(--ac);
+}
+.mode-card-arrow svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  fill: none;
+}
+
+
+/* Recent Scans Feed */
+.recent-scans-sec {
+  padding: 0 18px 24px;
+}
+.scan-feed-item {
+  background: var(--bg-glass);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rmd);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.scan-feed-item:hover {
+  background: var(--bg-glass-active);
+  border-color: var(--bdr-light);
+}
+.scan-feed-icon {
+  font-size: 26px;
+  width: 40px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.scan-feed-info {
+  flex: 1;
+  min-width: 0;
+}
+.scan-feed-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tp);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.scan-feed-meta {
+  font-size: 11px;
+  color: var(--ts);
+  margin-top: 2px;
+}
+.scan-feed-score {
+  text-align: right;
+}
+.scan-feed-score-val {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 800;
+}
+.scan-feed-score-lbl {
+  font-size: 10px;
+  color: var(--tm);
+}
+
+/* =================================================================
+   PREPARE SCAN SCREEN (Screen s2)
+   ================================================================= */
+
+.scan-hologram-box {
+  background: radial-gradient(circle at 50% 50%, #171717, #0a0a0a);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rxl);
+  padding: 28px 20px;
+  margin-bottom: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hologram-visual {
+  position: relative;
+  width: 140px;
+  height: 120px;
+  margin: 0 auto 14px;
+}
+.hologram-logo-preview {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  background: #141414;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: floatPulse 3s ease-in-out infinite;
+}
+.hologram-logo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@keyframes floatPulse {
+  0%, 100% { transform: translateY(-50%) scale(1); }
+  50% { transform: translateY(-56%) scale(1.04); }
+}
+.hologram-phone {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 76px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 10px;
+  background: #000000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+.hologram-beam {
+  position: absolute;
+  top: 50%;
+  left: 80px;
+  right: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, #ffffff, rgba(255, 255, 255, 0.15));
+  transform: translateY(-50%);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+}
+.step-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 24px;
+}
+.step-checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--bdr);
+}
+.step-checklist-item:last-child {
+  border-bottom: none;
+}
+.step-num-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg-glass);
+  border: 1px solid var(--bdr);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ac);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.step-text {
+  font-size: 13px;
+  color: var(--ts);
+  line-height: 1.45;
+}
+.step-text strong {
+  color: var(--tp);
+}
+
+/* =================================================================
+   CALIBRATION SCREEN (Screen s3)
+   ================================================================= */
+.calib-dial-wrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 16px auto 28px;
+}
+.calib-outer-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--bdr);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.calib-spinner {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #ffffff;
+  border-right-color: rgba(255, 255, 255, 0.35);
+  animation: rotateSpin 1.4s linear infinite;
+}
+@keyframes rotateSpin {
+  to { transform: rotate(360deg); }
+}
+.calib-inner-core {
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  background: var(--bg-surf);
+  border: 1px solid var(--bdr);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+}
+.calib-pct {
+  font-family: var(--mono);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--ac);
+}
+.calib-state-text {
+  font-size: 11px;
+  color: var(--ts);
+  font-weight: 600;
+}
+.sensor-diag-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--bdr);
+}
+.sensor-diag-row:last-child {
+  border-bottom: none;
+}
+.sensor-diag-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ts);
+  text-transform: uppercase;
+}
+.sensor-diag-status {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* =================================================================
+   ACTIVE SCAN SCREEN (Screen s4)
+   ================================================================= */
+.viewfinder-area {
+  position: absolute;
+  top: 52px;
+  left: 0;
+  right: 0;
+  height: 380px;
+  background: #000000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.reticle-box {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.reticle-box::before {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 0;
+  left: 0;
+  border-top: 3px solid #ffffff;
+  border-left: 3px solid #ffffff;
+}
+.reticle-box::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 0;
+  right: 0;
+  border-top: 3px solid #ffffff;
+  border-right: 3px solid #ffffff;
+}
+.reticle-bottom-corners {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.reticle-bottom-corners::before {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  bottom: 0;
+  left: 0;
+  border-bottom: 3px solid #ffffff;
+  border-left: 3px solid #ffffff;
+}
+.reticle-bottom-corners::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  bottom: 0;
+  right: 0;
+  border-bottom: 3px solid #ffffff;
+  border-right: 3px solid #ffffff;
+}
+.target-preview-img-wrap {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.target-preview-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.scan-laser-beam {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffffff, #ffffff, #ffffff, transparent);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+  animation: scanSweep 2s ease-in-out infinite;
+}
+@keyframes scanSweep {
+  0%, 100% { top: 15px; opacity: 0.3; }
+  50% { top: 195px; opacity: 1; }
+}
+
+.cv-detect-hud-card {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  right: 14px;
+  background: rgba(14, 14, 14, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  border-radius: var(--rmd);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+}
+.cv-hud-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.cv-hud-status {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--ac);
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.cv-hud-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gr);
+  animation: blinkFast 1s infinite;
+}
+@keyframes blinkFast {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+.cv-detected-target {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--tp);
+}
+.cv-hud-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--gr);
+  background: var(--gr-bg);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.scan-telemetry-tray {
+  position: absolute;
+  top: 432px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  padding: 16px 20px 24px;
+  background: var(--bg-base);
+}
+
+/* =================================================================
+   ANALYSIS PROCESSING SCREEN (Screen s5)
+   ================================================================= */
+.analysis-pipeline-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+.pipeline-step-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-surf);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rmd);
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 8px;
+}
+.pipeline-step-icon {
+  font-size: 18px;
+  width: 28px;
+  text-align: center;
+}
+.pipeline-step-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tp);
+}
+.pipeline-step-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ac);
+}
+
+/* =================================================================
+   RESULT SCREENS (Screens s6 & sm4)
+   ================================================================= */
+.result-hero-box {
+  background: var(--bg-surf);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rxl);
+  padding: 24px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.auto-identified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+.big-score-num {
+  font-family: var(--mono);
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.big-score-denom {
+  font-size: 24px;
+  color: var(--tm);
+  font-weight: 500;
+}
+.metrics-quad-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.quad-card {
+  background: var(--bg-surf);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rmd);
+  padding: 14px;
+}
+.quad-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ts);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.quad-val {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--tp);
+}
+.quad-sub {
+  font-size: 11px;
+  color: var(--tm);
+  margin-top: 2px;
+}
+
+/* Collapsible diagnostic */
+.diagnostic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 10px 0;
+}
+.diagnostic-header h4 {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--tp);
+}
+.diagnostic-chevron {
+  color: var(--ts);
+  transition: transform 0.25s;
+}
+.diagnostic-content {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
+}
+.diagnostic-content.open {
+  display: flex;
+}
+.diagnostic-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--bg-glass);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rsm);
+  font-size: 12px;
+}
+
+/* Action Button Deck */
+.actions-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+/* Milk Container Grid */
+.container-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.container-option-card {
+  background: var(--bg-surf);
+  border: 2px solid var(--bdr);
+  border-radius: var(--rmd);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.container-option-card.selected {
+  border-color: var(--ac);
+  background: var(--ac-bg);
+}
+.container-option-card:active {
+  transform: scale(0.96);
+}
+
+/* History List */
+.history-entry-card {
+  background: var(--bg-surf);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rmd);
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.history-entry-card:hover {
+  border-color: var(--bdr-light);
+}
+
+/* About Screen Brand Section */
+.about-hero-section {
+  text-align: center;
+  padding: 24px 0 28px;
+  border-bottom: 1px solid var(--bdr);
+  margin-bottom: 24px;
+}
+.about-logo-wrapper {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 16px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.about-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: normal;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
+}
+
+/* Demo Modal Sheet */
+.demo-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 10000;
+  display: none;
+  align-items: flex-end;
+  backdrop-filter: blur(8px);
+}
+.demo-overlay.visible {
+  display: flex;
+}
+.demo-sheet {
+  width: 100%;
+  background: var(--bg-elev);
+  border-top: 1px solid var(--bdr);
+  border-radius: var(--rxl) var(--rxl) 0 0;
+  padding: 24px 20px;
+  animation: slideSheetUp 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes slideSheetUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.demo-option-item {
+  background: var(--bg-surf);
+  border: 1px solid var(--bdr);
+  border-radius: var(--rmd);
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  transition: all 0.2s;
+}
+.demo-option-item:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 430px) {
+  #outerShell { background: var(--bg-base); }
+  #deviceFrame { width: 100%; height: 100%; border-radius: 0; box-shadow: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="outerShell">
+<div id="deviceFrame">
+  <!-- Dynamic Island -->
+  <div id="cameraNotch"><div class="camera-lens"></div></div>
+
+  <!-- Status Bar -->
+  <div id="statusBar">
+    <span id="liveClock">18:30</span>
+    <div class="status-icons">
+      <span>5G</span>
+      <span>&#9679;&#9679;&#9679;</span>
+      <span>100%</span>
+    </div>
+  </div>
+
+  <!-- Demo Banner -->
+  <div id="demoBanner">
+    <span class="demo-tag">&#9888; DEMO ACTIVE</span>
+    <span class="demo-desc" id="demoBannerText">Synthetic simulation mode</span>
+    <span class="demo-close" onclick="exitDemoMode()">&#10005;</span>
+  </div>
+
+  <div id="appView">
+
+    <!-- =======================================================
+         SCREEN 0: HOME / DASHBOARD
+         ======================================================= -->
+    <div id="s0" class="screen active">
+      <div class="screen-scroll no-header">
+        <div class="home-header">
+          <div class="brand-identity">
+            <div class="brand-logo-frame">
+              <img src="./logo.png" alt="FreshGuard Logo" class="brand-logo-img">
+            </div>
+            <div class="brand-info">
+              <div class="brand-title-row">
+                <span class="brand-title">FreshGuard</span>
+              </div>
+              <div class="brand-tagline">Automated food quality screening instrument</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mode-cards-grid">
+          <!-- Freshness Screening Card -->
+          <div class="mode-card" onclick="gt('s2')">
+            <div class="mode-card-icon apple-icon">&#127822;</div>
+            <div class="mode-card-content">
+              <div class="mode-card-title">
+                <span>Freshness Check</span>
+              </div>
+              <div class="mode-card-desc">
+                Instant produce recognition via onboard sensors. Analyzes cellular degradation, firmness, and remaining shelf-life.
+              </div>
+            </div>
+            <div class="mode-card-arrow">
+              <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </div>
+          </div>
+
+          <!-- Milk Quality Screening Card -->
+          <div class="mode-card" onclick="gt('sm0')">
+            <div class="mode-card-icon milk-icon">&#129371;</div>
+            <div class="mode-card-content">
+              <div class="mode-card-title">
+                <span>Milk Quality Check</span>
+              </div>
+              <div class="mode-card-desc">
+                Optical density & spectrophotometric screening for dilution and common adulterant patterns.
+              </div>
+            </div>
+            <div class="mode-card-arrow">
+              <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Scans -->
+        <div class="recent-scans-sec">
+          <div class="section-label">Recent Sensor Logs</div>
+
+          <div class="scan-feed-item" onclick="loadDemoScenario('rt')">
+            <div class="scan-feed-icon">&#127822;</div>
+            <div class="scan-feed-info">
+              <div class="scan-feed-title">Honeycrisp Apple</div>
+              <div class="scan-feed-meta">Today, 17:42 &bull; Freshness Screening</div>
+            </div>
+            <div class="scan-feed-score">
+              <div class="scan-feed-score-val" style="color:var(--gr)">88</div>
+              <div class="scan-feed-score-lbl">91% conf.</div>
+            </div>
+          </div>
+
+          <div class="scan-feed-item" onclick="loadDemoScenario('md')">
+            <div class="scan-feed-icon">&#129371;</div>
+            <div class="scan-feed-info">
+              <div class="scan-feed-title">Milk Sample #104</div>
+              <div class="scan-feed-meta">Today, 14:15 &bull; Purity Screening</div>
+            </div>
+            <div class="scan-feed-score">
+              <div class="scan-feed-score-val" style="color:var(--gr);font-size:14px">PASS</div>
+              <div class="scan-feed-score-lbl">93% conf.</div>
+            </div>
+          </div>
+
+          <div class="scan-feed-item" onclick="loadDemoScenario('ot')">
+            <div class="scan-feed-icon">&#127813;</div>
+            <div class="scan-feed-info">
+              <div class="scan-feed-title">Roma Tomato</div>
+              <div class="scan-feed-meta">Yesterday, 18:20 &bull; Freshness Screening</div>
+            </div>
+            <div class="scan-feed-score">
+              <div class="scan-feed-score-val" style="color:var(--rd)">41</div>
+              <div class="scan-feed-score-lbl">82% conf.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN 2: PREPARE SCAN (Zero manual selection needed)
+         ======================================================= -->
+    <div id="s2" class="screen">
+      <div class="app-header">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Back</span>
+        </button>
+        <span class="header-title">Prepare Produce Scan</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Return to Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding: 0 20px 24px;">
+          <!-- Hologram Graphic -->
+          <div class="scan-hologram-box">
+            <div class="hologram-visual">
+              <div class="hologram-logo-preview" style="font-size:36px;line-height:1;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);box-shadow:0 0 20px rgba(255,255,255,0.12)">
+                &#127822;
+              </div>
+              <div class="hologram-beam"></div>
+              <div class="hologram-phone">
+                <div style="width:10px;height:10px;border-radius:50%;background:#ffffff"></div>
+                <div style="width:28px;height:42px;background:#181818;border-radius:3px"></div>
+              </div>
+            </div>
+            <div style="font-size:13px;font-weight:600;color:var(--ts)">
+              Hold phone 20&ndash;25 cm above specimen
+            </div>
+          </div>
+
+          <div class="section-label">Measurement Protocol</div>
+          <div class="step-checklist">
+            <div class="step-checklist-item">
+              <div class="step-num-badge">1</div>
+              <div class="step-text">Place food on a <strong>clean, flat surface</strong> under diffuse ambient light.</div>
+            </div>
+            <div class="step-checklist-item">
+              <div class="step-num-badge">2</div>
+              <div class="step-text">The <strong>optical sensor</strong> will lock on and identify produce specimen automatically.</div>
+            </div>
+            <div class="step-checklist-item">
+              <div class="step-num-badge">3</div>
+              <div class="step-text">Follow prompts to <strong>rotate specimen</strong> for 360&deg; surface mapping.</div>
+            </div>
+            <div class="step-checklist-item">
+              <div class="step-num-badge">4</div>
+              <div class="step-text">Gently <strong>tap the specimen</strong> when prompted to record acoustic damping.</div>
+            </div>
+          </div>
+
+          <button class="btn-primary" onclick="gt('s3')">
+            <span>Start Sensor Calibration</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN 3: SENSOR CALIBRATION
+         ======================================================= -->
+    <div id="s3" class="screen">
+      <div class="app-header">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Back</span>
+        </button>
+        <span class="header-title">Sensor Calibration</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Return to Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding: 0 20px 24px; display: flex; flex-direction: column; align-items: center;">
+          <div class="calib-dial-wrapper">
+            <div class="calib-outer-ring">
+              <div class="calib-spinner"></div>
+              <div class="calib-inner-core">
+                <span class="calib-pct" id="calibPct">0%</span>
+                <span class="calib-state-text" id="calibStateText">Initializing</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="font-size:13px;color:var(--ts);text-align:center;margin-bottom:24px;font-style:italic;" id="calibSubLabel">
+            Aligning optical & acoustic baseline...
+          </div>
+
+          <div class="metric-card" style="width:100%;max-width:330px;margin-bottom:28px;">
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">White Balance & ISO</span>
+              <span class="sensor-diag-status" style="color:var(--yw)" id="calibRow1">SYNCING</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Acoustic Floor (Mic)</span>
+              <span class="sensor-diag-status" style="color:var(--yw)" id="calibRow2">SYNCING</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Spatial Gyro (IMU)</span>
+              <span class="sensor-diag-status" style="color:var(--yw)" id="calibRow3">SYNCING</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Optical Classifier Weights</span>
+              <span class="sensor-diag-status" style="color:var(--yw)" id="calibRow4">SYNCING</span>
+            </div>
+          </div>
+
+          <div id="calibReadyBadge" style="display:none;margin-bottom:20px;">
+            <span class="status-pill pill-green">&#10003; All Sensors Calibrated & Locked</span>
+          </div>
+
+          <button class="btn-primary" id="calibBeginScanBtn" style="display:none;width:100%;max-width:320px;" onclick="gt('s4')">
+            <span>Proceed to Active Scan</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN 4: ACTIVE SCAN (With Real-Time Auto-Detect HUD)
+         ======================================================= -->
+    <div id="s4" class="screen" style="background:#000000;">
+      <div class="app-header" style="background:rgba(0,0,0,0.92)">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Abort</span>
+        </button>
+        <span class="header-title">Multi-Modal Scan</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Exit Scan">
+          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Viewfinder Area -->
+      <div class="viewfinder-area">
+        <div class="reticle-box">
+          <div class="reticle-bottom-corners"></div>
+          <div class="scan-laser-beam"></div>
+          <div class="target-preview-img-wrap" style="font-size:76px;line-height:1;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);box-shadow:0 0 35px rgba(255,255,255,0.12)">
+            <span id="liveScanTargetIcon">&#127822;</span>
+          </div>
+        </div>
+
+        <!-- Live Specimen Auto-Detect HUD -->
+        <div class="cv-detect-hud-card">
+          <div class="cv-hud-left">
+            <div class="cv-hud-status">SPECIMEN IDENTIFIED</div>
+            <div class="cv-detected-target" id="cvTargetLabel">Honeycrisp Apple (Malus domestica)</div>
+          </div>
+          <div class="cv-hud-badge" id="cvConfidenceLabel">99.4% CONF</div>
+        </div>
+      </div>
+
+      <!-- Lower Controls & Telemetry -->
+      <div class="scan-telemetry-tray">
+        <div class="metric-card" style="margin-bottom:14px;padding:12px 14px;">
+          <div class="section-label" style="margin-bottom:6px;display:flex;justify-content:space-between">
+            <span>Acoustic Damping Response</span>
+            <span id="scanViewCounter" style="color:var(--ac)">VIEW 1 OF 3</span>
+          </div>
+          <canvas id="waveformCanvas" width="340" height="48" style="width:100%;height:48px;display:block"></canvas>
+        </div>
+
+        <div class="metric-card" style="margin-bottom:18px;">
+          <div class="sensor-diag-row">
+            <span class="sensor-diag-name">Visual Stream (HDR)</span>
+            <span class="sensor-diag-status" style="color:var(--gr)">&#10003; ACTIVE</span>
+          </div>
+          <div class="sensor-diag-row">
+            <span class="sensor-diag-name">Produce Taxonomy</span>
+            <span class="sensor-diag-status" style="color:var(--gr)" id="scanStatusCV">&#10003; AUTO-RESOLVED</span>
+          </div>
+          <div class="sensor-diag-row">
+            <span class="sensor-diag-name">Acoustic Tap Impulse</span>
+            <span class="sensor-diag-status" style="color:var(--ac)" id="scanStatusAcoustic">&#9675; RECORDING</span>
+          </div>
+          <div class="sensor-diag-row">
+            <span class="sensor-diag-name">Specular Scatter Index</span>
+            <span class="sensor-diag-status" style="color:var(--ts)" id="scanStatusSurface">&#9675; PENDING</span>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="scanStepBtn" onclick="advanceScanStep()">
+          <span>Rotate Specimen &rarr;</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN 5: MULTI-MODAL ANALYSIS PROCESSING
+         ======================================================= -->
+    <div id="s5" class="screen">
+      <div class="app-header">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Cancel</span>
+        </button>
+        <span class="header-title">Synthesizing Sensors</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div class="analysis-pipeline-wrap">
+          <div style="font-size:16px;font-weight:800;color:var(--tp);margin-bottom:24px;text-align:center;display:flex;align-items:center;gap:8px">
+            <span style="animation:rotateSpin 1.2s linear infinite;color:var(--ac)">&#8635;</span>
+            <span>Running Neural Inference Pipeline...</span>
+          </div>
+
+          <div class="pipeline-step-row">
+            <div class="pipeline-step-icon">&#128269;</div>
+            <div class="pipeline-step-name">Produce Classifier Engine</div>
+            <div class="pipeline-step-badge" style="color:var(--gr)">CONFIRMED</div>
+          </div>
+
+          <div style="color:var(--tm);font-size:16px;margin:2px 0;">&#8595;</div>
+
+          <div class="pipeline-step-row">
+            <div class="pipeline-step-icon">&#127752;</div>
+            <div class="pipeline-step-name">Anthocyanin & Chlorophyll Loss</div>
+            <div class="pipeline-step-badge" style="color:var(--ac)">COMPUTED</div>
+          </div>
+
+          <div style="color:var(--tm);font-size:16px;margin:2px 0;">&#8595;</div>
+
+          <div class="pipeline-step-row">
+            <div class="pipeline-step-icon">&#128266;</div>
+            <div class="pipeline-step-name">Resonance Turgor Pressure</div>
+            <div class="pipeline-step-badge" style="color:var(--ac)">ANALYZED</div>
+          </div>
+
+          <div style="color:var(--tm);font-size:16px;margin:2px 0;">&#8595;</div>
+
+          <div class="pipeline-step-row" style="background:var(--ac-bg);border-color:var(--bdr-accent)">
+            <div class="pipeline-step-icon">&#129504;</div>
+            <div class="pipeline-step-name">Freshness & Degradation Model</div>
+            <div class="pipeline-step-badge" style="color:var(--ac)">SYNTHESIZED</div>
+          </div>
+
+          <div style="margin-top:24px;font-size:11px;color:var(--ts);text-align:center;font-family:var(--mono)">
+            AgriVision-MobileNet-v4 &bull; 14ms on-device NPU
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN 6: FRESHNESS RESULT SCREEN
+         ======================================================= -->
+    <div id="s6" class="screen">
+      <div class="app-header">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Back</span>
+        </button>
+        <span class="header-title">Freshness Screening Result</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Return to Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding: 0 20px 32px;">
+          <!-- Auto-Detected Label Pill -->
+          <div style="text-align:center;margin-bottom:12px;">
+            <div class="auto-identified-badge" id="resAutoDetectedBadge">
+              <span>&#128269;</span>
+              <span id="resTargetName">Identified: Honeycrisp Apple</span>
+              <span style="color:var(--gr);font-weight:800;" id="resConfBadge">&bull; 99.2% Conf</span>
+            </div>
+          </div>
+
+          <!-- Big Hero Score Card -->
+          <div class="result-hero-box">
+            <div class="big-score-num" id="resScoreNum" style="color:var(--gr)">
+              88<span class="big-score-denom">/100</span>
+            </div>
+            <div style="font-size:13px;color:var(--ts);margin-top:6px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase">
+              Freshness Index
+            </div>
+            <div style="margin-top:12px;">
+              <span class="status-pill pill-green" id="resStagePill">OPTIMAL FRESHNESS</span>
+            </div>
+          </div>
+
+          <!-- Quad Metrics Grid -->
+          <div class="metrics-quad-grid">
+            <div class="quad-card">
+              <div class="quad-title">Remaining Shelf-Life</div>
+              <div class="quad-val" id="resRulVal">5&ndash;7</div>
+              <div class="quad-sub">days (80% CI)</div>
+            </div>
+            <div class="quad-card">
+              <div class="quad-title">Degradation Rate</div>
+              <div class="quad-val" id="resDegVal">-1.6</div>
+              <div class="quad-sub">points / 24h</div>
+            </div>
+            <div class="quad-card">
+              <div class="quad-title">Cellular Turgor</div>
+              <div class="quad-val" id="resTurgorVal">92%</div>
+              <div class="quad-sub">firmness acoustic</div>
+            </div>
+            <div class="quad-card">
+              <div class="quad-title">Model Confidence</div>
+              <div class="quad-val" id="resConfVal">89%</div>
+              <div class="quad-sub">multi-sensor match</div>
+            </div>
+          </div>
+
+          <!-- Expandable Diagnostic Breakdown -->
+          <div class="metric-card" style="margin-bottom:20px;">
+            <div class="diagnostic-header" onclick="toggleDiagnostic('freshDiag')">
+              <h4>Sensor Attribution & Changes</h4>
+              <span class="diagnostic-chevron" id="diagChevron">&#9662;</span>
+            </div>
+            <div class="diagnostic-content" id="freshDiag">
+              <div class="diagnostic-row">
+                <span style="color:var(--ts)">Visual Pigment Loss</span>
+                <span style="font-weight:700;color:var(--gr)">Minimal (&lt; 4%)</span>
+              </div>
+              <div class="diagnostic-row">
+                <span style="color:var(--ts)">Skin Micro-Wrinkles</span>
+                <span style="font-weight:700;color:var(--gr)">None Detected</span>
+              </div>
+              <div class="diagnostic-row">
+                <span style="color:var(--ts)">Acoustic Wave Velocity</span>
+                <span style="font-weight:700;color:var(--ac)">184 m/s (Crisp)</span>
+              </div>
+              <div class="diagnostic-row">
+                <span style="color:var(--ts)">Storage Time Baseline</span>
+                <span style="font-weight:700;color:var(--ts)">Calculated Day 2</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scientific Disclaimer -->
+          <div class="disclaimer-card" style="margin-bottom:24px;">
+            <div class="disclaimer-text">
+              <strong>Measurement Disclaimer:</strong> FreshGuard calculates non-destructive probabilistic indicators based on physical optical and acoustic responses. It does not replace certified laboratory microbiological testing.
+            </div>
+          </div>
+
+          <!-- Bottom Navigation Action Deck -->
+          <div class="actions-deck">
+            <button class="btn-primary" onclick="gt('s2')">
+              <span>Scan Another Specimen</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            <button class="btn-secondary" onclick="gt('s7')">
+              <span>View Trajectory & Deep Metrics</span>
+            </button>
+            <button class="btn-secondary" onclick="goHome()" style="border-color:transparent;color:var(--ts)">
+              <span>&#8592; Back to Dashboard</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN 7: DETAILED ANALYSIS
+         ======================================================= -->
+    <div id="s7" class="screen">
+      <div class="app-header">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Back</span>
+        </button>
+        <span class="header-title">Detailed Metrics & Curves</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding: 0 20px 32px;">
+          <!-- Historical Trajectory Chart -->
+          <div class="metric-card" style="margin-bottom:18px;">
+            <div class="section-label">Freshness Degradation Trajectory</div>
+            <canvas id="trajectoryCanvas" width="340" height="130" style="width:100%;height:130px;display:block"></canvas>
+          </div>
+
+          <!-- Degradation Velocity -->
+          <div class="metric-card" style="margin-bottom:18px;">
+            <div class="section-label">Degradation Velocity Analysis</div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
+              <span style="font-family:var(--mono);font-size:28px;font-weight:800;color:var(--gr)" id="deepDegVel">-1.6</span>
+              <span style="font-size:13px;color:var(--ts)">points / day</span>
+            </div>
+            <span class="status-pill pill-green" id="deepDegPill">Stable Linear Decay</span>
+            <div style="margin-top:10px;font-size:12px;color:var(--ts);line-height:1.45">
+              Specimen exhibits robust cellular retention with no accelerated breakdown detected.
+            </div>
+          </div>
+
+          <!-- Signal Contribution Weighting -->
+          <div class="metric-card" style="margin-bottom:24px;">
+            <div class="section-label">Multi-Modal Sensor Weights</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                  <span style="color:var(--ts)">Optical Spectral Feature Mapping</span>
+                  <span style="font-family:var(--mono);font-weight:700;color:var(--ac)">38%</span>
+                </div>
+                <div style="height:6px;background:var(--bdr);border-radius:3px;overflow:hidden">
+                  <div style="height:100%;width:38%;background:var(--ac)"></div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                  <span style="color:var(--ts)">Acoustic Impulse & Resonant Frequency</span>
+                  <span style="font-family:var(--mono);font-weight:700;color:var(--ac)">28%</span>
+                </div>
+                <div style="height:6px;background:var(--bdr);border-radius:3px;overflow:hidden">
+                  <div style="height:100%;width:28%;background:var(--ac)"></div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                  <span style="color:var(--ts)">Temporal Degradation Curve Matching</span>
+                  <span style="font-family:var(--mono);font-weight:700;color:var(--ac)">22%</span>
+                </div>
+                <div style="height:6px;background:var(--bdr);border-radius:3px;overflow:hidden">
+                  <div style="height:100%;width:22%;background:var(--ac)"></div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                  <span style="color:var(--ts)">IMU Orientation & Distance Stability</span>
+                  <span style="font-family:var(--mono);font-weight:700;color:var(--ac)">12%</span>
+                </div>
+                <div style="height:6px;background:var(--bdr);border-radius:3px;overflow:hidden">
+                  <div style="height:100%;width:12%;background:var(--ac)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions-deck">
+            <button class="btn-secondary" onclick="gb()">
+              <span>&larr; Return to Result</span>
+            </button>
+            <button class="btn-secondary" onclick="goHome()">
+              <span>Dashboard</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN SM0: MILK CONTAINER SELECTION
+         ======================================================= -->
+    <div id="sm0" class="screen">
+      <div class="app-header">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Back</span>
+        </button>
+        <span class="header-title">Milk Sample Setup</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding: 0 20px 32px;">
+          <div style="font-size:22px;font-weight:900;color:var(--tp);letter-spacing:-0.02em;margin-bottom:8px">
+            Select sample container
+          </div>
+          <div style="font-size:13px;color:var(--ts);line-height:1.45;margin-bottom:20px">
+            Spectrophotometric screening requires transparent containment to allow light transmission.
+          </div>
+
+          <div class="section-label">Container Material</div>
+          <div class="container-options-grid">
+            <div class="container-option-card selected" id="cntGlass" onclick="selectContainer('glass')">
+              <div style="font-size:32px">&#127755;</div>
+              <div style="font-size:13px;font-weight:700">Clear Glass</div>
+              <div style="font-size:10px;color:var(--gr)">RECOMMENDED</div>
+            </div>
+            <div class="container-option-card" id="cntPlastic" onclick="selectContainer('plastic')">
+              <div style="font-size:32px">&#129518;</div>
+              <div style="font-size:13px;font-weight:700">Clear Plastic</div>
+              <div style="font-size:10px;color:var(--ts)">SUPPORTED</div>
+            </div>
+            <div class="container-option-card" id="cntSteel" onclick="selectContainer('steel')">
+              <div style="font-size:32px">&#129695;</div>
+              <div style="font-size:13px;font-weight:700">Steel / Metal</div>
+              <div style="font-size:10px;color:var(--rd)">OPAQUE</div>
+            </div>
+            <div class="container-option-card" id="cntOther" onclick="selectContainer('other')">
+              <div style="font-size:32px">&#10067;</div>
+              <div style="font-size:13px;font-weight:700">Other / Ceramic</div>
+              <div style="font-size:10px;color:var(--ts)">UNVERIFIED</div>
+            </div>
+          </div>
+
+          <!-- Opaque Steel warning -->
+          <div id="steelWarningBox" style="display:none;background:var(--rd-bg);border:1px solid rgba(239,68,68,0.3);border-radius:var(--rmd);padding:14px;margin-bottom:18px">
+            <div style="font-size:12px;font-weight:800;color:var(--rd);margin-bottom:4px">&#9888; Opaque Container Warning</div>
+            <div style="font-size:11px;color:#fca5a5;line-height:1.4">
+              Optical density measurements cannot penetrate opaque steel or ceramic containers. Please pour 20&ndash;30 mL of milk into a transparent glass for accurate screening.
+            </div>
+          </div>
+
+          <div class="info-box" style="margin-bottom:24px;">
+            <div class="info-box-title">&#129514; Optical Calibration Principle</div>
+            <div class="info-box-body">
+              Light refraction and Rayleigh scattering index are measured through the liquid column to detect changes in milk solids, fat emulsification, and water content.
+            </div>
+          </div>
+
+          <button class="btn-primary" id="btnContinueMilk" onclick="gt('sm1')">
+            <span>Proceed to Standardization</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN SM1: MILK STANDARDIZE & POSITION
+         ======================================================= -->
+    <div id="sm1" class="screen">
+      <div class="app-header">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Back</span>
+        </button>
+        <span class="header-title">Position Sample</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding: 0 20px 32px;">
+          <div class="scan-hologram-box" style="margin-bottom:20px;">
+            <div style="display:flex;justify-content:center;margin-bottom:12px;"><svg class="milk-glass-svg" viewBox="0 0 48 48" width="68" height="68" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 15px rgba(255,255,255,0.4))">
+            <defs>
+              <linearGradient id="milkLiquidSm2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="70%" stop-color="#f8fafc"/>
+                <stop offset="100%" stop-color="#e2e8f0"/>
+              </linearGradient>
+              <linearGradient id="glassShineSm2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+              </linearGradient>
+              <linearGradient id="glassBorderSm2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.85)"/>
+                <stop offset="100%" stop-color="rgba(255,255,255,0.4)"/>
+              </linearGradient>
+            </defs>
+            <path d="M12 9L15.5 40C15.7 41.6 17.1 43 18.7 43H29.3C30.9 43 32.3 41.6 32.5 40L36 9" stroke="url(#glassBorderSm2)" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M16 38.5L16.5 41C16.6 41.8 17.3 42.5 18.2 42.5H29.8C30.7 42.5 31.4 41.8 31.5 41L32 38.5H16Z" fill="rgba(255,255,255,0.25)"/>
+            <path d="M13.2 15.5L16 38.5H32L34.8 15.5C34.8 15.5 31.5 17 24 17C16.5 17 13.2 15.5 13.2 15.5Z" fill="url(#milkLiquidSm2)"/>
+            <ellipse cx="24" cy="15.5" rx="10.8" ry="2.2" fill="#ffffff" stroke="rgba(226,232,240,0.8)" stroke-width="0.8"/>
+            <path d="M15 13L17.5 38" stroke="url(#glassShineSm2)" stroke-width="1.8" stroke-linecap="round"/>
+            <ellipse cx="24" cy="9" rx="12" ry="2.8" stroke="url(#glassBorderSm2)" stroke-width="2" fill="none"/>
+          </svg></div>
+            <div style="font-size:16px;font-weight:800;color:var(--tp);">20 &ndash; 30 mL Liquid Sample</div>
+            <div style="font-size:12px;color:var(--ts);margin-top:4px;">Place glass inside scan zone &bull; Avoid direct sunlight glare</div>
+          </div>
+
+          <div class="section-label">Alignment Checklist</div>
+          <div class="step-checklist">
+            <div class="step-checklist-item">
+              <div class="step-num-badge">&#10003;</div>
+              <div class="step-text"><strong>Working Distance:</strong> Hold phone 15&ndash;20 cm directly above glass rim.</div>
+            </div>
+            <div class="step-checklist-item">
+              <div class="step-num-badge">&#10003;</div>
+              <div class="step-text"><strong>Surface Meniscus:</strong> Liquid should be at rest without bubbles or froth.</div>
+            </div>
+            <div class="step-checklist-item">
+              <div class="step-num-badge">&#10003;</div>
+              <div class="step-text"><strong>Ambient Illumination:</strong> Diffuse indirect light; avoid casting shadows over the glass.</div>
+            </div>
+          </div>
+
+          <button class="btn-primary" onclick="gt('sm2')">
+            <span>Initiate Milk Screening</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN SM2: MILK MEASUREMENT
+         ======================================================= -->
+    <div id="sm2" class="screen" style="background:#000000;">
+      <div class="app-header" style="background:rgba(0,0,0,0.92)">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Cancel</span>
+        </button>
+        <span class="header-title">Milk Spectrometry</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Exit">
+          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="viewfinder-area" style="height:340px;">
+        <div class="reticle-box">
+          <div class="reticle-bottom-corners"></div>
+          <div class="scan-laser-beam"></div>
+<svg class="milk-glass-svg" viewBox="0 0 48 48" width="68" height="68" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 15px rgba(255,255,255,0.4))">
+            <defs>
+              <linearGradient id="milkLiquidSm2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="70%" stop-color="#f8fafc"/>
+                <stop offset="100%" stop-color="#e2e8f0"/>
+              </linearGradient>
+              <linearGradient id="glassShineSm2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+              </linearGradient>
+              <linearGradient id="glassBorderSm2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.85)"/>
+                <stop offset="100%" stop-color="rgba(255,255,255,0.4)"/>
+              </linearGradient>
+            </defs>
+            <path d="M12 9L15.5 40C15.7 41.6 17.1 43 18.7 43H29.3C30.9 43 32.3 41.6 32.5 40L36 9" stroke="url(#glassBorderSm2)" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M16 38.5L16.5 41C16.6 41.8 17.3 42.5 18.2 42.5H29.8C30.7 42.5 31.4 41.8 31.5 41L32 38.5H16Z" fill="rgba(255,255,255,0.25)"/>
+            <path d="M13.2 15.5L16 38.5H32L34.8 15.5C34.8 15.5 31.5 17 24 17C16.5 17 13.2 15.5 13.2 15.5Z" fill="url(#milkLiquidSm2)"/>
+            <ellipse cx="24" cy="15.5" rx="10.8" ry="2.2" fill="#ffffff" stroke="rgba(226,232,240,0.8)" stroke-width="0.8"/>
+            <path d="M15 13L17.5 38" stroke="url(#glassShineSm2)" stroke-width="1.8" stroke-linecap="round"/>
+            <ellipse cx="24" cy="9" rx="12" ry="2.8" stroke="url(#glassBorderSm2)" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+
+        <div class="cv-detect-hud-card">
+          <div class="cv-hud-left">
+            <div class="cv-hud-status">OPTICAL SENSING IN PROGRESS</div>
+            <div class="cv-detected-target">Liquid Colloid Dispersion Analysis</div>
+          </div>
+          <div class="cv-hud-badge" style="color:var(--ac);background:var(--ac-bg)">OPTICAL TRANSMISSION</div>
+        </div>
+      </div>
+
+      <div class="scan-telemetry-tray" style="top:392px;">
+        <div class="metric-card" style="margin-bottom:18px;">
+          <div class="sensor-diag-row">
+            <span class="sensor-diag-name">Rayleigh Scatter Capture</span>
+            <span class="sensor-diag-status" style="color:var(--gr)" id="smDiag1">&#10003; CAPTURED</span>
+          </div>
+          <div class="sensor-diag-row">
+            <span class="sensor-diag-name">Refractive Index Dispersion</span>
+            <span class="sensor-diag-status" style="color:var(--yw)" id="smDiag2">&#9675; SAMPLING</span>
+          </div>
+          <div class="sensor-diag-row">
+            <span class="sensor-diag-name">Spectrophotometric Curve</span>
+            <span class="sensor-diag-status" style="color:var(--ts)" id="smDiag3">&#9675; QUEUED</span>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btnAnalyzeMilk" onclick="runMilkInference()">
+          <span>Analyze Specimen &rarr;</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN SM4: MILK RESULT SCREEN
+         ======================================================= -->
+    <div id="sm4" class="screen">
+      <div class="app-header">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Back</span>
+        </button>
+        <span class="header-title">Milk Screening Result</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding: 0 20px 32px;">
+          <div class="result-hero-box" id="milkResultHero">
+            <div style="display:flex;justify-content:center;margin-bottom:10px;">
+              <svg class="milk-glass-svg" viewBox="0 0 48 48" width="56" height="56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="milkLiquidSm4" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#ffffff"/>
+                    <stop offset="70%" stop-color="#f8fafc"/>
+                    <stop offset="100%" stop-color="#e2e8f0"/>
+                  </linearGradient>
+                  <linearGradient id="glassShineSm4" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+                  </linearGradient>
+                  <linearGradient id="glassBorderSm4" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="rgba(255,255,255,0.85)"/>
+                    <stop offset="100%" stop-color="rgba(255,255,255,0.4)"/>
+                  </linearGradient>
+                </defs>
+                <path d="M12 9L15.5 40C15.7 41.6 17.1 43 18.7 43H29.3C30.9 43 32.3 41.6 32.5 40L36 9" stroke="url(#glassBorderSm4)" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M16 38.5L16.5 41C16.6 41.8 17.3 42.5 18.2 42.5H29.8C30.7 42.5 31.4 41.8 31.5 41L32 38.5H16Z" fill="rgba(255,255,255,0.25)"/>
+                <path d="M13.2 15.5L16 38.5H32L34.8 15.5C34.8 15.5 31.5 17 24 17C16.5 17 13.2 15.5 13.2 15.5Z" fill="url(#milkLiquidSm4)"/>
+                <ellipse cx="24" cy="15.5" rx="10.8" ry="2.2" fill="#ffffff" stroke="rgba(226,232,240,0.8)" stroke-width="0.8"/>
+                <path d="M15 13L17.5 38" stroke="url(#glassShineSm4)" stroke-width="1.8" stroke-linecap="round"/>
+                <ellipse cx="24" cy="9" rx="12" ry="2.8" stroke="url(#glassBorderSm4)" stroke-width="2" fill="none"/>
+              </svg>
+            </div>
+            <div class="section-label" style="justify-content:center;margin-bottom:6px">Screening Verdict</div>
+            <div style="font-size:16px;font-weight:900;letter-spacing:0.04em;" class="status-pill pill-green" id="milkVerdictPill">
+              NO TESTED ADULTERATION DETECTED
+            </div>
+          </div>
+
+          <!-- Dilution Gauge Card -->
+          <div class="metric-card" style="margin-bottom:16px;">
+            <div class="section-label">Estimated Water Dilution</div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
+              <span style="font-family:var(--mono);font-size:32px;font-weight:800;color:var(--gr)" id="milkWaterPct">3.8%</span>
+              <span style="font-size:12px;color:var(--ts)">(Normal baseline variance)</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:11px;color:var(--ts)">Certainty</span>
+              <div style="flex:1;height:5px;background:var(--bdr);border-radius:3px;overflow:hidden">
+                <div style="height:100%;width:92%;background:var(--ac)" id="milkConfBar"></div>
+              </div>
+              <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--ac)" id="milkConfText">92%</span>
+            </div>
+          </div>
+
+          <!-- Adulterant Matrix -->
+          <div class="section-label">Screened Adulterants Matrix</div>
+          <div class="metric-card" style="margin-bottom:16px;">
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Excess Water Dilution</span>
+              <span class="sensor-diag-status" style="color:var(--gr)" id="adWaterStatus">&#10003; 3.8% (Normal)</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Synthetic Urea Nitrogen</span>
+              <span class="sensor-diag-status" style="color:var(--gr)">&#10003; Negative</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Starch & Thickening Agents</span>
+              <span class="sensor-diag-status" style="color:var(--gr)">&#10003; Negative</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Detergents & Neutralizers</span>
+              <span class="sensor-diag-status" style="color:var(--gr)">&#10003; Negative</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Unscreened Chemical Compounds</span>
+              <span class="sensor-diag-status" style="color:var(--tm)">&mdash; Out of scope</span>
+            </div>
+          </div>
+
+          <div id="milkAnomalyAlert"></div>
+
+          <div class="disclaimer-card" style="margin-bottom:24px;">
+            <div class="disclaimer-text">
+              <strong>Screening Limitation:</strong> Optical screening identifies optical density deviances and known refractive anomalies. It is a preliminary rapid test, not a substitute for certified FSSAI/ISO laboratory chemical chromatography.
+            </div>
+          </div>
+
+          <div class="actions-deck">
+            <button class="btn-primary" onclick="gt('sm0')">
+              <span>Test Another Sample</span>
+            </button>
+            <button class="btn-secondary" onclick="gt('sm5')">
+              <span>View Spectrometric Curve</span>
+            </button>
+            <button class="btn-secondary" onclick="goHome()" style="border-color:transparent;color:var(--ts)">
+              <span>&#8592; Back to Dashboard</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN SM5: MILK TECHNICAL ANALYSIS
+         ======================================================= -->
+    <div id="sm5" class="screen">
+      <div class="app-header">
+        <button class="nav-back-btn" onclick="gb()" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Back</span>
+        </button>
+        <span class="header-title">Technical Spectrometry</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Dashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding: 0 20px 32px;">
+          <div class="metric-card" style="margin-bottom:18px;">
+            <div class="section-label">Colloid Dispersion Curve (400&ndash;700 nm)</div>
+            <canvas id="milkCurveCanvas" width="340" height="120" style="width:100%;height:120px;display:block"></canvas>
+            <div style="font-size:10px;color:var(--ts);margin-top:8px;font-style:italic">
+              Relative normalized optical transmission through 25mm liquid column.
+            </div>
+          </div>
+
+          <div class="metric-card" style="margin-bottom:20px;">
+            <div class="section-label">Sample Environment Telemetry</div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Container Geometry</span>
+              <span class="sensor-diag-status" style="color:var(--tp)" id="techCntVal">Clear Glass (Cylindrical)</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Liquid Volume</span>
+              <span class="sensor-diag-status" style="color:var(--tp)">~25 mL (&plusmn;3 mL)</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Ambient Temperature</span>
+              <span class="sensor-diag-status" style="color:var(--tp)">22.4 &deg;C (Estimated)</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">Transmission Coefficient</span>
+              <span class="sensor-diag-status" style="color:var(--gr)">0.942 (Normal)</span>
+            </div>
+          </div>
+
+          <div class="actions-deck">
+            <button class="btn-secondary" onclick="gb()">
+              <span>&larr; Return to Milk Result</span>
+            </button>
+            <button class="btn-secondary" onclick="goHome()">
+              <span>Dashboard</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN SH: SCAN HISTORY
+         ======================================================= -->
+    <div id="sh" class="screen">
+      <div class="app-header">
+        <button class="nav-back-btn" onclick="goHome()" title="Home">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Home</span>
+        </button>
+        <span class="header-title">Scan Log History</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Home">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding: 0 20px 24px;">
+          <div class="section-label">Today</div>
+
+          <div class="history-entry-card" onclick="loadDemoScenario('rt')">
+            <div style="font-size:28px">&#127822;</div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;color:var(--tp)">Honeycrisp Apple</div>
+              <div style="font-size:12px;color:var(--ts)">Freshness: 88 &bull; RUL: 5-7 d</div>
+              <div style="font-size:11px;color:var(--tm);margin-top:2px">17:42 &bull; Session #402</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--gr)">88</div>
+              <div style="font-size:10px;color:var(--ts)">91% conf</div>
+            </div>
+          </div>
+
+          <div class="history-entry-card" onclick="loadDemoScenario('md')">
+            <div style="font-size:28px">&#129371;</div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;color:var(--tp)">Cow Milk Sample</div>
+              <div style="font-size:12px;color:var(--ts)">No adulterants &bull; Dilution: ~3.8%</div>
+              <div style="font-size:11px;color:var(--tm);margin-top:2px">14:15 &bull; Session #401</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-family:var(--mono);font-size:13px;font-weight:800;color:var(--gr)">PASS</div>
+              <div style="font-size:10px;color:var(--ts)">93% conf</div>
+            </div>
+          </div>
+
+          <div class="section-label" style="margin-top:16px;">Yesterday</div>
+
+          <div class="history-entry-card" onclick="loadDemoScenario('ot')">
+            <div style="font-size:28px">&#127813;</div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;color:var(--tp)">Roma Tomato</div>
+              <div style="font-size:12px;color:var(--ts)">Freshness: 41 &bull; RUL: 0-1 d</div>
+              <div style="font-size:11px;color:var(--tm);margin-top:2px">18:20 &bull; Session #399</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--rd)">41</div>
+              <div style="font-size:10px;color:var(--ts)">82% conf</div>
+            </div>
+          </div>
+
+          <div class="history-entry-card" onclick="loadDemoScenario('ft')">
+            <div style="font-size:28px">&#127813;</div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:700;color:var(--tp)">Greenhouse Tomato</div>
+              <div style="font-size:12px;color:var(--ts)">Freshness: 94 &bull; RUL: 6-8 d</div>
+              <div style="font-size:11px;color:var(--tm);margin-top:2px">11:05 &bull; Session #398</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-family:var(--mono);font-size:18px;font-weight:800;color:var(--gr)">94</div>
+              <div style="font-size:10px;color:var(--ts)">88% conf</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         SCREEN SA: ABOUT & DIAGNOSTICS
+         ======================================================= -->
+    <div id="sa" class="screen">
+      <div class="app-header">
+        <button class="nav-back-btn" onclick="goHome()" title="Home">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          <span>Home</span>
+        </button>
+        <span class="header-title">About FreshGuard</span>
+        <button class="nav-home-btn" onclick="goHome()" title="Home">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+      </div>
+      <div class="screen-scroll">
+        <div style="padding: 0 20px 32px;">
+          <!-- App Hero with Provided Logo -->
+          <div class="about-hero-section">
+            <div class="about-logo-wrapper">
+              <img src="./logo.png" alt="FreshGuard Logo" class="about-logo-img">
+            </div>
+            <div style="font-size:26px;font-weight:900;color:var(--tp);letter-spacing:-0.02em">FreshGuard</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--ac);margin-top:4px;font-weight:700">
+              v2.2.0 &bull; iQOO 15 Edition
+            </div>
+            <div style="font-size:13px;color:var(--ts);line-height:1.5;margin-top:8px;max-width:280px;margin-left:auto;margin-right:auto">
+              Automated multi-modal food screening combining optical inspection, acoustic resonance, and surface spectroscopy.
+            </div>
+          </div>
+
+          <div class="metric-card" style="margin-bottom:18px;">
+            <div class="section-label">Specimen Inspection Engine</div>
+            <div style="font-size:13px;color:var(--ts);line-height:1.5;margin-bottom:8px;">
+              FreshGuard eliminates manual food selection through automated sensor screening. The vision subsystem automatically detects produce species, cultivar, orientation, and surface distribution.
+            </div>
+            <span class="status-pill pill-cyan">Visual Core v4.2 [Active]</span>
+          </div>
+
+          <!-- Developer Demo Mode Button -->
+          <div class="metric-card" style="margin-bottom:18px;border-color:rgba(249,115,22,0.3)">
+            <div class="section-label" style="color:var(--org)">Demo & Verification Mode</div>
+            <div style="font-size:12px;color:var(--ts);line-height:1.45;margin-bottom:14px;">
+              Pre-load simulated inspection scenarios for validation and showcase presentations.
+            </div>
+            <button class="btn-primary" style="background:var(--org);color:#fff;box-shadow:0 4px 20px var(--org-bg)" onclick="openDemoSheet()">
+              <span>Launch Demo Preset Selector</span>
+            </button>
+          </div>
+
+          <!-- Pipeline Architecture Table -->
+          <div class="metric-card" style="margin-bottom:20px;">
+            <div class="section-label">Subsystem Architecture (Status)</div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">VisionClassifierPipeline</span>
+              <span class="sensor-diag-status" style="color:var(--ac)">MOCKED</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">FreshnessSensorFusion</span>
+              <span class="sensor-diag-status" style="color:var(--ac)">MOCKED</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">MilkColloidSpectrometry</span>
+              <span class="sensor-diag-status" style="color:var(--ac)">MOCKED</span>
+            </div>
+            <div class="sensor-diag-row">
+              <span class="sensor-diag-name">AdulterantPatternLibrary</span>
+              <span class="sensor-diag-status" style="color:var(--ac)">MOCKED</span>
+            </div>
+          </div>
+
+          <div class="disclaimer-card">
+            <div class="disclaimer-text">
+              <strong>Regulatory Notice:</strong> FreshGuard is a mobile screening tool designed for household awareness. It is not an accredited medical or industrial analytical standard.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- #appView -->
+
+  <!-- =======================================================
+       PERSISTENT BOTTOM NAVIGATION BAR
+       ======================================================= -->
+  <div id="bottomBar">
+    <div class="nav-tab-item active" id="tabHome" onclick="switchTab('s0')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="nav-tab-label">Dashboard</span>
+    </div>
+
+    <div class="nav-tab-item" id="tabHistory" onclick="switchTab('sh')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span class="nav-tab-label">History</span>
+    </div>
+
+    <div class="nav-tab-item" id="tabAbout" onclick="switchTab('sa')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span class="nav-tab-label">About</span>
+    </div>
+  </div>
+
+</div> <!-- #deviceFrame -->
+</div> <!-- #outerShell -->
+
+<!-- =======================================================
+     DEMO MODE SELECTOR OVERLAY SHEET
+     ======================================================= -->
+<div class="demo-overlay" id="demoOverlay">
+  <div class="demo-sheet">
+    <div style="font-family:var(--mono);font-size:10px;font-weight:800;color:var(--org);letter-spacing:0.15em;text-transform:uppercase;text-align:center;margin-bottom:4px">
+      &#9888; DEMO SELECTOR &bull; SIMULATED DATA
+    </div>
+    <div style="font-size:13px;color:var(--ts);text-align:center;margin-bottom:18px">
+      Select an inspection scenario to preview
+    </div>
+
+    <div class="demo-option-item" onclick="loadDemoScenario('rt')">
+      <div style="font-size:24px">&#127822;</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:800;color:var(--tp)">Honeycrisp Apple (Optimal Fresh)</div>
+        <div style="font-size:11px;color:var(--ts)">Score: 88 &bull; RUL: 5-7 d</div>
+      </div>
+    </div>
+
+    <div class="demo-option-item" onclick="loadDemoScenario('ft')">
+      <div style="font-size:24px">&#127813;</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:800;color:var(--tp)">Greenhouse Tomato (Peak Fresh)</div>
+        <div style="font-size:11px;color:var(--ts)">Score: 94 &bull; RUL: 6-8 d</div>
+      </div>
+    </div>
+
+    <div class="demo-option-item" onclick="loadDemoScenario('ot')">
+      <div style="font-size:24px">&#127813;</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:800;color:var(--tp)">Roma Tomato (Softening / Overripe)</div>
+        <div style="font-size:11px;color:var(--ts)">Score: 41 &bull; RUL: 0-1 d</div>
+      </div>
+    </div>
+
+    <div class="demo-option-item" onclick="loadDemoScenario('md')">
+      <div style="font-size:24px">&#129371;</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:800;color:var(--tp)">Milk Sample (Pure / Normal)</div>
+        <div style="font-size:11px;color:var(--ts)">Water: ~3.8% &bull; No adulteration detected</div>
+      </div>
+    </div>
+
+    <div class="demo-option-item" onclick="loadDemoScenario('ma')">
+      <div style="font-size:24px">&#9888;</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:800;color:var(--rd)">Milk Sample (Excess Water Anomaly)</div>
+        <div style="font-size:11px;color:#fca5a5">Dilution: 9&ndash;13% &bull; Abnormal transmission</div>
+      </div>
+    </div>
+
+    <button class="btn-secondary" onclick="closeDemoSheet()" style="margin-top:8px">Cancel</button>
+  </div>
+</div>
+
+<script>
+/* =================================================================
+   ROBUST NAVIGATION & SCREEN STATE ENGINE
+   ================================================================= */
+var currentScreen = 's0';
+var navHistory = [];
+var waveformTimer = null;
+var calibTimer = null;
+var scanStepIndex = 0;
+
+// Root tabs that display the persistent bottom navigation bar
+var ROOT_TABS = ['s0', 'sh', 'sa'];
+
+function gt(nextScreen) {
+  if (!document.getElementById(nextScreen) || nextScreen === currentScreen) return;
+  navHistory.push(currentScreen);
+  transitionScreen(currentScreen, nextScreen, 'forward');
+}
+
+function gb() {
+  if (navHistory.length > 0) {
+    var prevScreen = navHistory.pop();
+    transitionScreen(currentScreen, prevScreen, 'backward');
+  } else {
+    // Fallback: If history is empty, return safely to Home dashboard
+    goHome();
+  }
+}
+
+function goHome() {
+  navHistory = [];
+  if (currentScreen !== 's0') {
+    transitionScreen(currentScreen, 's0', 'backward');
+  }
+  updateNavTabs('s0');
+}
+
+function switchTab(tabId) {
+  if (tabId === currentScreen) return;
+  navHistory = [];
+  transitionScreen(currentScreen, tabId, 'fade');
+  updateNavTabs(tabId);
+}
+
+function updateNavTabs(tabId) {
+  document.getElementById('tabHome').classList.toggle('active', tabId === 's0');
+  document.getElementById('tabHistory').classList.toggle('active', tabId === 'sh');
+  document.getElementById('tabAbout').classList.toggle('active', tabId === 'sa');
+}
+
+function transitionScreen(fromId, toId, direction) {
+  var fromEl = document.getElementById(fromId);
+  var toEl = document.getElementById(toId);
+  if (!toEl) return;
+
+  // Stop active animations / timers on leaving screens
+  onLeaveScreen(fromId);
+
+  // Bottom bar visibility: Show only on primary root tabs (Home, History, About)
+  var bottomBar = document.getElementById('bottomBar');
+  if (ROOT_TABS.indexOf(toId) !== -1) {
+    bottomBar.classList.remove('hidden');
+    updateNavTabs(toId);
+  } else {
+    bottomBar.classList.add('hidden');
+  }
+
+  // Slide transitions
+  if (direction === 'forward') {
+    fromEl.classList.add('exit-left');
+    setTimeout(function() {
+      fromEl.classList.remove('active', 'exit-left');
+    }, 280);
+    toEl.style.transform = 'translateX(28px)';
+    toEl.classList.add('active');
+    setTimeout(function() { toEl.style.transform = ''; }, 10);
+  } else if (direction === 'backward') {
+    fromEl.classList.remove('active');
+    toEl.style.transform = 'translateX(-28px)';
+    toEl.classList.add('active');
+    setTimeout(function() { toEl.style.transform = ''; }, 10);
+  } else {
+    // Tab fade
+    fromEl.classList.remove('active', 'exit-left');
+    toEl.classList.add('active');
+  }
+
+  currentScreen = toId;
+  onEnterScreen(toId);
+}
+
+function onLeaveScreen(id) {
+  stopWaveform();
+  if (calibTimer) clearTimeout(calibTimer);
+}
+
+function onEnterScreen(id) {
+  if (id === 's3') {
+    startCalibrationProcess();
+  } else if (id === 's4') {
+    startActiveScanProcess();
+  } else if (id === 's5') {
+    // Auto-advance to Freshness Result after 3.2s
+    setTimeout(function() {
+      if (currentScreen === 's5') gt('s6');
+    }, 3200);
+  } else if (id === 's6') {
+    // Scrolled to top
+    var sc = document.querySelector('#s6 .screen-scroll');
+    if (sc) sc.scrollTop = 0;
+  } else if (id === 's7') {
+    setTimeout(drawTrajectoryChart, 250);
+  } else if (id === 'sm2') {
+    resetMilkMeasurement();
+  } else if (id === 'sm5') {
+    setTimeout(drawMilkSpectrumChart, 250);
+  }
+}
+
+/* =================================================================
+   CALIBRATION SEQUENCE
+   ================================================================= */
+function startCalibrationProcess() {
+  var pct = document.getElementById('calibPct');
+  var state = document.getElementById('calibStateText');
+  var sub = document.getElementById('calibSubLabel');
+  var badge = document.getElementById('calibReadyBadge');
+  var btn = document.getElementById('calibBeginScanBtn');
+
+  ['calibRow1', 'calibRow2', 'calibRow3', 'calibRow4'].forEach(function(k) {
+    var el = document.getElementById(k);
+    el.textContent = 'SYNCING';
+    el.style.color = 'var(--yw)';
+  });
+
+  pct.textContent = '0%';
+  state.textContent = 'Initializing';
+  sub.textContent = 'Aligning optical & acoustic baseline...';
+  badge.style.display = 'none';
+  btn.style.display = 'none';
+
+  var milestones = [
+    { delay: 350, p: '24%', s: 'Camera & ISO', el: 'calibRow1' },
+    { delay: 850, p: '52%', s: 'Acoustic Floor', el: 'calibRow2' },
+    { delay: 1400, p: '78%', s: 'Spatial Gyro', el: 'calibRow3' },
+    { delay: 2000, p: '94%', s: 'Neural Specimen Engine', el: 'calibRow4' },
+    { delay: 2500, p: '100%', s: 'Locked & Ready', el: null }
+  ];
+
+  milestones.forEach(function(m) {
+    calibTimer = setTimeout(function() {
+      pct.textContent = m.p;
+      state.textContent = m.s;
+      if (m.el) {
+        var e = document.getElementById(m.el);
+        e.textContent = 'VERIFIED';
+        e.style.color = 'var(--gr)';
+      }
+      if (m.p === '100%') {
+        sub.textContent = 'Ready for specimen capture.';
+        badge.style.display = 'block';
+        setTimeout(function() { btn.style.display = 'flex'; }, 200);
+      }
+    }, m.delay);
+  });
+}
+
+/* =================================================================
+   ACTIVE SCAN SEQUENCE (Auto-CV target detection)
+   ================================================================= */
+function startActiveScanProcess() {
+  scanStepIndex = 0;
+  document.getElementById('scanViewCounter').textContent = 'VIEW 1 OF 3';
+  document.getElementById('scanStepBtn').innerHTML = '<span>Rotate Specimen &rarr;</span>';
+  document.getElementById('scanStepBtn').onclick = advanceScanStep;
+
+  document.getElementById('scanStatusCV').innerHTML = '&#10003; AUTO-RESOLVED';
+  document.getElementById('scanStatusCV').style.color = 'var(--gr)';
+  document.getElementById('scanStatusAcoustic').innerHTML = '&#9675; RECORDING';
+  document.getElementById('scanStatusAcoustic').style.color = 'var(--ac)';
+  document.getElementById('scanStatusSurface').innerHTML = '&#9675; PENDING';
+  document.getElementById('scanStatusSurface').style.color = 'var(--ts)';
+
+  startWaveform();
+
+  // Simulated auto-trigger for views
+  setTimeout(function() {
+    if (currentScreen !== 's4') return;
+    document.getElementById('scanStatusAcoustic').innerHTML = '&#10003; 184 m/s CAPTURED';
+    document.getElementById('scanStatusAcoustic').style.color = 'var(--gr)';
+  }, 1200);
+}
+
+function advanceScanStep() {
+  scanStepIndex++;
+  if (scanStepIndex === 1) {
+    document.getElementById('scanViewCounter').textContent = 'VIEW 2 OF 3';
+    document.getElementById('scanStatusSurface').innerHTML = '&#10003; 48% MAPPED';
+    document.getElementById('scanStatusSurface').style.color = 'var(--ac)';
+  } else if (scanStepIndex === 2) {
+    document.getElementById('scanViewCounter').textContent = 'VIEW 3 OF 3';
+    document.getElementById('scanStatusSurface').innerHTML = '&#10003; 100% COMPLETED';
+    document.getElementById('scanStatusSurface').style.color = 'var(--gr)';
+    document.getElementById('scanStepBtn').innerHTML = '<span>Compute Freshness Model &rarr;</span>';
+    document.getElementById('scanStepBtn').onclick = function() { gt('s5'); };
+  } else {
+    gt('s5');
+  }
+}
+
+/* =================================================================
+   WAVEFORM CANVAS ANIMATION
+   ================================================================= */
+function startWaveform() {
+  var c = document.getElementById('waveformCanvas');
+  if (!c) return;
+  var ctx = c.getContext('2d');
+  var phase = 0;
+  stopWaveform();
+
+  waveformTimer = setInterval(function() {
+    var W = c.offsetWidth || 320;
+    var H = 48;
+    c.width = W;
+    c.height = H;
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+
+    for (var x = 0; x < W; x++) {
+      var t = x / W;
+      var y = H / 2 + Math.sin(t * Math.PI * 8 + phase) * (H * 0.26)
+                    + Math.sin(t * Math.PI * 18 + phase * 1.5) * (H * 0.12)
+                    + (Math.random() - 0.5) * 3;
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    phase += 0.14;
+  }, 45);
+}
+
+function stopWaveform() {
+  if (waveformTimer) clearInterval(waveformTimer);
+  waveformTimer = null;
+}
+
+/* =================================================================
+   MILK SCREENING FLOW
+   ================================================================= */
+function selectContainer(type) {
+  ['cntGlass', 'cntPlastic', 'cntSteel', 'cntOther'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('selected');
+  });
+
+  var map = { glass: 'cntGlass', plastic: 'cntPlastic', steel: 'cntSteel', other: 'cntOther' };
+  if (map[type]) document.getElementById(map[type]).classList.add('selected');
+
+  var warn = document.getElementById('steelWarningBox');
+  var btn = document.getElementById('btnContinueMilk');
+  var techCnt = document.getElementById('techCntVal');
+
+  if (type === 'steel') {
+    warn.style.display = 'block';
+    btn.disabled = true;
+    btn.style.opacity = '0.35';
+    btn.style.cursor = 'not-allowed';
+  } else {
+    warn.style.display = 'none';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+    if (techCnt) {
+      techCnt.textContent = type === 'glass' ? 'Clear Glass (Cylindrical)' :
+                            type === 'plastic' ? 'Clear Polyethylene' : 'Custom Specimen Cell';
+    }
+  }
+}
+
+function resetMilkMeasurement() {
+  ['smDiag1', 'smDiag2', 'smDiag3'].forEach(function(id) {
+    var el = document.getElementById(id);
+    el.innerHTML = '&#9675; STANDBY';
+    el.style.color = 'var(--ts)';
+  });
+  var btn = document.getElementById('btnAnalyzeMilk');
+  btn.disabled = false;
+  btn.innerHTML = '<span>Analyze Specimen &rarr;</span>';
+  btn.style.opacity = '1';
+  btn.onclick = runMilkInference;
+}
+
+function runMilkInference() {
+  var btn = document.getElementById('btnAnalyzeMilk');
+  btn.disabled = true;
+  btn.innerHTML = '<span>Measuring Spectral Absorption...</span>';
+  btn.style.opacity = '0.6';
+
+  setTimeout(function() {
+    var d1 = document.getElementById('smDiag1');
+    d1.innerHTML = '&#10003; 0.942 CAPTURED';
+    d1.style.color = 'var(--gr)';
+  }, 600);
+
+  setTimeout(function() {
+    var d2 = document.getElementById('smDiag2');
+    d2.innerHTML = '&#10003; REFRACTIVE MATCH';
+    d2.style.color = 'var(--gr)';
+  }, 1200);
+
+  setTimeout(function() {
+    var d3 = document.getElementById('smDiag3');
+    d3.innerHTML = '&#10003; 100% SYNTHESIZED';
+    d3.style.color = 'var(--gr)';
+    btn.disabled = false;
+    btn.innerHTML = '<span>View Screening Result &rarr;</span>';
+    btn.style.opacity = '1';
+    btn.onclick = function() { gt('sm4'); };
+  }, 1800);
+}
+
+/* =================================================================
+   DIAGNOSTIC COLLAPSIBLE
+   ================================================================= */
+function toggleDiagnostic(id) {
+  var content = document.getElementById(id);
+  var chevron = document.getElementById('diagChevron');
+  if (!content) return;
+  var isOpen = content.classList.contains('open');
+  content.classList.toggle('open', !isOpen);
+  if (chevron) {
+    chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+  }
+}
+
+/* =================================================================
+   DEMO MODE SCENARIOS & ENGINE
+   ================================================================= */
+function openDemoSheet() {
+  document.getElementById('demoOverlay').classList.add('visible');
+}
+
+function closeDemoSheet() {
+  document.getElementById('demoOverlay').classList.remove('visible');
+}
+
+function exitDemoMode() {
+  document.getElementById('demoBanner').classList.remove('visible');
+  loadDemoScenario('rt'); // Reset to default state
+}
+
+function loadDemoScenario(key) {
+  closeDemoSheet();
+  var banner = document.getElementById('demoBanner');
+  var bannerText = document.getElementById('demoBannerText');
+
+  var scenarioTitles = {
+    rt: 'DEMO: Honeycrisp Apple (Optimal Freshness)',
+    ft: 'DEMO: Greenhouse Tomato (Peak Fresh)',
+    ot: 'DEMO: Roma Tomato (Softening/Overripe)',
+    md: 'DEMO: Milk Sample (Pure Standard)',
+    ma: 'DEMO: Milk Sample (Excess Water Anomaly)'
+  };
+
+  banner.classList.add('visible');
+  bannerText.textContent = scenarioTitles[key] || 'Demo scenario loaded';
+
+  applyDemoData(key);
+
+  if (key === 'md' || key === 'ma') {
+    gt('sm4');
+  } else {
+    gt('s6');
+  }
+}
+
+function applyDemoData(key) {
+  var produceScenarios = {
+    rt: {
+      targetName: 'Honeycrisp Apple (Malus domestica)',
+      confBadge: '99.2% Conf',
+      score: 88,
+      color: 'var(--gr)',
+      stageText: 'OPTIMAL FRESHNESS',
+      stageClass: 'pill-green',
+      rul: '5–7',
+      deg: '-1.6',
+      turgor: '92%',
+      conf: '89%',
+      deepVel: '-1.6',
+      deepPill: 'Stable Linear Decay',
+      deepPillClass: 'pill-green'
+    },
+    ft: {
+      targetName: 'Greenhouse Tomato (Solanum lycopersicum)',
+      confBadge: '98.8% Conf',
+      score: 94,
+      color: 'var(--gr)',
+      stageText: 'PEAK HARVEST FRESH',
+      stageClass: 'pill-green',
+      rul: '6–8',
+      deg: '-1.2',
+      turgor: '96%',
+      conf: '93%',
+      deepVel: '-1.2',
+      deepPill: 'Minimal Degradation',
+      deepPillClass: 'pill-green'
+    },
+    ot: {
+      targetName: 'Roma Tomato (Solanum lycopersicum)',
+      confBadge: '98.1% Conf',
+      score: 41,
+      color: 'var(--rd)',
+      stageText: 'OVERRIPE / CONSUME PROMPTLY',
+      stageClass: 'pill-red',
+      rul: '0–1',
+      deg: '-6.8',
+      turgor: '54%',
+      conf: '84%',
+      deepVel: '-6.8',
+      deepPill: 'Accelerated Breakdown',
+      deepPillClass: 'pill-red'
+    }
+  };
+
+  var milkScenarios = {
+    md: {
+      verdictText: 'NO TESTED ADULTERATION DETECTED',
+      verdictClass: 'pill-green',
+      waterPct: '3.8%',
+      waterColor: 'var(--gr)',
+      conf: '92%',
+      adWater: 'က3 3.8% (Normal baseline)',
+      adWaterColor: 'var(--gr)',
+      anomalyHtml: ''
+    },
+    ma: {
+      verdictText: 'POTENTIAL WATER DILUTION DETECTED',
+      verdictClass: 'pill-red',
+      waterPct: '11.4%',
+      waterColor: 'var(--rd)',
+      conf: '88%',
+      adWater: '⚠ 11.4% (Elevated Dilution)',
+      adWaterColor: 'var(--rd)',
+      anomalyHtml: '<div style="background:var(--rd-bg);border:1px solid rgba(239,68,68,0.3);border-radius:14px;padding:14px;margin-bottom:18px"><div style="font-size:12px;font-weight:800;color:var(--rd);margin-bottom:4px">&#9888; Refractive Anomaly Detected</div><div style="font-size:12px;color:#fca5a5;line-height:1.4">Colloid dispersion index deviates by > 2.4 sigma. Water dilution estimated between <strong>9% and 13%</strong>. Verification recommended.</div></div>'
+    }
+  };
+
+  if (produceScenarios[key]) {
+    var p = produceScenarios[key];
+    document.getElementById('resTargetName').textContent = 'Identified: ' + p.targetName;
+    document.getElementById('resConfBadge').textContent = '• ' + p.confBadge;
+    document.getElementById('cvTargetLabel').textContent = p.targetName;
+    document.getElementById('resScoreNum').innerHTML = p.score + '<span class="big-score-denom">/100</span>';
+    document.getElementById('resScoreNum').style.color = p.color;
+
+    var pill = document.getElementById('resStagePill');
+    pill.textContent = p.stageText;
+    pill.className = 'status-pill ' + p.stageClass;
+
+    document.getElementById('resRulVal').textContent = p.rul;
+    document.getElementById('resDegVal').textContent = p.deg;
+    document.getElementById('resTurgorVal').textContent = p.turgor;
+    document.getElementById('resConfVal').textContent = p.conf;
+
+    document.getElementById('deepDegVel').textContent = p.deepVel;
+    document.getElementById('deepDegVel').style.color = p.color;
+    var dp = document.getElementById('deepDegPill');
+    dp.textContent = p.deepPill;
+    dp.className = 'status-pill ' + p.deepPillClass;
+  }
+
+  if (milkScenarios[key]) {
+    var m = milkScenarios[key];
+    var mv = document.getElementById('milkVerdictPill');
+    mv.textContent = m.verdictText;
+    mv.className = 'status-pill ' + m.verdictClass;
+
+    var wp = document.getElementById('milkWaterPct');
+    wp.textContent = m.waterPct;
+    wp.style.color = m.waterColor;
+
+    document.getElementById('milkConfText').textContent = m.conf;
+    document.getElementById('milkConfBar').style.width = m.conf;
+
+    var aw = document.getElementById('adWaterStatus');
+    aw.textContent = m.adWater;
+    aw.style.color = m.adWaterColor;
+
+    document.getElementById('milkAnomalyAlert').innerHTML = m.anomalyHtml;
+  }
+}
+
+/* =================================================================
+   CHARTS & CANVASES
+   ================================================================= */
+function drawTrajectoryChart() {
+  var c = document.getElementById('trajectoryCanvas');
+  if (!c) return;
+  var W = c.offsetWidth || 320;
+  var H = 130;
+  c.width = W;
+  c.height = H;
+  var ctx = c.getContext('2d');
+  var pad = 28;
+  var cW = W - pad * 2;
+  var cH = H - pad * 2;
+  var scores = [96, 93, 91, 88];
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+  ctx.lineWidth = 1;
+  [20, 50, 80, 100].forEach(function(val) {
+    var y = pad + cH - (val / 100) * cH;
+    ctx.beginPath();
+    ctx.moveTo(pad, y);
+    ctx.lineTo(W - pad, y);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.font = '9px JetBrains Mono';
+    ctx.fillText(val, 4, y + 3);
+  });
+
+  // Gradient fill
+  var grad = ctx.createLinearGradient(0, pad, 0, H - pad);
+  grad.addColorStop(0, 'rgba(34, 197, 94, 0.35)');
+  grad.addColorStop(1, 'rgba(34, 197, 94, 0)');
+
+  ctx.beginPath();
+  scores.forEach(function(val, i) {
+    var x = pad + (i / (scores.length - 1)) * cW;
+    var y = pad + cH - (val / 100) * cH;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.lineTo(pad + cW, H - pad);
+  ctx.lineTo(pad, H - pad);
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.strokeStyle = '#22c55e';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  scores.forEach(function(val, i) {
+    var x = pad + (i / (scores.length - 1)) * cW;
+    var y = pad + cH - (val / 100) * cH;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Data points
+  scores.forEach(function(val, i) {
+    var x = pad + (i / (scores.length - 1)) * cW;
+    var y = pad + cH - (val / 100) * cH;
+    ctx.beginPath();
+    ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+    ctx.fillStyle = (i === scores.length - 1) ? '#ffffff' : '#22c55e';
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = '10px JetBrains Mono';
+    ctx.fillText(val, x - 8, y - 8);
+  });
+
+  ['Day 1', 'Day 2', 'Day 3', 'Today'].forEach(function(lbl, i) {
+    var x = pad + (i / (scores.length - 1)) * cW;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.font = '9px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText(lbl, x, H - 6);
+  });
+  ctx.textAlign = 'left';
+}
+
+function drawMilkSpectrumChart() {
+  var c = document.getElementById('milkCurveCanvas');
+  if (!c) return;
+  var W = c.offsetWidth || 320;
+  var H = 120;
+  c.width = W;
+  c.height = H;
+  var ctx = c.getContext('2d');
+  var pad = 20;
+  var cW = W - pad * 2;
+  var cH = H - pad * 2;
+
+  var pts = [
+    { x: 0.05, y: 0.32 }, { x: 0.2, y: 0.65 }, { x: 0.35, y: 0.82 },
+    { x: 0.5, y: 0.74 }, { x: 0.65, y: 0.55 }, { x: 0.8, y: 0.42 }, { x: 0.95, y: 0.28 }
+  ];
+
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  pts.forEach(function(pt, i) {
+    var x = pad + pt.x * cW;
+    var y = pad + cH - pt.y * cH;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  var grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+  grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  ctx.beginPath();
+  pts.forEach(function(pt, i) {
+    var x = pad + pt.x * cW;
+    var y = pad + cH - pt.y * cH;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.lineTo(pad + cW, pad + cH);
+  ctx.lineTo(pad, pad + cH);
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+  ctx.font = '9px JetBrains Mono';
+  ctx.fillText('400 nm (Violet)', pad, H - 4);
+  ctx.fillText('700 nm (Red)', W - 78, H - 4);
+}
+
+/* =================================================================
+   CLOCK
+   ================================================================= */
+function updateClock() {
+  var now = new Date();
+  var h = String(now.getHours()).padStart(2, '0');
+  var m = String(now.getMinutes()).padStart(2, '0');
+  var el = document.getElementById('liveClock');
+  if (el) el.textContent = h + ':' + m;
+}
+setInterval(updateClock, 10000);
+updateClock();
+
+// Initial demo defaults
+applyDemoData('rt');
+applyDemoData('md');
+</script>
+</body>
+</html>
